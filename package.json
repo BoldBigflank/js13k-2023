@@ -3,7 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.33.0",
+    "@typescript-eslint/parser": "^5.33.0",
+    "babel-eslint": "^10.1.0",
+    "copy-webpack-plugin": "^9.0.1",
     "ect-bin": "1.4.1",
+    "eslint": "^8.21.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-typescript": "^17.0.0",
     "google-closure-compiler": "^20220601.0.0",
     "html-minifier": "^4.0.0",
     "html-webpack-plugin": "^5.3.2",
@@ -13,14 +20,16 @@
     "typescript": "^4.7.4",
     "webpack": "^5.50.0",
     "webpack-cli": "^4.8.0",
-    "webpack-dev-server": "^4.0.0",
-    "copy-webpack-plugin": "^9.0.1"
+    "webpack-dev-server": "^4.0.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "webpack serve --mode=development --host=0.0.0.0",
+    "start": "webpack serve --mode=development --host=0.0.0.0",
     "build": "webpack --config webpack.prod.js && npm run zip",
     "zip": "node zip.js"
   },
-  "author": ""
+  "author": "",
+  "dependencies": {
+    "babylonjs": "^5.19.0"
+  }
 }
