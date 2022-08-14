@@ -1,12 +1,11 @@
 // https://github.com/airbnb/javascript/blob/master/packages/eslint-config-airbnb-base/rules
 
 module.exports = {
-    extends: [
-        'airbnb-base',
-        'airbnb-typescript'
-    ],
-    parser: 'babel-eslint',
-
+    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+    parser: '@typescript-eslint/parser',
+    plugins: ['@typescript-eslint'],
+    root: true,
+    
     env: {
         'browser': true,
         'es6': true,
@@ -24,7 +23,7 @@ module.exports = {
         semi: ['error', 'never'],
 
         indent: ['error', 4, {
-            SwitchCase: 0,
+            SwitchCase: 0
         }],
 
         'comma-dangle': ['error', 'never'],
@@ -50,16 +49,16 @@ module.exports = {
 
         'prefer-destructuring': ['error', {
             VariableDeclarator: {
-              array: false,
-              object: false
+                array: false,
+                object: false
             },
             AssignmentExpression: {
-              array: false,
-              object: false
+                array: false,
+                object: false
             }
         },
         {
-            enforceForRenamedProperties: false,
+            enforceForRenamedProperties: false
         }],
 
         'no-plusplus': ['error', {
