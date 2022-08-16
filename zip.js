@@ -7,7 +7,7 @@ const pathToZipFolder = path.join(__dirname, 'dist', 'super-minified')
 try {
     fs.unlinkSync(path.join(pathToZipFolder, 'index.zip'))
 } catch(e){
-
+    console.log('unlink Error', e)
 }
 
 try {

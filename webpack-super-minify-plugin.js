@@ -107,8 +107,11 @@ async function applyClosure(js) {
     await fs.writeFile(tmpobj.name, js)
     const closureCompiler = new ClosureCompiler({
         js: tmpobj.name,
+        // eslint-disable-next-line camelcase
         compilation_level: 'ADVANCED',
+        // eslint-disable-next-line camelcase
         language_in: 'ECMASCRIPT_2020',
+        // eslint-disable-next-line camelcase
         language_out: 'ECMASCRIPT_2020'
     })
     return new Promise((resolve, reject) => {

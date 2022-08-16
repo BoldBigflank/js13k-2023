@@ -1,8 +1,10 @@
 import { StateMachine } from './core/state-machine'
 import { State } from './core/state'
 
-export let gameStateMachine: StateMachine
+let gameStateMachine: StateMachine
 
-export function createGameStateMachine(initialState: State) {
+const createGameStateMachine = function(initialState: State) {
     gameStateMachine = new StateMachine(initialState)
 }
+
+export { gameStateMachine, createGameStateMachine }

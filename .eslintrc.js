@@ -18,7 +18,7 @@ module.exports = {
         VERSION: 'readonly',
         SLACK_API: 'readonly'
     },
-
+    ignorePatterns: ["bundle.js", "**/vendor/*.js"],
     rules: {
         semi: ['error', 'never'],
 
@@ -81,8 +81,8 @@ module.exports = {
         'lines-between-class-members': ['off'],
         'import/no-unresolved': ['off'],
         'import/prefer-default-export': ['off'],
-        'import/no-default-export': ['error'],
-        'import/extensions': ['off']
+        'import/extensions': ['off'],
+        '@typescript-eslint/no-var-requires': ['off']
     }
 
 }

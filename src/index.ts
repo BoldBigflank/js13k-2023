@@ -1,6 +1,6 @@
-
+import { SlideTilePuzzle } from '@/puzzles/SlideTilePuzzle'
+import type { Tile, InteractiveMesh } from '@/Types'
 const init = async () => {
-    console.log('init started')
     document.getElementById('intro')!.style.display = 'none'
     const canvas: HTMLCanvasElement = document.getElementById('c') as HTMLCanvasElement
     canvas.style.display = 'block'
@@ -11,9 +11,27 @@ const init = async () => {
     const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 3, new BABYLON.Vector3(0, 0, 0), scene)
     camera.attachControl(canvas, true)
     
-    const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene)
+    new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene)
     
-    const box = BABYLON.MeshBuilder.CreateBox("box", {}, scene)
+    // BABYLON.MeshBuilder.CreateBox("box", {}, scene)
+    BABYLON.MeshBuilder.CreateSphere("center", {diameter: 0.1}, scene)
+
+    // Custom pointer events
+    scene.onPointerObservable.add((pointerInfo) => {      		
+        switch (pointerInfo.type) {
+        case BABYLON.PointerEventTypes.POINTERDOWN:
+            if (
+                pointerInfo && 
+                pointerInfo.pickInfo &&
+                pointerInfo.pickInfo.pickedMesh) {
+                const pickedMesh = pointerInfo.pickInfo.pickedMesh as InteractiveMesh
+                if (pickedMesh.onPointerPick) {
+                    pickedMesh.onPointerPick(pointerInfo)
+                }
+            }
+            break
+        }
+    })
 
     engine.hideLoadingUI()
 
@@ -26,8 +44,7 @@ const init = async () => {
     window.addEventListener('resize', () => {
         engine.resize()
     })
-    console.log('init ended')
-    
+    const slideTile = new SlideTilePuzzle(scene)
 }
 
 window.addEventListener('DOMContentLoaded', () => {
