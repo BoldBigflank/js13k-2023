@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const {SuperMinifyPlugin} = require("./webpack-super-minify-plugin")
 const CopyPlugin = require('copy-webpack-plugin')
@@ -6,6 +7,9 @@ const CopyPlugin = require('copy-webpack-plugin')
 module.exports = {
     entry: './src/index.ts',
     mode: 'production',
+    externals: {
+        babylon: 'BABYLON'
+    },
     plugins: [
         new HtmlWebpackPlugin({
             template: './index.html'
