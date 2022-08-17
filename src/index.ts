@@ -1,5 +1,6 @@
 import { SlideTilePuzzle } from '@/puzzles/SlideTilePuzzle'
 import type { Tile, InteractiveMesh } from '@/Types'
+
 const { Engine, Scene, MeshBuilder, HemisphericLight, FreeCamera, Vector3, PointerEventTypes } = BABYLON
 const init = async () => {
     document.getElementById('intro')!.style.display = 'none'
@@ -7,7 +8,7 @@ const init = async () => {
     canvas.style.display = 'block'
     const engine = new Engine(canvas, true)
     const scene = new Scene(engine)
-    scene.gravity = new BABYLON.Vector3(0, -0.15, 0)
+    scene.gravity = new Vector3(0, -0.15, 0)
     scene.collisionsEnabled = true
     // scene.debugLayer.show({
     //     embedMode: true

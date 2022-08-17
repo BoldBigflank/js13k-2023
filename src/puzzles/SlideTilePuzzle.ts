@@ -1,12 +1,14 @@
 import { sample } from '@/core/Utils'
 import type { Tile, InteractiveMesh } from '@/Types'
 
+const { TransformNode, Engine, Scene, MeshBuilder, HemisphericLight, FreeCamera, Vector3, PointerEventTypes, PointerInfo, StandardMaterial } = BABYLON
+
 export class SlideTilePuzzle {
     // Puzzle Settings
     width = 3
     height =  3
     tileCount = 8
-    openSlot: number = 8
+    openSlot = 8
     scene: BABYLON.Scene
     tiles: Tile[] = []
     parent: BABYLON.TransformNode
@@ -17,7 +19,7 @@ export class SlideTilePuzzle {
     constructor(scene: BABYLON.Scene) {        
         this.scene = scene
         // Parent position
-        this.parent = new BABYLON.TransformNode('SlideTilePuzzle', this.scene)
+        this.parent = new TransformNode('SlideTilePuzzle', this.scene)
         this.reset()
     }
 
@@ -86,7 +88,7 @@ export class SlideTilePuzzle {
             const tile: Tile = {
                 face: i,
                 slot: i,
-                mesh: BABYLON.MeshBuilder.CreateBox(`Tile${i}`, {size: 0.96, depth: 0.2}, this.scene) as InteractiveMesh
+                mesh: MeshBuilder.CreateBox(`Tile${i}`, {size: 0.96, depth: 0.2}, this.scene) as InteractiveMesh
             }
             tile.mesh.checkCollisions = true
             tile.mesh.onPointerPick = (pointerInfo: BABYLON.PointerInfo) => {
@@ -104,15 +106,15 @@ export class SlideTilePuzzle {
             ctx.fillStyle = 'black'
             ctx.fillText(`${i}`, 80, 240)
             
-            const decalMaterial = new BABYLON.StandardMaterial("decalMat", this.scene)
+            const decalMaterial = new StandardMaterial(`decalMat${i}`, this.scene)
             decalMaterial.diffuseTexture = BABYLON.Texture.LoadFromDataString(`canvasTexture${i}`, canvas.toDataURL(), this.scene)
             decalMaterial.diffuseTexture.hasAlpha = true
             decalMaterial.zOffset = -2
             
-            const decal = BABYLON.MeshBuilder.CreateDecal('decal', tile.mesh, {
+            const decal = MeshBuilder.CreateDecal('decal', tile.mesh, {
                 position: tile.mesh.position,
-                normal: BABYLON.Vector3.Backward(),
-                size: BABYLON.Vector3.One().multiplyByFloats(0.9, 0.9, 0.2)
+                normal: Vector3.Backward(),
+                size: Vector3.One().multiplyByFloats(0.9, 0.9, 0.2)
             })
             decal.material = decalMaterial
             decal.setParent(tile.mesh)
