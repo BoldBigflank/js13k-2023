@@ -50,14 +50,16 @@ export class SlideTilePuzzle {
 
     isValidSwap(slotA: number, slotB: number) {
         // Validate the slots themselves
-        if (0 > slotA) return false
+        if (slotA < 0) return false
         if (slotA >= this.width * this.height) return false
-        if (0 > slotB) return false
+        if (slotB < 0) return false
         if (slotB >= this.width * this.height) return false
 
         // either off by 1 or off by width
-        if (Math.abs(slotB - slotA) === 1) return true
-        if (Math.abs(slotB - slotA) === this.width) return true
+        const offset = 
+        Math.abs(Math.floor(slotB / this.width) - Math.floor(slotA / this.width)) + // rows
+        Math.abs(slotB - slotA) % this.width // cols
+        if (offset === 1) return true
         return false
     }
 
@@ -90,6 +92,31 @@ export class SlideTilePuzzle {
             tile.mesh.onPointerPick = (pointerInfo: BABYLON.PointerInfo) => {
                 this.attemptMove(tile)
             }
+
+            const canvas = document.createElement('canvas')
+            canvas.width = 320
+            canvas.height = 320
+            const ctx = canvas.getContext('2d')
+            if (!ctx) throw new Error('ctx missing')
+            // ctx.fillStyle = 'red'
+            // ctx.fillRect(0, 0, 320, 320)
+            ctx.font = '160px Arial'
+            ctx.fillStyle = 'black'
+            ctx.fillText(`${i}`, 80, 240)
+            
+            const decalMaterial = new BABYLON.StandardMaterial("decalMat", this.scene)
+            decalMaterial.diffuseTexture = BABYLON.Texture.LoadFromDataString(`canvasTexture${i}`, canvas.toDataURL(), this.scene)
+            decalMaterial.diffuseTexture.hasAlpha = true
+            decalMaterial.zOffset = -2
+            
+            const decal = BABYLON.MeshBuilder.CreateDecal('decal', tile.mesh, {
+                position: tile.mesh.position,
+                normal: BABYLON.Vector3.Backward(),
+                size: BABYLON.Vector3.One().multiplyByFloats(0.9, 0.9, 0.2)
+            })
+            decal.material = decalMaterial
+            decal.setParent(tile.mesh)
+
             tile.mesh.setParent(this.parent)
             tile.mesh.registerBeforeRender((m) => {
                 tile.mesh.position.x = tile.slot % this.width - 0.5 * this.width + 0.5
