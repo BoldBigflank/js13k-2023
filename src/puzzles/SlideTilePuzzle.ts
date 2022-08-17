@@ -21,6 +21,10 @@ export class SlideTilePuzzle {
         this.reset()
     }
 
+    set position(pos: BABYLON.Vector3) {
+        this.parent.position = pos
+    }
+
     shuffle() {
         // Find valid neighboring slots
         const openSlot = this.openSlot
@@ -82,13 +86,14 @@ export class SlideTilePuzzle {
                 slot: i,
                 mesh: BABYLON.MeshBuilder.CreateBox(`Tile${i}`, {size: 0.96, depth: 0.2}, this.scene) as InteractiveMesh
             }
+            tile.mesh.checkCollisions = true
             tile.mesh.onPointerPick = (pointerInfo: BABYLON.PointerInfo) => {
                 this.attemptMove(tile)
             }
             tile.mesh.setParent(this.parent)
             tile.mesh.registerBeforeRender((m) => {
-                tile.mesh.position.x = tile.slot % this.width - 0.5 * this.width
-                tile.mesh.position.y = -1 * Math.floor(tile.slot / this.width) + 0.5 * this.height
+                tile.mesh.position.x = tile.slot % this.width - 0.5 * this.width + 0.5
+                tile.mesh.position.y = -1 * Math.floor(tile.slot / this.width) + 0.5 * this.height - 0.5
             })
             this.tiles.push(tile)
         }
