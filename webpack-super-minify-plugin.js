@@ -112,7 +112,8 @@ async function applyClosure(js) {
         // eslint-disable-next-line camelcase
         language_in: 'ECMASCRIPT_2020',
         // eslint-disable-next-line camelcase
-        language_out: 'ECMASCRIPT_2020'
+        language_out: 'ECMASCRIPT_2020',
+        externs: 'externs.js'
     })
     return new Promise((resolve, reject) => {
         closureCompiler.run((_exitCode, stdOut, stdErr) => {

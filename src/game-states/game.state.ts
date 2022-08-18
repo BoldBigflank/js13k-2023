@@ -11,7 +11,7 @@ class GameState implements State {
     ballVelocity = new DOMPoint(10, 10)
 
     constructor() {
-        this.image.src = 'ball.png' // all assets will end up flat in the final zip to save space, so no path on any asset
+        // this.image.src = 'ball.png' // all assets will end up flat in the final zip to save space, so no path on any asset
     }
 
     // Make sure ball starts at the same spot when game is entered
