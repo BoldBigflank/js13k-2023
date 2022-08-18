@@ -1,7 +1,7 @@
 import { SlideTilePuzzle } from '@/puzzles/SlideTilePuzzle'
 import type { Tile, InteractiveMesh } from '@/Types'
 
-const { Engine, Scene, MeshBuilder, HemisphericLight, FreeCamera, Vector3, PointerEventTypes } = BABYLON
+const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON
 const init = async () => {
     document.getElementById('intro')!.style.display = 'none'
     const canvas: HTMLCanvasElement = document.getElementById('c') as HTMLCanvasElement
@@ -15,7 +15,7 @@ const init = async () => {
     // })
     engine.displayLoadingUI()
 
-    const camera = new FreeCamera('MainCamera', new Vector3(0, 1.615, -6), scene)
+    const camera = new UniversalCamera('MainCamera', new Vector3(0, 1.615, -6), scene)
     camera.inertia = 0.5
     camera.speed = 1
     camera.keysUp.push(87);    		// W
@@ -51,8 +51,12 @@ const init = async () => {
                 const pickedMesh = pointerInfo.pickInfo.pickedMesh as InteractiveMesh
                 if (pickedMesh.onPointerPick) {
                     pickedMesh.onPointerPick(pointerInfo)
+                    camera.detachControl()
                 }
             }
+            break
+        case PointerEventTypes.POINTERUP:
+            camera.attachControl(canvas, true)
             break
         }
     })
