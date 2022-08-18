@@ -56,10 +56,16 @@ const init = async () => {
             }
             break
         case PointerEventTypes.POINTERUP:
-            camera.attachControl(canvas, true)
+            if (!camera.inputs.attachedToElement)
+                camera.attachControl(canvas, true)
             break
         }
     })
+
+    // WebXR
+    const xr = await scene.createDefaultXRExperienceAsync({
+        floorMeshes: [ground],
+    });
 
     engine.hideLoadingUI()
 
