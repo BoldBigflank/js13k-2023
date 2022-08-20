@@ -1,0 +1,125 @@
+// Vertex shader
+precision highp float;
+
+attribute vec3 position;
+attribute vec2 uv;
+
+
+uniform mat4 u_World;
+uniform mat4 u_ViewProjection;
+uniform vec2 u_TwirlCenter;
+uniform float u_TwirlStrength;
+uniform float u_Time;
+uniform float u_Scale;
+uniform vec4 u_RippleColor;
+uniform vec4 u_BaseColor;
+uniform float u_Opacity;
+
+
+varying vec2 v_output2;
+
+
+
+
+float u_Offset = 666.0;
+float u_ColorAlpha = 1.0;
+
+
+void main(void) {
+vec4 output1 = u_World * vec4(position, 1.0);
+vec4 output0 = u_ViewProjection * output1;
+gl_Position = output0;
+vec2 xy = u_TwirlCenter.xy;
+vec2 output8 = uv - xy;
+float output7 = length(output8);
+float output6 = u_TwirlStrength * output7;
+float output9 = sin(output6);
+float x1 = output8.x;
+float y1 = output8.y;
+float output5 = cos(output6);
+float output4 = output5 * x1;
+float output12 = sin(output6);
+float output11 = output12 * y1;
+float output3 = output4 - output11;
+float output10 = x1 * output9;
+float output15 = cos(output6);
+float output14 = output15 * y1;
+float output13 = output10 + output14;
+vec2 xy1 = vec2(output3, output13).xy;
+vec2 output2 = xy + xy1;
+v_output2 = output2;
+
+}
+
+// Fragment shader
+precision highp float;
+
+uniform mat4 u_World;
+uniform mat4 u_ViewProjection;
+uniform vec2 u_TwirlCenter;
+uniform float u_TwirlStrength;
+uniform float u_Time;
+uniform float u_Scale;
+uniform vec4 u_RippleColor;
+uniform vec4 u_BaseColor;
+uniform float u_Opacity;
+
+
+varying vec2 v_output2;
+
+
+vec2 voronoiRandom(vec2 seed, float offset){
+            mat2 m = mat2(15.27, 47.63, 99.41, 89.98);
+            vec2 uv = fract(sin(m * seed) * 46839.32);
+            return vec2(sin(uv.y * offset) * 0.5 + 0.5, cos(uv.x * offset) * 0.5 + 0.5);
+        }
+        
+void voronoi(vec2 seed, float offset, float density, out float outValue, out float cells){
+            vec2 g = floor(seed * density);
+            vec2 f = fract(seed * density);
+            float t = 8.0;
+            vec3 res = vec3(8.0, 0.0, 0.0);
+
+            for(int y=-1; y<=1; y++)
+            {
+                for(int x=-1; x<=1; x++)
+                {
+                    vec2 lattice = vec2(x,y);
+                    vec2 randomOffset = voronoiRandom(lattice + g, offset);
+                    float d = distance(lattice + randomOffset, f);
+                    if(d < res.x)
+                    {
+                        res = vec3(d, randomOffset.x, randomOffset.y);
+                        outValue = res.x;
+                        cells = res.y;
+                    }
+                }
+            }
+        }
+        
+#include<helperFunctions>
+
+
+
+float u_Offset = 666.0;
+float u_ColorAlpha = 1.0;
+
+
+void main(void) {
+float output19 = u_Time + u_Offset;
+float tempOutput = 0.0;
+float tempCells = 0.0;
+voronoi(v_output2, output19, u_Scale, tempOutput, tempCells);
+float output18 = tempOutput;
+vec4 rgba = vec4(output18, output18, output18, u_ColorAlpha).rgba;
+vec4 output17 = rgba * u_RippleColor;
+vec4 output16 = max(output17, u_BaseColor);
+gl_FragColor = vec4(output16.rgb, u_Opacity);
+#ifdef CONVERTTOLINEAR0
+gl_FragColor = toLinearSpace(gl_FragColor);
+#endif
+#ifdef CONVERTTOGAMMA0
+gl_FragColor = toGammaSpace(gl_FragColor);
+#endif
+
+}

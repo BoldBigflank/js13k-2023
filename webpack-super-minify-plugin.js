@@ -69,11 +69,11 @@ class SuperMinifyPlugin {
                     Object.entries(assets).forEach(entry => {
                         const [filename, rawSource] = entry
                         if (filename !== this.options.htmlBundleName && filename !== this.options.jsBundleName) {
-                            compilation.emitAsset(`super-minified/${filename}`, rawSource)
+                            compilation.emitAsset(`../dist-minified/${filename}`, rawSource)
                         }
                     })
                     compilation.emitAsset(
-                        'super-minified/index.html',
+                        '../dist-minified/index.html',
                         new RawSource(htmlJs)
                     )
                     callback()

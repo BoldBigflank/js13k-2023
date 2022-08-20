@@ -28,8 +28,8 @@ For building, `npm run build` leverages the included custom plugin `webpack-supe
 * Runs google closure compiler on your code
 * Runs Roadroller on the closure minified code
 * Replaces your `index.html` with only a script tag and the roadroller'd JS
-* Places this `index.html` file in the folder `dist/super-minified` along with any other assets from the `static-assets` folder
-* Zips everything up and places it in `dist/super-minified/index.zip`
+* Places this `index.html` file in the folder `dist-minified` along with any other assets from the `static-assets` folder
+* Zips everything up and places it in `dist-minified/index.zip`
 
 So when you complete your build you end up with the following structure in your dist folder:
 ```
@@ -37,14 +37,14 @@ dist/
     index.html   <-- regular webpack built index.html
     bundle.js    <-- regular webpack transpiled and bundled code
     ball.png     <-- any assets are copied from ./static-assets to the root of dist for smaller size
-    super-minified/
-        index.html   <-- This should contain only a <script> tag with the code
-        ball.png     <-- A copy of any assets also ends up here for easy testing of your app
-        index.zip    <-- index.html plus any assets zipped up with ECT
+dist-minified/
+    index.html   <-- This should contain only a <script> tag with the code
+    ball.png     <-- A copy of any assets also ends up here for easy testing of your app
+    index.zip    <-- index.html plus any assets zipped up with ECT
 ```
 
 This structure makes it easier to test out the build process. Files directly in dist only go through regular webpack bundling.
-Files in super-minified have the closure compiler and roadroller applied. These are used for zipping but the unzipped copy is left behind so you can validate
+Files in dist-minified have the closure compiler and roadroller applied. These are used for zipping but the unzipped copy is left behind so you can validate
 the code still works without unzipping.
 Finally you have your index.zip to distribute
 

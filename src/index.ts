@@ -1,4 +1,5 @@
 import { SlideTilePuzzle } from '@/puzzles/SlideTilePuzzle'
+import { waterNME } from '@/shaders/waterNME'
 import type { Tile, InteractiveMesh } from '@/Types'
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON
@@ -39,6 +40,12 @@ const init = async () => {
     ground.checkCollisions = true
     // MeshBuilder.CreateBox("box", {}, scene)
     MeshBuilder.CreateSphere("center", {diameter: 0.1}, scene)
+
+    // Test water cube
+    const waterBox = MeshBuilder.CreateBox("box", {}, scene)
+    waterBox.position = new Vector3(-3, 2, -2)
+    const waterMat = waterNME()
+    waterBox.material = waterMat
 
     // Custom pointer events
     scene.onPointerObservable.add((pointerInfo) => {      		
