@@ -8,21 +8,22 @@ module.exports = {
     devServer: {
         static: './dist',
         hot: true,
-        host: '0.0.0.0'
+        host: '0.0.0.0',
+        port: 8080
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: './index.html'
         }),
-        // new CopyPlugin({
-        //     patterns: [
-        //         {
-        //             context: './static-assets',
-        //             from: '*',
-        //             to: './'
-        //         }
-        //     ]
-        // })
+        new CopyPlugin({
+            patterns: [
+                {
+                    context: './src/static-assets',
+                    from: '*',
+                    to: './'
+                }
+            ]
+        })
     ],
     module: {
         rules: [

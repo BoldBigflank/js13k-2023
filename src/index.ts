@@ -2,7 +2,7 @@ import { SlideTilePuzzle } from '@/puzzles/SlideTilePuzzle'
 import { waterNME } from '@/shaders/waterNME'
 import type { Tile, InteractiveMesh } from '@/Types'
 
-const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON
+const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, Vector4, PointerEventTypes } = BABYLON
 const init = async () => {
     document.getElementById('intro')!.style.display = 'none'
     const canvas: HTMLCanvasElement = document.getElementById('c') as HTMLCanvasElement
@@ -19,12 +19,12 @@ const init = async () => {
     const camera = new UniversalCamera('MainCamera', new Vector3(0, 1.615, -6), scene)
     camera.inertia = 0.5
     camera.speed = 1
-    camera.keysUp.push(87);    		// W
+    camera.keysUp.push(87)    		// W
     camera.keysDown.push(83)   		// D
-    camera.keysLeft.push(65);  		// A
-    camera.keysRight.push(68); 		// S
-    camera.keysUpward.push(69);		// E
-    camera.keysDownward.push(81);     // Q
+    camera.keysLeft.push(65)  		// A
+    camera.keysRight.push(68) 		// S
+    camera.keysUpward.push(69)		// E
+    camera.keysDownward.push(81)     // Q
 
     camera.attachControl(canvas, true)
     // camera.speed = 0.1
@@ -41,11 +41,49 @@ const init = async () => {
     // MeshBuilder.CreateBox("box", {}, scene)
     MeshBuilder.CreateSphere("center", {diameter: 0.1}, scene)
 
-    // Test water cube
-    const waterBox = MeshBuilder.CreateBox("box", {}, scene)
-    waterBox.position = new Vector3(-3, 2, -2)
-    const waterMat = waterNME()
-    waterBox.material = waterMat
+    // // Test water cube
+    // const waterBox = MeshBuilder.CreateBox("box", {}, scene)
+    // waterBox.position = new Vector3(-3, 2, -2)
+    // const waterMat = waterNME()
+    // waterBox.material = waterMat
+
+    // Test 
+    const mat = new BABYLON.StandardMaterial("mat", scene)
+    const tex = new BABYLON.Texture('./checker.png', scene)
+    mat.diffuseTexture = tex
+    
+    const testBox = MeshBuilder.CreateBox("box", {}, scene)
+    testBox.position = new Vector3(-1, 1, 0)
+    testBox.material = mat
+    
+    // The width is w = 1
+    // The height is h = 2w
+    // The circumference is c = PI*w
+    // The uv height is 2/PI
+    const testCylinder = MeshBuilder.CreateCylinder('cylinder', {
+        height: 3.14,
+        subdivisions: 2,
+        enclose: true,
+        faceUV: [
+            new Vector4(0,0,1,1), // bottom cap
+            new Vector4(1,0,0,1), // center
+            new Vector4(0,0,1,1) // top cap
+        ]
+    }, scene)
+    testCylinder.position = new Vector3(0, 3.14/4, 0)
+    testCylinder.scaling = new Vector3(0.5, 0.5, 0.5)
+    testCylinder.material = mat
+
+    const testSphere = MeshBuilder.CreateSphere('sphere', {}, scene)
+    testSphere.position = new Vector3(1, 1, 0)
+    testSphere.material = mat
+
+    const testCapsule = MeshBuilder.CreateCapsule('capsule', {
+        radiusTop: .3
+    }, scene)
+    testCapsule.position = new Vector3(2, 1, 0)
+    testCapsule.material = mat
+
 
     // Custom pointer events
     scene.onPointerObservable.add((pointerInfo) => {      		
@@ -71,8 +109,8 @@ const init = async () => {
 
     // WebXR
     const xr = await scene.createDefaultXRExperienceAsync({
-        floorMeshes: [ground],
-    });
+        floorMeshes: [ground]
+    })
 
     engine.hideLoadingUI()
 
@@ -86,7 +124,7 @@ const init = async () => {
         engine.resize()
     })
     const slideTile = new SlideTilePuzzle(scene)
-    slideTile.position = new Vector3(0, 2, 0)
+    slideTile.position = new Vector3(0, 2, 4)
 }
 
 window.addEventListener('DOMContentLoaded', () => {
