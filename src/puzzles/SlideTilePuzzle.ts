@@ -1,5 +1,6 @@
 import { sample, heiroglyphics } from '@/core/Utils'
 import type { Tile, InteractiveMesh } from '@/Types'
+import { CubeMapToSphericalPolynomialTools } from 'babylonjs'
 
 const { TransformNode, Engine, Scene, MeshBuilder, HemisphericLight, FreeCamera, Vector3, PointerEventTypes, PointerInfo, StandardMaterial } = BABYLON
 
@@ -102,12 +103,15 @@ export class SlideTilePuzzle {
         canvas.height = 320
         const ctx = canvas.getContext('2d')
         if (!ctx) throw new Error('ctx missing')
-        // ctx.fillStyle = 'red'
-        // ctx.fillRect(0, 0, 320, 320)
-        ctx.font = '400px Arial'
+        ctx.fillStyle = '#009e69'
+        ctx.arc(160, 160, 140, 0, 2 * Math.PI)
+        ctx.fill()
+        ctx.font = '320px emoji'
         ctx.fillStyle = 'black'
-        ctx.textBaseline = 'top' 
-        ctx.fillText('🪲', 10, -50)
+        ctx.textBaseline = 'top'
+        const textWidth = ctx.measureText('𓆣').width
+        console.log('textWidth', textWidth)
+        ctx.fillText('𓆣', 0.5 * (320 - textWidth), 0)
 
         // Create something to hold the tiles in position
         const puzzleTransform = new TransformNode('SlideTilePuzzle', this.scene)
@@ -149,13 +153,15 @@ export class SlideTilePuzzle {
         }
 
         // Orient the tiles over the coffin
-        puzzleTransform.rotate(Vector3.Right(), Math.PI / 2)
+        // puzzleTransform.rotate(Vector3.Right(), Math.PI / 2) // Face up
+        // puzzleTransform.rotate(Vector3.Up(), Math.PI / 2) // Head left
+        puzzleTransform.rotation = new Vector3(Math.PI / 2, Math.PI * 3 / 2, 0)
         puzzleTransform.position = new Vector3(0, 1, 0)
         puzzleTransform.scaling = new Vector3(0.25, 0.25, 0.25)
 
-        // Shuffle all the tiles
-        for (let i = 0; i < 100; i++) {
-            this.shuffle()
-        }
+        // // Shuffle all the tiles
+        // for (let i = 0; i < 100; i++) {
+        //     this.shuffle()
+        // }
     }
 }

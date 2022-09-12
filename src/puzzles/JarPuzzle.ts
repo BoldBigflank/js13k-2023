@@ -1,5 +1,6 @@
 import { sample, heiroglyphics } from '@/core/Utils'
 import type { Jar, InteractiveMesh } from '@/Types'
+import { CreateBox } from 'babylonjs'
 
 const { TransformNode, Engine, Scene, MeshBuilder, HemisphericLight, FreeCamera, Vector3, PointerEventTypes, PointerInfo, StandardMaterial } = BABYLON
 // https://en.wikipedia.org/wiki/List_of_Egyptian_hieroglyphs
@@ -42,14 +43,25 @@ export class JarPuzzle {
         this.solved = false
         this.jars = []
 
+        const box = MeshBuilder.CreateBox('jar', {
+            size: 0.6
+        }, this.scene)
+        box.position = new Vector3(0, 0.3, 0)
+        box.checkCollisions = true
+        box.setParent(this.parent)
+
         const symbols = ['𓃻', '𓁢', '𓁵', '𓁛']
         symbols.forEach((symbol, i) => {
             
-            const xPos = -2 + 1 * i
+            const xPos = -0.15 + 0.3 * (i % 2)
+            const zPos = 0.15 - 0.3 * (Math.floor(i / 2))
             
             const jar: Jar = {
                 orientation: (i + Math.floor(Math.random() * 3) + 1) % 4, // Only 4 orientations
-                mesh: MeshBuilder.CreateCapsule(`Jar${i}`, {}, this.scene) as InteractiveMesh
+                mesh: MeshBuilder.CreateCapsule(`Jar${i}`, {
+                    radius: 0.125,
+                    height: 0.5
+                }, this.scene) as InteractiveMesh
             }
 
             // Create a texture for it            
@@ -78,7 +90,7 @@ export class JarPuzzle {
             decal.setParent(jar.mesh)
             decal.isPickable = false
 
-            jar.mesh.position.x = xPos
+            jar.mesh.position = new Vector3(xPos, 0.6, zPos)
             jar.mesh.setParent(this.parent)
             jar.mesh.checkCollisions = true
             jar.mesh.onPointerPick = (pointerInfo: BABYLON.PointerInfo) => {

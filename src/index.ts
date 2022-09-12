@@ -62,6 +62,22 @@ const init = async () => {
         wallMesh.position = new Vector3(wall.x, 1.5, wall.z)
     })
 
+    // Pillars
+    const pillars = [
+        { x: -4.5, z: 0.5 },
+        { x: -4.5, z: 5.5 },
+        { x: 4.5, z: 0.5 },
+        { x: 4.5, z: 5.5 }
+    ]
+    pillars.forEach((opts, i) => {
+        const mesh = MeshBuilder.CreateCylinder(`cylinder${i}`, {
+            diameter: 1,
+            height: 3
+        })
+        mesh.checkCollisions = true
+        mesh.position = new Vector3(opts.x, 1.5, opts.z)
+    })
+
     // // Test water cube
     // const waterBox = MeshBuilder.CreateBox("box", {}, scene)
     // waterBox.position = new Vector3(-3, 2, -2)
@@ -145,7 +161,7 @@ const init = async () => {
         engine.resize()
     })
     const jarPuzzle = new JarPuzzle(scene)
-    jarPuzzle.position = new Vector3(-2, 1, 2)
+    jarPuzzle.position = new Vector3(3, 0, 3)
     const slideTile = new SlideTilePuzzle(scene)
     slideTile.position = new Vector3(0, 0, 4)
 }
