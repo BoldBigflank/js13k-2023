@@ -17,7 +17,7 @@ const init = async () => {
     // })
     engine.displayLoadingUI()
 
-    const camera = new UniversalCamera('MainCamera', new Vector3(0, 1.615, -6), scene)
+    const camera = new UniversalCamera('MainCamera', new Vector3(0, 1.615, 0), scene)
     camera.inertia = 0.5
     camera.speed = 1
     camera.keysUp.push(87)    		// W
@@ -39,8 +39,28 @@ const init = async () => {
 
     const ground = MeshBuilder.CreateGround("ground", { width: 100, height: 100, subdivisions: 100}, scene)
     ground.checkCollisions = true
-    // MeshBuilder.CreateBox("box", {}, scene)
+    ground.position.y = -0.01
+    const floor = MeshBuilder.CreateGround("floor", { width: 12, height: 8, subdivisions: 100}, scene)
+    floor.position = new Vector3(0, 0, 3)
+    floor.checkCollisions = true
     MeshBuilder.CreateSphere("center", {diameter: 0.1}, scene)
+
+    // Walls
+    const walls = [
+        { x: 0, z: -1.5, width: 12, depth: 1 },
+        { x: 0, z: 7.5, width: 12, depth: 1 },
+        { x: -6.5, z: 3, width: 1, depth: 8 },
+        { x: 6.5, z: 3, width: 1, depth: 8 }
+    ]
+    walls.forEach((wall, i) => {
+        const wallMesh = MeshBuilder.CreateBox(`wall${i}`, {
+            width: wall.width,
+            depth: wall.depth,
+            height: 3
+        }, scene)
+        wallMesh.checkCollisions = true
+        wallMesh.position = new Vector3(wall.x, 1.5, wall.z)
+    })
 
     // // Test water cube
     // const waterBox = MeshBuilder.CreateBox("box", {}, scene)
@@ -110,7 +130,7 @@ const init = async () => {
 
     // WebXR
     const xr = await scene.createDefaultXRExperienceAsync({
-        floorMeshes: [ground]
+        floorMeshes: [floor]
     })
 
     engine.hideLoadingUI()
@@ -127,7 +147,7 @@ const init = async () => {
     const jarPuzzle = new JarPuzzle(scene)
     jarPuzzle.position = new Vector3(-2, 1, 2)
     const slideTile = new SlideTilePuzzle(scene)
-    slideTile.position = new Vector3(0, 2, 4)
+    slideTile.position = new Vector3(0, 0, 4)
 }
 
 window.addEventListener('DOMContentLoaded', () => {

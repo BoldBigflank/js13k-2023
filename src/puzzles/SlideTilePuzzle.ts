@@ -85,6 +85,17 @@ export class SlideTilePuzzle {
         this.tiles = []
         this.openSlot = this.width * this.height - 1
 
+        // First, a simple coffin box
+        const coffin = MeshBuilder.CreateBox('coffin', {
+            width: 2.33,
+            height: 1,
+            depth: 0.8
+        }, this.scene)
+        coffin.position = new Vector3(0, 0.5, 0)
+        coffin.checkCollisions = true
+        coffin.setParent(this.parent)
+
+
         // The drawing to put on the image
         const canvas = document.createElement('canvas')
         canvas.width = 320
@@ -96,8 +107,11 @@ export class SlideTilePuzzle {
         ctx.font = '400px Arial'
         ctx.fillStyle = 'black'
         ctx.textBaseline = 'top' 
-        ctx.fillText('𓂀', 10, -50)
+        ctx.fillText('🪲', 10, -50)
 
+        // Create something to hold the tiles in position
+        const puzzleTransform = new TransformNode('SlideTilePuzzle', this.scene)
+        puzzleTransform.setParent(this.parent)
         // Create the tiles
         for (let i = 0; i < 8; i++) {
             const tile: Tile = {
@@ -126,13 +140,19 @@ export class SlideTilePuzzle {
             decal.setParent(tile.mesh)
             decal.isPickable = false
 
-            tile.mesh.setParent(this.parent)
+            tile.mesh.setParent(puzzleTransform)
             tile.mesh.registerBeforeRender((m) => {
                 tile.mesh.position.x = tile.slot % this.width - 0.5 * this.width + 0.5
                 tile.mesh.position.y = -1 * Math.floor(tile.slot / this.width) + 0.5 * this.height - 0.5
             })
             this.tiles.push(tile)
         }
+
+        // Orient the tiles over the coffin
+        puzzleTransform.rotate(Vector3.Right(), Math.PI / 2)
+        puzzleTransform.position = new Vector3(0, 1, 0)
+        puzzleTransform.scaling = new Vector3(0.25, 0.25, 0.25)
+
         // Shuffle all the tiles
         for (let i = 0; i < 100; i++) {
             this.shuffle()
