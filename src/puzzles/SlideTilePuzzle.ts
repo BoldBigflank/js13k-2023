@@ -1,6 +1,7 @@
 import { sample, heiroglyphics } from '@/core/Utils'
 import type { Tile, InteractiveMesh } from '@/Types'
-import { CubeMapToSphericalPolynomialTools } from 'babylonjs'
+import { zzfx } from 'zzfx'
+import { coffinMaterial } from '@/core/textures'
 
 const { TransformNode, Engine, Scene, MeshBuilder, HemisphericLight, FreeCamera, Vector3, PointerEventTypes, PointerInfo, StandardMaterial } = BABYLON
 
@@ -69,15 +70,20 @@ export class SlideTilePuzzle {
     }
 
     attemptMove(tile: Tile) {
+        if (this.solved) return
         if (!this.isValidSwap(tile.slot, this.openSlot)) return
         const tempSlot = this.openSlot
         this.openSlot = tile.slot
         tile.slot = tempSlot
+        zzfx(...[,,76,.02,.02,.01,1,.44,,,,,,.5,,,,,.01,.57]); // Blip 60
+        this.isSolved()
     }
 
     isSolved() {
         if (this.solved) return true
         this.solved = this.tiles.every((tile, index) => tile.slot === tile.face)
+        // Solved sfx
+        if (this.solved) zzfx(...[2.07,0,130.81,.01,.26,.47,3,1.15,,.1,,,.05,,,,.14,.26,.15,.02]); // Music 112 - Mutation 2
         return this.solved
     }
 
@@ -95,6 +101,7 @@ export class SlideTilePuzzle {
         coffin.position = new Vector3(0, 0.5, 0)
         coffin.checkCollisions = true
         coffin.setParent(this.parent)
+        coffin.material = coffinMaterial(this.scene)
 
 
         // The drawing to put on the image
@@ -110,7 +117,6 @@ export class SlideTilePuzzle {
         ctx.fillStyle = 'black'
         ctx.textBaseline = 'top'
         const textWidth = ctx.measureText('𓆣').width
-        console.log('textWidth', textWidth)
         ctx.fillText('𓆣', 0.5 * (320 - textWidth), 0)
 
         // Create something to hold the tiles in position
@@ -159,9 +165,9 @@ export class SlideTilePuzzle {
         puzzleTransform.position = new Vector3(0, 1, 0)
         puzzleTransform.scaling = new Vector3(0.25, 0.25, 0.25)
 
-        // // Shuffle all the tiles
-        // for (let i = 0; i < 100; i++) {
-        //     this.shuffle()
-        // }
+        // Shuffle all the tiles
+        for (let i = 0; i < 1; i++) {
+            this.shuffle()
+        }
     }
 }

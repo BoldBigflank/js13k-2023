@@ -1,6 +1,7 @@
-import { sample, heiroglyphics } from '@/core/Utils'
+import { jarboxMaterial } from '@/core/textures'
+import { sample, jarHeads } from '@/core/Utils'
 import type { Jar, InteractiveMesh } from '@/Types'
-import { CreateBox } from 'babylonjs'
+import { zzfx } from 'zzfx'
 
 const { TransformNode, Engine, Scene, MeshBuilder, HemisphericLight, FreeCamera, Vector3, PointerEventTypes, PointerInfo, StandardMaterial } = BABYLON
 // https://en.wikipedia.org/wiki/List_of_Egyptian_hieroglyphs
@@ -30,12 +31,19 @@ export class JarPuzzle {
     }
 
     attemptMove(jar: Jar) {
+        if (this.solved) return true
         jar.orientation = (jar.orientation + 1) % 4
+        zzfx(...[,,651,.01,.02,0,1,2.52,,38,-34,.03,,,-31]); // Blip 77
+        this.isSolved()
     }
 
     isSolved() {
         if (this.solved) return true
-        this.solved = this.jars.every((jar, index) => jar.orientation === index)
+        this.solved = this.jars.every((jar, index) => {
+            return jar.orientation === index
+        })
+        // Solved sfx
+        if (this.solved) zzfx(...[2.07,0,130.81,.01,.26,.47,3,1.15,,.1,,,.05,,,,.14,.26,.15,.02]); // Music 112 - Mutation 2
         return this.solved
     }
 
@@ -49,9 +57,9 @@ export class JarPuzzle {
         box.position = new Vector3(0, 0.3, 0)
         box.checkCollisions = true
         box.setParent(this.parent)
+        box.material = jarboxMaterial(this.scene)
 
-        const symbols = ['𓃻', '𓁢', '𓁵', '𓁛']
-        symbols.forEach((symbol, i) => {
+        jarHeads.forEach((symbol, i) => {
             
             const xPos = -0.15 + 0.3 * (i % 2)
             const zPos = 0.15 - 0.3 * (Math.floor(i / 2))
@@ -72,10 +80,10 @@ export class JarPuzzle {
             if (!ctx) throw new Error('ctx missing')
             // ctx.fillStyle = 'red'
             // ctx.fillRect(0, 0, 320, 320)
-            ctx.font = '400px Arial'
+            ctx.font = '320px Arial'
             ctx.fillStyle = 'black'
             ctx.textBaseline = 'top' 
-            ctx.fillText(symbols[i], 0.5 * (canvas.width - ctx.measureText(symbols[i]).width), -10)
+            ctx.fillText(symbol, 0.5 * (canvas.width - ctx.measureText(symbol).width), -10)
             const decalMaterial = new StandardMaterial(`jarDecalMat${i}`, this.scene)
             decalMaterial.diffuseTexture = BABYLON.Texture.LoadFromDataString(`jarCanvasTexture${i}`, canvas.toDataURL(), this.scene)
             decalMaterial.diffuseTexture.hasAlpha = true

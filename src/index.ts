@@ -2,6 +2,8 @@ import { SlideTilePuzzle } from '@/puzzles/SlideTilePuzzle'
 import { JarPuzzle } from '@/puzzles/JarPuzzle'
 import { waterNME } from '@/shaders/waterNME'
 import type { Tile, InteractiveMesh } from '@/Types'
+import { columnMaterial, wallMaterial } from './core/textures'
+import { jarHeads } from './core/Utils'
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, Vector4, PointerEventTypes } = BABYLON
 const init = async () => {
@@ -56,26 +58,29 @@ const init = async () => {
         const wallMesh = MeshBuilder.CreateBox(`wall${i}`, {
             width: wall.width,
             depth: wall.depth,
-            height: 3
+            height: 3.14
         }, scene)
         wallMesh.checkCollisions = true
         wallMesh.position = new Vector3(wall.x, 1.5, wall.z)
+        wallMesh.material = wallMaterial([], scene)
     })
 
     // Pillars
     const pillars = [
-        { x: -4.5, z: 0.5 },
-        { x: -4.5, z: 5.5 },
-        { x: 4.5, z: 0.5 },
-        { x: 4.5, z: 5.5 }
+        { x: 4.5, z: 0.5, rotation: Math.PI },
+        { x: -4.5, z: 0.5, rotation: Math.PI * 3 / 2 },
+        { x: -4.5, z: 5.5, rotation: 0 },
+        { x: 4.5, z: 5.5, rotation: Math.PI / 2 }
     ]
     pillars.forEach((opts, i) => {
         const mesh = MeshBuilder.CreateCylinder(`cylinder${i}`, {
             diameter: 1,
-            height: 3
+            height: 3.14
         })
         mesh.checkCollisions = true
         mesh.position = new Vector3(opts.x, 1.5, opts.z)
+        mesh.material = columnMaterial([jarHeads[i]], scene)
+        mesh.rotation = new Vector3(0, opts.rotation, 0)
     })
 
     // // Test water cube
@@ -167,6 +172,9 @@ const init = async () => {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+
+    // Test 
+
     const b = document.getElementById('playButton') as HTMLButtonElement
     b.onclick = init
 })

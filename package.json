@@ -31,6 +31,7 @@
   },
   "author": "",
   "dependencies": {
-    "babylonjs": "^5.19.0"
+    "babylonjs": "^5.23.0",
+    "zzfx": "^1.1.8"
   }
 }
