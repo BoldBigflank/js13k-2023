@@ -40,7 +40,7 @@ export const columnMaterial = (lines: string[], scene: BABYLON.Scene) => {
     ctx.fillStyle = 'black'
     ctx.textBaseline = 'top'
     lines.forEach((line, i) => {
-        ctx.fillText(line, 64, i * lineHeight)
+        ctx.fillText(line, 64, 32 + i * lineHeight)
     })
 
     // Send it

@@ -74,8 +74,8 @@ export class JarPuzzle {
 
             // Create a texture for it            
             const canvas = document.createElement('canvas')
-            canvas.width = 320
-            canvas.height = 320
+            canvas.width = 512
+            canvas.height = 512
             const ctx = canvas.getContext('2d')
             if (!ctx) throw new Error('ctx missing')
             // ctx.fillStyle = 'red'
@@ -83,7 +83,7 @@ export class JarPuzzle {
             ctx.font = '320px Arial'
             ctx.fillStyle = 'black'
             ctx.textBaseline = 'top' 
-            ctx.fillText(symbol, 0.5 * (canvas.width - ctx.measureText(symbol).width), -10)
+            ctx.fillText(symbol, 0.5 * (canvas.width - ctx.measureText(symbol).width), 80)
             const decalMaterial = new StandardMaterial(`jarDecalMat${i}`, this.scene)
             decalMaterial.diffuseTexture = BABYLON.Texture.LoadFromDataString(`jarCanvasTexture${i}`, canvas.toDataURL(), this.scene)
             decalMaterial.diffuseTexture.hasAlpha = true
