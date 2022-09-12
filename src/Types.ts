@@ -1,3 +1,8 @@
+export interface Jar {
+    orientation: number
+    mesh: InteractiveMesh
+}
+
 export interface Tile {
     face: number
     slot: number

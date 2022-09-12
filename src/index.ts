@@ -1,4 +1,5 @@
 import { SlideTilePuzzle } from '@/puzzles/SlideTilePuzzle'
+import { JarPuzzle } from '@/puzzles/JarPuzzle'
 import { waterNME } from '@/shaders/waterNME'
 import type { Tile, InteractiveMesh } from '@/Types'
 
@@ -47,42 +48,42 @@ const init = async () => {
     // const waterMat = waterNME()
     // waterBox.material = waterMat
 
-    // Test 
-    const mat = new BABYLON.StandardMaterial("mat", scene)
-    const tex = new BABYLON.Texture('./checker.png', scene)
-    mat.diffuseTexture = tex
+    // // Test 
+    // const mat = new BABYLON.StandardMaterial("mat", scene)
+    // const tex = new BABYLON.Texture('./checker.png', scene)
+    // mat.diffuseTexture = tex
     
-    const testBox = MeshBuilder.CreateBox("box", {}, scene)
-    testBox.position = new Vector3(-1, 1, 0)
-    testBox.material = mat
+    // const testBox = MeshBuilder.CreateBox("box", {}, scene)
+    // testBox.position = new Vector3(-1, 1, 0)
+    // testBox.material = mat
     
-    // The width is w = 1
-    // The height is h = 2w
-    // The circumference is c = PI*w
-    // The uv height is 2/PI
-    const testCylinder = MeshBuilder.CreateCylinder('cylinder', {
-        height: 3.14,
-        subdivisions: 2,
-        enclose: true,
-        faceUV: [
-            new Vector4(0,0,1,1), // bottom cap
-            new Vector4(1,0,0,1), // center
-            new Vector4(0,0,1,1) // top cap
-        ]
-    }, scene)
-    testCylinder.position = new Vector3(0, 3.14/4, 0)
-    testCylinder.scaling = new Vector3(0.5, 0.5, 0.5)
-    testCylinder.material = mat
+    // // The width is w = 1
+    // // The height is h = 2w
+    // // The circumference is c = PI*w
+    // // The uv height is 2/PI
+    // const testCylinder = MeshBuilder.CreateCylinder('cylinder', {
+    //     height: 3.14,
+    //     subdivisions: 2,
+    //     enclose: true,
+    //     faceUV: [
+    //         new Vector4(0,0,1,1), // bottom cap
+    //         new Vector4(1,0,0,1), // center
+    //         new Vector4(0,0,1,1) // top cap
+    //     ]
+    // }, scene)
+    // testCylinder.position = new Vector3(0, 3.14/4, 0)
+    // testCylinder.scaling = new Vector3(0.5, 0.5, 0.5)
+    // testCylinder.material = mat
 
-    const testSphere = MeshBuilder.CreateSphere('sphere', {}, scene)
-    testSphere.position = new Vector3(1, 1, 0)
-    testSphere.material = mat
+    // const testSphere = MeshBuilder.CreateSphere('sphere', {}, scene)
+    // testSphere.position = new Vector3(1, 1, 0)
+    // testSphere.material = mat
 
-    const testCapsule = MeshBuilder.CreateCapsule('capsule', {
-        radiusTop: .3
-    }, scene)
-    testCapsule.position = new Vector3(2, 1, 0)
-    testCapsule.material = mat
+    // const testCapsule = MeshBuilder.CreateCapsule('capsule', {
+    //     radiusTop: .3
+    // }, scene)
+    // testCapsule.position = new Vector3(2, 1, 0)
+    // testCapsule.material = mat
 
 
     // Custom pointer events
@@ -123,6 +124,8 @@ const init = async () => {
     window.addEventListener('resize', () => {
         engine.resize()
     })
+    const jarPuzzle = new JarPuzzle(scene)
+    jarPuzzle.position = new Vector3(-2, 1, 2)
     const slideTile = new SlideTilePuzzle(scene)
     slideTile.position = new Vector3(0, 2, 4)
 }
