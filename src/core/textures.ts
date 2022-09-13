@@ -110,8 +110,8 @@ export const jarboxMaterial = (scene: BABYLON.Scene) => {
 export const infoBillboardMaterial = (lines: string[], scene: BABYLON.Scene) => {
     // Setup
     const canvas = document.createElement('canvas') as HTMLCanvasElement
-    canvas.width = 512
-    canvas.height = 512
+    canvas.width = 1920
+    canvas.height = 1080
     const ctx = canvas.getContext('2d')
     if (!ctx) return null
 
@@ -121,16 +121,16 @@ export const infoBillboardMaterial = (lines: string[], scene: BABYLON.Scene) => 
 
     // Top and bottom
     ctx.fillStyle = '#2bafbb'
-    ctx.fillRect(0, 0, 512, 52)
-    ctx.fillRect(0, 512-64, 512, 64)
+    ctx.fillRect(0, 0, canvas.width, 52)
+    ctx.fillRect(0, canvas.height-64, canvas.width, 64)
 
     // The lines
-    const lineHeight = 60
+    const lineHeight = 140
     ctx.font = `bold ${lineHeight}px serif`
     ctx.fillStyle = 'black'
     ctx.textBaseline = 'top'
     lines.forEach((line, i) => {
-        ctx.fillText(line, 8, 64 + i * lineHeight)
+        ctx.fillText(line, 128, 64 + i * lineHeight)
     })
     
     // Send it

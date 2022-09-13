@@ -183,18 +183,59 @@ const init = async () => {
             z: 3,
             angle: 0,
             lines: [
-                'Tut\'s tomb was not',
-                'actually this big,',
-                'it was roughly half',
-                'the length, width',
-                'and height of what',
-                'you see.'
+                'Tut\'s tomb was not actually',
+                'this big, it was roughly half',
+                'the length, width, and height',
+                'of what you see. This token',
+                'marks the halfway point.'
+            ]
+        },
+        {
+            x: 3.6,
+            y: .7,
+            z: 2.7,
+            angle: Math.PI / 2,
+            lines: [
+                'Four canopic jars hold Tut\'s',
+                'stomach, intestines, lungs,',
+                'and liver. These were',
+                'considered necessary for the',
+                'afterlife, and preserved here.'
+            ]
+        },
+        {
+            x: 5.6,
+            y: 2,
+            z: 5,
+            angle: Math.PI / 2,
+            lines: [
+                'This wall lead to the Treasury',
+                'where Tut\'s canopic jars were',
+                'actually kept. It also held a',
+                'statue of Anubis on a golden',
+                'shrine, keeping guard.'
+            ]
+        },
+        {
+            x: 0,
+            y: 1,
+            z: 5,
+            angle: 0,
+            lines: [
+                'Scarabs are a symbol of new',
+                'life. Funerary workers place',
+                'a scarab over the mummy\'s',
+                'chest to provide protection',
+                'and guidance being reborn',
+                'in the afterlife'
             ]
         }
+        
     ]
     
     infoBubblesOpts.forEach((opts) => {
         const infoBubble = new InfoBubble(opts.lines, scene)
+        console.log('placing bubble at ', opts.x, opts.y, opts.z)
         infoBubble.position = new Vector3(opts.x, opts.y, opts.z)
         infoBubble.rotation = new Vector3(0, opts.angle, 0)
         infoBubbles.push(infoBubble)

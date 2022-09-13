@@ -3,6 +3,7 @@ import { zzfx } from 'zzfx'
 import type { InteractiveMesh } from '@/Types'
 
 const { TransformNode, Engine, Scene, MeshBuilder, HemisphericLight, FreeCamera, Vector3, PointerEventTypes, PointerInfo, StandardMaterial } = BABYLON
+let pc = 0
 
 export class InfoBubble {
     // Puzzle Settings
@@ -22,15 +23,15 @@ export class InfoBubble {
         this.scene = scene
         this.lines = lines
         // Parent position
-        this.parent = new TransformNode('InfoBubble', this.scene)
+        this.parent = new TransformNode(`InfoBubble${++pc}`, this.scene)
         this.lookAtPos = new Vector3(0, 0, 0)
-        this.bubbleMesh = MeshBuilder.CreateCylinder(`bubble${this.lines[0]}`, {
+        this.bubbleMesh = MeshBuilder.CreateCylinder(`bubble${++pc}`, {
             diameter: 0.25,
             height: 0.06
         }, this.scene)
         this.bubbleMesh.rotation = new Vector3(Math.PI / 2, 0, 0)
         this.bubbleMesh.setParent(this.parent)
-        this.billboardMesh = MeshBuilder.CreatePlane(`billboard${this.lines[0].replace(/\s/, '')}`, {
+        this.billboardMesh = MeshBuilder.CreatePlane(`billboard${++pc}`, {
             width: 1.6,
             height: .9,
             sideOrientation: BABYLON.Mesh.DOUBLESIDE
