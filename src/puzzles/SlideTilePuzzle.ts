@@ -103,6 +103,30 @@ export class SlideTilePuzzle {
         coffin.setParent(this.parent)
         coffin.material = coffinMaterial(this.scene)
 
+        // Put a mummy decal on it
+        const mummyCanvas = document.createElement('canvas')
+        mummyCanvas.width = 320
+        mummyCanvas.height = 320
+        const mummyCtx = mummyCanvas.getContext('2d')
+        if (!mummyCtx) throw new Error('ctx missing')
+        mummyCtx.font = '260px emoji'
+        mummyCtx.fillStyle = 'black'
+        mummyCtx.textBaseline = 'top'
+        const mummyTextWidth = mummyCtx.measureText('𓀾').width
+        mummyCtx.fillText('𓀾', 0.5 * (320 - mummyTextWidth), 60)
+        const decalMaterial = new StandardMaterial(`mummyMat`, this.scene)
+        decalMaterial.diffuseTexture = BABYLON.Texture.LoadFromDataString(`mummyTexture`, mummyCanvas.toDataURL(), this.scene)
+        decalMaterial.diffuseTexture.hasAlpha = true
+        decalMaterial.zOffset = -2
+
+        const decal = MeshBuilder.CreateDecal('decal', coffin, {
+            position: new Vector3(0, 1, 0),
+            normal: Vector3.Up(),
+            size: new Vector3(-2.92, 2.92, 0.2)
+        })
+        decal.material = decalMaterial
+        decal.setParent(coffin)
+        decal.isPickable = false
 
         // The drawing to put on the image
         const canvas = document.createElement('canvas')
