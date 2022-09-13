@@ -1,5 +1,4 @@
 # Project exclude paths
-/dist/
 /dist-minified/
 /node_modules/
 dist.zip
