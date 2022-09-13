@@ -12,3 +12,9 @@ export interface Tile {
 export interface InteractiveMesh extends BABYLON.Mesh {
     onPointerPick?: (pointerInfo: BABYLON.PointerInfo) => void
 }
+
+export interface MeshOpts {
+    baseColor?: BABYLON.Color4
+    rippleColor?: BABYLON.Color4
+    frozen?: boolean
+}

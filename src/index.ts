@@ -1,12 +1,12 @@
 import { SlideTilePuzzle } from '@/puzzles/SlideTilePuzzle'
 import { JarPuzzle } from '@/puzzles/JarPuzzle'
 import { InfoBubble } from '@/puzzles/InfoBubble'
-import { waterNME } from '@/shaders/waterNME'
-import type { Tile, InteractiveMesh } from '@/Types'
-import { columnMaterial, wallMaterial } from './core/textures'
-import { jarHeads, loremIpsum } from './core/Utils'
+import type { InteractiveMesh } from '@/Types'
+import { columnMaterial, wallMaterial, floorMaterial } from './core/textures'
+import { jarHeads } from './core/Utils'
+import { Mesh } from 'babylonjs'
 
-const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, Vector4, PointerEventTypes } = BABYLON
+const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, Color4, PointerEventTypes } = BABYLON
 const init = async () => {
     document.getElementById('intro')!.style.display = 'none'
     const canvas: HTMLCanvasElement = document.getElementById('c') as HTMLCanvasElement
@@ -44,10 +44,17 @@ const init = async () => {
     const ground = MeshBuilder.CreateGround("ground", { width: 100, height: 100, subdivisions: 100}, scene)
     ground.checkCollisions = true
     ground.position.y = -0.01
-    const floor = MeshBuilder.CreateGround("floor", { width: 12, height: 8, subdivisions: 100}, scene)
+    const floor = MeshBuilder.CreateGround("floor", {
+        width: 12,
+        height: 8,
+        subdivisions: 100
+    }, scene)
+    floor.material = floorMaterial(scene)
     floor.position = new Vector3(0, 0, 3)
     floor.checkCollisions = true
-    MeshBuilder.CreateSphere("center", {diameter: 0.1}, scene)
+    const ceiling = floor.clone('ceiling')
+    ceiling.position.y = 3.14
+    ceiling.rotate(Vector3.Right(), Math.PI, BABYLON.Space.WORLD)
 
     // Walls
     const walls = [
@@ -63,7 +70,7 @@ const init = async () => {
             height: 3.14
         }, scene)
         wallMesh.checkCollisions = true
-        wallMesh.position = new Vector3(wall.x, 1.5, wall.z)
+        wallMesh.position = new Vector3(wall.x, 1.57, wall.z)
         wallMesh.material = wallMaterial([], scene)
     })
 
@@ -75,7 +82,7 @@ const init = async () => {
         { x: 4.5, z: 5.5, rotation: Math.PI / 2 }
     ]
     pillars.forEach((opts, i) => {
-        const mesh = MeshBuilder.CreateCylinder(`cylinder${i}`, {
+        const mesh = MeshBuilder.CreateCylinder(`column${i}`, {
             diameter: 1,
             height: 3.14
         })

@@ -1,8 +1,9 @@
 import { infoBillboardMaterial } from '@/core/textures'
 import { zzfx } from 'zzfx'
+import { waterNME } from '@/shaders/waterNME'
 import type { InteractiveMesh } from '@/Types'
 
-const { TransformNode, Engine, Scene, MeshBuilder, HemisphericLight, FreeCamera, Vector3, PointerEventTypes, PointerInfo, StandardMaterial } = BABYLON
+const { TransformNode, Engine, Scene, MeshBuilder, HemisphericLight, FreeCamera, Vector3, PointerEventTypes, PointerInfo, StandardMaterial, Color4 } = BABYLON
 let pc = 0
 
 export class InfoBubble {
@@ -29,6 +30,10 @@ export class InfoBubble {
             diameter: 0.25,
             height: 0.06
         }, this.scene)
+        this.bubbleMesh.material = waterNME({
+            baseColor: new Color4(0, 0.65, 0.42, 1),
+            rippleColor: new Color4(.4, 1, 0.9, 1)
+        })
         this.bubbleMesh.rotation = new Vector3(Math.PI / 2, 0, 0)
         this.bubbleMesh.setParent(this.parent)
         this.billboardMesh = MeshBuilder.CreatePlane(`billboard${++pc}`, {

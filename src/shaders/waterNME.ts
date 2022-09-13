@@ -1,6 +1,10 @@
 // Taken from https://nme.babylonjs.com/#9YQCNE#3
+import { MeshOpts } from "@/Types"
+const waterNME = function(opts: MeshOpts) {
+    const baseColorValue = opts.baseColor || new BABYLON.Color4(0.1450980392156863, 0.23921568627450981, 0.6470588235294118, 1)
+    const rippleColorValue = opts.rippleColor || new BABYLON.Color4(0.0392156862745098, 0.8352941176470589, 0.8784313725490196, 1)
+    const frozen = opts.frozen || false
 
-const waterNME = function() {
     const nodeMaterial = new BABYLON.NodeMaterial('node')
 
     // InputBlock
@@ -206,8 +210,8 @@ const waterNME = function() {
     Time.max = 0
     Time.isBoolean = false
     Time.matrixMode = 0
-    Time.animationType = BABYLON.AnimatedInputBlockTypes.Time
-    Time.isConstant = false
+    Time.animationType = (frozen) ? BABYLON.AnimatedInputBlockTypes.Time : BABYLON.AnimatedInputBlockTypes.None
+    Time.isConstant = frozen
 
     // InputBlock
     const Offset = new BABYLON.InputBlock('Offset')
@@ -269,7 +273,7 @@ const waterNME = function() {
     RippleColor.visibleInInspector = false
     RippleColor.visibleOnFrame = false
     RippleColor.target = 1
-    RippleColor.value = new BABYLON.Color4(0.0392156862745098, 0.8352941176470589, 0.8784313725490196, 1)
+    RippleColor.value = rippleColorValue
     RippleColor.isConstant = false
 
     // MaxBlock
@@ -283,7 +287,7 @@ const waterNME = function() {
     BaseColor.visibleInInspector = false
     BaseColor.visibleOnFrame = false
     BaseColor.target = 1
-    BaseColor.value = new BABYLON.Color4(0.1450980392156863, 0.23921568627450981, 0.6470588235294118, 1)
+    BaseColor.value = baseColorValue
     BaseColor.isConstant = false
 
     // FragmentOutputBlock

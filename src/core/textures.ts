@@ -25,6 +25,44 @@ export const coffinMaterial = (scene: BABYLON.Scene) => {
     return material
 }
 
+export const floorMaterial = (scene: BABYLON.Scene) => {
+    // Setup
+    const canvas = document.createElement('canvas') as HTMLCanvasElement
+    canvas.width = 512
+    canvas.height = 512
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return null
+
+    ctx.fillStyle = '#7c644a'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    ctx.textBaseline = 'middle'
+    ctx.fillStyle = '#392c20'
+    let size = 128
+    for(let i = 0; i < 10; i++) {
+        ctx.save()
+        size = 128 + Math.random() * 60
+        ctx.font = `${size}px emoji`
+        
+        ctx.translate(Math.random() * canvas.width, Math.random() * canvas.height)
+        ctx.rotate(Math.random() * 2 * Math.PI)
+        ctx.fillText(loremIpsum(16), -8 *  size, 0)
+        ctx.fillText(loremIpsum(16), -8 *  size, size)
+        ctx.fillText(loremIpsum(16), -8 *  size, -1 * size)
+        ctx.restore()
+    }
+
+    // TODO: Draw out a floor
+
+
+
+    // Send it
+    const material = new StandardMaterial(`material${++pc}`, scene)
+    const texture = Texture.LoadFromDataString(`texture${++pc}`, canvas.toDataURL(), scene)
+    material.diffuseTexture = texture
+    return material
+}
+
 export const columnMaterial = (lines: string[], scene: BABYLON.Scene) => {
     // Setup
     const canvas = document.createElement('canvas') as HTMLCanvasElement
@@ -45,7 +83,7 @@ export const columnMaterial = (lines: string[], scene: BABYLON.Scene) => {
     // Filler heiroglyphics
     ctx.font = `48px emoji`
     ctx.fillStyle = '#b76324'
-    for(let y = 0; y < 512-64; y += 48) {
+    for(let y = 48; y < 512-64; y += 48) {
         ctx.fillText(loremIpsum(32), 0, y)
     }
 
@@ -125,7 +163,7 @@ export const infoBillboardMaterial = (lines: string[], scene: BABYLON.Scene) => 
     ctx.fillRect(0, canvas.height-64, canvas.width, 64)
 
     // The lines
-    const lineHeight = 140
+    const lineHeight = 118
     ctx.font = `bold ${lineHeight}px serif`
     ctx.fillStyle = 'black'
     ctx.textBaseline = 'top'
