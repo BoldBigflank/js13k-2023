@@ -16,9 +16,9 @@ const init = async () => {
     const infoBubbles: InfoBubble[] = []
     scene.gravity = new Vector3(0, -0.15, 0)
     scene.collisionsEnabled = true
-    scene.debugLayer.show({
-        embedMode: true
-    })
+    // scene.debugLayer.show({
+    //     embedMode: true
+    // })
     engine.displayLoadingUI()
 
     const camera = new UniversalCamera('MainCamera', new Vector3(0, 1.615, 0), scene)
