@@ -106,3 +106,36 @@ export const jarboxMaterial = (scene: BABYLON.Scene) => {
     return material
 }
 
+
+export const infoBillboardMaterial = (lines: string[], scene: BABYLON.Scene) => {
+    // Setup
+    const canvas = document.createElement('canvas') as HTMLCanvasElement
+    canvas.width = 512
+    canvas.height = 512
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return null
+
+    // Base Color
+    ctx.fillStyle = '#e7c482'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    // Top and bottom
+    ctx.fillStyle = '#2bafbb'
+    ctx.fillRect(0, 0, 512, 52)
+    ctx.fillRect(0, 512-64, 512, 64)
+
+    // The lines
+    const lineHeight = 60
+    ctx.font = `bold ${lineHeight}px serif`
+    ctx.fillStyle = 'black'
+    ctx.textBaseline = 'top'
+    lines.forEach((line, i) => {
+        ctx.fillText(line, 8, 64 + i * lineHeight)
+    })
+    
+    // Send it
+    const material = new StandardMaterial(`billboardMaterial${++pc}`, scene)
+    const texture = Texture.LoadFromDataString(`billboardTexture${++pc}`, canvas.toDataURL(), scene)
+    material.diffuseTexture = texture
+    return material
+}

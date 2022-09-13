@@ -1,9 +1,10 @@
 import { SlideTilePuzzle } from '@/puzzles/SlideTilePuzzle'
 import { JarPuzzle } from '@/puzzles/JarPuzzle'
+import { InfoBubble } from '@/puzzles/InfoBubble'
 import { waterNME } from '@/shaders/waterNME'
 import type { Tile, InteractiveMesh } from '@/Types'
 import { columnMaterial, wallMaterial } from './core/textures'
-import { jarHeads } from './core/Utils'
+import { jarHeads, loremIpsum } from './core/Utils'
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, Vector4, PointerEventTypes } = BABYLON
 const init = async () => {
@@ -12,11 +13,12 @@ const init = async () => {
     canvas.style.display = 'block'
     const engine = new Engine(canvas, true)
     const scene = new Scene(engine)
+    const infoBubbles: InfoBubble[] = []
     scene.gravity = new Vector3(0, -0.15, 0)
     scene.collisionsEnabled = true
-    // scene.debugLayer.show({
-    //     embedMode: true
-    // })
+    scene.debugLayer.show({
+        embedMode: true
+    })
     engine.displayLoadingUI()
 
     const camera = new UniversalCamera('MainCamera', new Vector3(0, 1.615, 0), scene)
@@ -136,10 +138,14 @@ const init = async () => {
                 pointerInfo.pickInfo &&
                 pointerInfo.pickInfo.pickedMesh) {
                 const pickedMesh = pointerInfo.pickInfo.pickedMesh as InteractiveMesh
+                infoBubbles.forEach((bubble) => {
+                    bubble.blur()
+                })
                 if (pickedMesh.onPointerPick) {
                     pickedMesh.onPointerPick(pointerInfo)
                     camera.detachControl()
                 }
+                
             }
             break
         case PointerEventTypes.POINTERUP:
@@ -169,6 +175,32 @@ const init = async () => {
     jarPuzzle.position = new Vector3(3, 0, 3)
     const slideTile = new SlideTilePuzzle(scene)
     slideTile.position = new Vector3(0, 0, 4)
+
+    const infoBubblesOpts = [
+        {
+            x: 0,
+            y: 2,
+            z: 3,
+            angle: 0,
+            lines: [
+                'Tut\'s tomb was not',
+                'actually this big,',
+                'it was roughly half',
+                'the length, width',
+                'and height of what',
+                'you see.'
+            ]
+        }
+    ]
+    
+    infoBubblesOpts.forEach((opts) => {
+        const infoBubble = new InfoBubble(opts.lines, scene)
+        infoBubble.position = new Vector3(opts.x, opts.y, opts.z)
+        infoBubble.rotation = new Vector3(0, opts.angle, 0)
+        infoBubbles.push(infoBubble)
+    })
+
+
 }
 
 window.addEventListener('DOMContentLoaded', () => {
