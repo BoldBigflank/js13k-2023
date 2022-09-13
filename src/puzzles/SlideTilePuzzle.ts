@@ -166,7 +166,7 @@ export class SlideTilePuzzle {
         puzzleTransform.scaling = new Vector3(0.25, 0.25, 0.25)
 
         // Shuffle all the tiles
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < 100; i++) {
             this.shuffle()
         }
     }

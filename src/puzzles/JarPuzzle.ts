@@ -1,5 +1,6 @@
 import { jarboxMaterial } from '@/core/textures'
 import { sample, jarHeads } from '@/core/Utils'
+import { waterNME } from '@/shaders/waterNME'
 import type { Jar, InteractiveMesh } from '@/Types'
 import { zzfx } from 'zzfx'
 
@@ -58,6 +59,7 @@ export class JarPuzzle {
         box.checkCollisions = true
         box.setParent(this.parent)
         box.material = jarboxMaterial(this.scene)
+        // box.material = waterNME()
 
         jarHeads.forEach((symbol, i) => {
             
