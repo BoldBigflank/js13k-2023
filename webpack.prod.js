@@ -14,7 +14,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './index.html'
         }),
-        new SuperMinifyPlugin(),
+        // new SuperMinifyPlugin(),
         // new CopyPlugin({
         //     patterns: [
         //         {
