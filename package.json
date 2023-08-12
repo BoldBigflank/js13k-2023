@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
+    "@babel/eslint-parser": "^7.22.10",
     "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/parser": "^5.33.0",
-    "babel-eslint": "^10.1.0",
     "copy-webpack-plugin": "^9.0.1",
     "ect-bin": "1.4.1",
     "eslint": "^8.22.0",

@@ -11,6 +11,9 @@ const init = async () => {
     document.getElementById('intro')!.style.display = 'none'
     const canvas: HTMLCanvasElement = document.getElementById('c') as HTMLCanvasElement
     canvas.style.display = 'block'
+    canvas.addEventListener("click", async () => {
+        await canvas.requestPointerLock()
+    })
     const engine = new Engine(canvas, true)
     const scene = new Scene(engine)
     const infoBubbles: InfoBubble[] = []
@@ -144,7 +147,10 @@ const init = async () => {
                 pointerInfo && 
                 pointerInfo.pickInfo &&
                 pointerInfo.pickInfo.pickedMesh) {
-                const pickedMesh = pointerInfo.pickInfo.pickedMesh as InteractiveMesh
+                // const pickedMesh = pointerInfo.pickInfo.pickedMesh as InteractiveMesh
+                const pickedInfo = scene.pick(engine.getRenderWidth() / 2, engine.getRenderHeight() / 2)
+                console.log('pickedInfo', pickedInfo)
+                const pickedMesh = pickedInfo?.pickedMesh as InteractiveMesh
                 infoBubbles.forEach((bubble) => {
                     bubble.blur()
                 })

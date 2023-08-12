@@ -1,7 +1,5 @@
-# Tut's Tomb
-## For JS13KGames 2022 - Death
-
-You are tasked with preparing King Tut to make the journey from death to the afterlife. Solve the two puzzles to complete the task.  
+# JS13k Jam 2023
+## For JS13KGames 2023
 
 Use a WebXR Pointer or WASD/Mouse to move and interact.  
 
@@ -18,6 +16,6 @@ A JS13K Game starter kit with TypeScript and Webpack using:
 
 Install dependencies: `npm install`
 
-Run Server: `npm run serve`
+Run Server: `npm run start`
 
 Build: `npm run build`
