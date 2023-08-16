@@ -1,4 +1,4 @@
-import { loremIpsum } from "./Utils"
+import { loremIpsum, sample } from "./Utils"
 
 const { StandardMaterial, Texture, Scene } = BABYLON
 
@@ -55,6 +55,54 @@ export const floorMaterial = (scene: BABYLON.Scene) => {
     // TODO: Draw out a floor
 
 
+
+    // Send it
+    const material = new StandardMaterial(`material${++pc}`, scene)
+    const texture = Texture.LoadFromDataString(`texture${++pc}`, canvas.toDataURL(), scene)
+    material.diffuseTexture = texture
+    return material
+}
+
+export const castleMaterial = (scene: BABYLON.Scene) => {
+    // Setup
+    const canvas = document.createElement('canvas') as HTMLCanvasElement
+    canvas.width = 512
+    canvas.height = 512
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return null
+
+    ctx.fillStyle = '#c5a296'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    // Horizontal lines
+    const brickHeight = 16
+    const brickWidth = 32
+    ctx.save()
+    ctx.strokeStyle = "#000000"
+    ctx.lineWidth = 4
+
+    const brickColors = [
+        "#dd7d7d",
+        "#cb6b6b",
+        "#b65454",
+        "#9e3333",
+        "#842020"
+    ]
+
+    for (let y = 0; y * brickHeight < canvas.height; y++) {
+        for (let x = (y % 2) ? 0 : -1; x * brickWidth < canvas.width; x++) {
+            ctx.fillStyle = sample(brickColors)
+            const startOffset = (y % 2) ? 0 : 0.5 * brickWidth
+            ctx.fillRect(x * brickWidth + startOffset, y * brickHeight, brickWidth - 1, brickHeight - 1)
+        }
+    }
+    ctx.restore()
+    
+    
+
+    ctx.textBaseline = 'middle'
+    ctx.fillStyle = '#392c20'
+    
 
     // Send it
     const material = new StandardMaterial(`material${++pc}`, scene)

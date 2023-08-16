@@ -1,5 +1,5 @@
 import { SlideTilePuzzle } from '@/puzzles/SlideTilePuzzle'
-import { JarPuzzle } from '@/puzzles/JarPuzzle'
+import { Castle } from '@/puzzles/Castle'
 import { InfoBubble } from '@/puzzles/InfoBubble'
 import type { InteractiveMesh } from '@/Types'
 import { columnMaterial, wallMaterial, floorMaterial } from './core/textures'
@@ -11,9 +11,9 @@ const init = async () => {
     document.getElementById('intro')!.style.display = 'none'
     const canvas: HTMLCanvasElement = document.getElementById('c') as HTMLCanvasElement
     canvas.style.display = 'block'
-    canvas.addEventListener("click", async () => {
-        await canvas.requestPointerLock()
-    })
+    // canvas.addEventListener("click", async () => {
+    //     await canvas.requestPointerLock()
+    // })
     const engine = new Engine(canvas, true)
     const scene = new Scene(engine)
     const infoBubbles: InfoBubble[] = []
@@ -55,45 +55,45 @@ const init = async () => {
     floor.material = floorMaterial(scene)
     floor.position = new Vector3(0, 0, 3)
     floor.checkCollisions = true
-    const ceiling = floor.clone('ceiling')
-    ceiling.position.y = 3.14
-    ceiling.rotate(Vector3.Right(), Math.PI, BABYLON.Space.WORLD)
+    // const ceiling = floor.clone('ceiling')
+    // ceiling.position.y = 3.14
+    // ceiling.rotate(Vector3.Right(), Math.PI, BABYLON.Space.WORLD)
 
-    // Walls
-    const walls = [
-        { x: 0, z: -1.5, width: 12, depth: 1 },
-        { x: 0, z: 7.5, width: 12, depth: 1 },
-        { x: -6.5, z: 3, width: 1, depth: 8 },
-        { x: 6.5, z: 3, width: 1, depth: 8 }
-    ]
-    walls.forEach((wall, i) => {
-        const wallMesh = MeshBuilder.CreateBox(`wall${i}`, {
-            width: wall.width,
-            depth: wall.depth,
-            height: 3.14
-        }, scene)
-        wallMesh.checkCollisions = true
-        wallMesh.position = new Vector3(wall.x, 1.57, wall.z)
-        wallMesh.material = wallMaterial([], scene)
-    })
+    // // Walls
+    // const walls = [
+    //     { x: 0, z: -1.5, width: 12, depth: 1 },
+    //     { x: 0, z: 7.5, width: 12, depth: 1 },
+    //     { x: -6.5, z: 3, width: 1, depth: 8 },
+    //     { x: 6.5, z: 3, width: 1, depth: 8 }
+    // ]
+    // walls.forEach((wall, i) => {
+    //     const wallMesh = MeshBuilder.CreateBox(`wall${i}`, {
+    //         width: wall.width,
+    //         depth: wall.depth,
+    //         height: 3.14
+    //     }, scene)
+    //     wallMesh.checkCollisions = true
+    //     wallMesh.position = new Vector3(wall.x, 1.57, wall.z)
+    //     wallMesh.material = wallMaterial([], scene)
+    // })
 
-    // Pillars
-    const pillars = [
-        { x: 4.5, z: 0.5, rotation: Math.PI },
-        { x: -4.5, z: 0.5, rotation: Math.PI * 3 / 2 },
-        { x: -4.5, z: 5.5, rotation: 0 },
-        { x: 4.5, z: 5.5, rotation: Math.PI / 2 }
-    ]
-    pillars.forEach((opts, i) => {
-        const mesh = MeshBuilder.CreateCylinder(`column${i}`, {
-            diameter: 1,
-            height: 3.14
-        })
-        mesh.checkCollisions = true
-        mesh.position = new Vector3(opts.x, 1.5, opts.z)
-        mesh.material = columnMaterial([jarHeads[i]], scene)
-        mesh.rotation = new Vector3(0, opts.rotation, 0)
-    })
+    // // Pillars
+    // const pillars = [
+    //     { x: 4.5, z: 0.5, rotation: Math.PI },
+    //     { x: -4.5, z: 0.5, rotation: Math.PI * 3 / 2 },
+    //     { x: -4.5, z: 5.5, rotation: 0 },
+    //     { x: 4.5, z: 5.5, rotation: Math.PI / 2 }
+    // ]
+    // pillars.forEach((opts, i) => {
+    //     const mesh = MeshBuilder.CreateCylinder(`column${i}`, {
+    //         diameter: 1,
+    //         height: 3.14
+    //     })
+    //     mesh.checkCollisions = true
+    //     mesh.position = new Vector3(opts.x, 1.5, opts.z)
+    //     mesh.material = columnMaterial([jarHeads[i]], scene)
+    //     mesh.rotation = new Vector3(0, opts.rotation, 0)
+    // })
 
     // // Test water cube
     // const waterBox = MeshBuilder.CreateBox("box", {}, scene)
@@ -151,6 +151,7 @@ const init = async () => {
                 const pickedInfo = scene.pick(engine.getRenderWidth() / 2, engine.getRenderHeight() / 2)
                 console.log('pickedInfo', pickedInfo)
                 const pickedMesh = pickedInfo?.pickedMesh as InteractiveMesh
+                if (!pickedMesh) return
                 infoBubbles.forEach((bubble) => {
                     bubble.blur()
                 })
@@ -184,8 +185,8 @@ const init = async () => {
     window.addEventListener('resize', () => {
         engine.resize()
     })
-    const jarPuzzle = new JarPuzzle(scene)
-    jarPuzzle.position = new Vector3(3, 0, 3)
+    const jarPuzzle = new Castle(scene)
+    jarPuzzle.position = new Vector3(3, 0, 20)
     const slideTile = new SlideTilePuzzle(scene)
     slideTile.position = new Vector3(0, 0, 4)
 
