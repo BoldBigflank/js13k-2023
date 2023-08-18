@@ -1,4 +1,4 @@
-import { loremIpsum, sample } from "./Utils"
+import { loremIpsum, sample, shuffle } from "./Utils"
 
 const { StandardMaterial, Texture, Scene } = BABYLON
 
@@ -110,6 +110,120 @@ export const castleMaterial = (scene: BABYLON.Scene) => {
     material.diffuseTexture = texture
     return material
 }
+export const grassMaterial = (scene: BABYLON.Scene) => {
+    // Setup
+    
+    const canvas = document.createElement('canvas') as HTMLCanvasElement
+    canvas.width = 512
+    canvas.height = 512
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return null
+
+    const tempCanvas = document.createElement('canvas') as HTMLCanvasElement
+    tempCanvas.width = canvas.width * 2
+    tempCanvas.height = canvas.height * 2
+    const tempCtx = tempCanvas.getContext('2d')
+    if (!tempCtx) return null
+    
+    const GRASS_COUNT = 32
+    const GRASS_SIZE = canvas.width / GRASS_COUNT
+
+    // Horizontal lines
+    tempCtx.save()
+
+    const grassColors = [
+        "#abb348",
+        "#7ca244",
+        "#426d38",
+        "#799c45",
+        "#a7af48"
+    ]
+
+    // Take all positions
+    const positions = []
+    for (let y = 0; y < GRASS_COUNT; y++) {
+        for (let x = 0; x < GRASS_COUNT; x++) {
+            positions.push({x, y})
+        }
+    }
+    const shuffledPositions = shuffle(positions)
+    tempCtx.translate(0.25 * tempCanvas.width, 0.25 * tempCanvas.height)
+    shuffledPositions.forEach((position) => {
+        const { x, y } = position
+        tempCtx.save()
+        tempCtx.fillStyle = sample(grassColors)
+        tempCtx.translate(x * GRASS_SIZE, y * GRASS_SIZE)
+        const scale = 1 * Math.random() + 1
+        const rotation = Math.random() * Math.PI
+        tempCtx.save()
+        tempCtx.scale(scale, scale)
+        tempCtx.rotate(rotation) // half circle bc it's the same as 2pi
+        // Seamless repeating
+        tempCtx.fillRect(-0.5 * GRASS_SIZE, -0.5 * GRASS_SIZE, GRASS_SIZE, GRASS_SIZE)
+        tempCtx.restore()
+
+        if (x == 0) {
+            tempCtx.save()
+            tempCtx.translate(0.5 * tempCanvas.width, 0)
+            tempCtx.save()
+            tempCtx.scale(scale, scale)
+            tempCtx.rotate(rotation) // half circle bc it's the same as 2pi
+            // Seamless repeating
+            tempCtx.fillRect(-0.5 * GRASS_SIZE, -0.5 * GRASS_SIZE, GRASS_SIZE, GRASS_SIZE)
+            tempCtx.restore()
+            tempCtx.restore()
+        }
+        if (y == 0) {
+            tempCtx.save()
+            tempCtx.translate(0, 0.5 * tempCanvas.height)
+            tempCtx.save()
+            tempCtx.scale(scale, scale)
+            tempCtx.rotate(rotation) // half circle bc it's the same as 2pi
+            // Seamless repeating
+            tempCtx.fillRect(-0.5 * GRASS_SIZE, -0.5 * GRASS_SIZE, GRASS_SIZE, GRASS_SIZE)
+            tempCtx.restore()
+            tempCtx.restore()
+        }
+        tempCtx.restore()
+    })
+
+    // // Repeat the pattern
+    // tempCtx.createPattern()
+    // tempCtx.drawImage(tempCanvas, 0, -canvas.height) // Up 1
+    // tempCtx.drawImage(tempCanvas, -canvas.width) // Left 1
+    // tempCtx.drawImage(tempCanvas, 0, 2 * )
+
+    tempCtx.restore()
+
+    // DEBUG Border
+    tempCtx.strokeStyle = "#0000ff" 
+    tempCtx.lineWidth = 32
+    tempCtx.strokeRect(0, 0, tempCanvas.width, tempCanvas.height)
+
+    // Paste the middle to the canvas
+    // ctx.drawImage(tempCanvas, 0, 0, canvas.width, canvas.height)
+    ctx.drawImage(
+        tempCanvas,
+        tempCanvas.width * 0.25,
+        tempCanvas.height * 0.25,
+        tempCanvas.width * 0.5,
+        tempCanvas.height * 0.5,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    )
+
+    // // DEBUG border
+    // ctx.strokeStyle = "#ff0000"
+    // ctx.strokeRect(0, 0, canvas.width, canvas.height)
+
+    // Send it
+    const material = new StandardMaterial(`material${++pc}`, scene)
+    const texture = Texture.LoadFromDataString(`texture${++pc}`, canvas.toDataURL(), scene)
+    material.diffuseTexture = texture
+    return material
+}
 
 export const columnMaterial = (lines: string[], scene: BABYLON.Scene) => {
     // Setup
@@ -150,6 +264,7 @@ export const columnMaterial = (lines: string[], scene: BABYLON.Scene) => {
     material.diffuseTexture = texture
     return material
 }
+
 
 export const wallMaterial = (lines: string[], scene: BABYLON.Scene) => {
     // Setup

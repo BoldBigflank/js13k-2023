@@ -2,7 +2,7 @@ import { SlideTilePuzzle } from '@/puzzles/SlideTilePuzzle'
 import { Castle } from '@/puzzles/Castle'
 import { InfoBubble } from '@/puzzles/InfoBubble'
 import type { InteractiveMesh } from '@/Types'
-import { columnMaterial, wallMaterial, floorMaterial } from './core/textures'
+import { columnMaterial, wallMaterial, floorMaterial, grassMaterial } from './core/textures'
 import { jarHeads } from './core/Utils'
 import { Mesh } from 'babylonjs'
 
@@ -44,9 +44,24 @@ const init = async () => {
     
     new HemisphericLight("light", new Vector3(0, 1, 0), scene)
 
-    const ground = MeshBuilder.CreateGround("ground", { width: 100, height: 100, subdivisions: 100}, scene)
+    // const ground = MeshBuilder.CreateGround("ground", { width: 100, height: 100, subdivisions: 100}, scene)
+    // ground.material = grassMaterial(scene)
+    
+    const ground = MeshBuilder.CreateTiledGround("ground", {
+        xmin: -50,
+        zmin: -50,
+        xmax: 50,
+        zmax: 50,
+        subdivisions: {
+            w: 10,
+            h: 10
+        }
+    })
+    ground.material = grassMaterial(scene)
+
     ground.checkCollisions = true
     ground.position.y = -0.01
+    
     const floor = MeshBuilder.CreateGround("floor", {
         width: 12,
         height: 8,
