@@ -26,3 +26,11 @@ export const loremIpsum = (length: number) => {
     }
     return result
 }
+
+export const initCanvas = (size = 512): [HTMLCanvasElement, CanvasRenderingContext2D] => {
+    const canvas = document.createElement('canvas') as HTMLCanvasElement
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+    return [canvas, ctx]
+}

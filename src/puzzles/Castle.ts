@@ -1,10 +1,6 @@
 import { castleMaterial } from '@/core/textures'
-import { sample, jarHeads } from '@/core/Utils'
-import { waterNME } from '@/shaders/waterNME'
-import type { Jar, InteractiveMesh } from '@/Types'
-import { zzfx } from 'zzfx'
 
-const { TransformNode, Engine, Scene, MeshBuilder, HemisphericLight, FreeCamera, Vector3, PointerEventTypes, PointerInfo, StandardMaterial } = BABYLON
+const { TransformNode, Vector3 } = BABYLON
 
 export class Castle {
     // Puzzle Settings
@@ -22,8 +18,16 @@ export class Castle {
         this.reset()
     }
 
+    get model() {
+        return this.parent
+    }
+
     set position(pos: BABYLON.Vector3) {
         this.parent.position = pos
+    }
+
+    set scale(s: BABYLON.Vector3) {
+        this.parent.scaling = s
     }
 
     isSolved() {
@@ -40,36 +44,37 @@ export class Castle {
         // this.solved = false
         // this.jars = []
 
-        // w, h, d, x, y, z
+        // x, y, z, w, h, d
         const boxes = [
-            [5,6,6,-11.5,3,5],
-            [7,10,4,-5.5,5,4],
-            [4,10,6,0,5,3],
-            [9,6,6,1.5,3,-3],
-            [9,5,4,10.5,2.5,-4],
-            [3,2,8,13.5,1,2],
-            [4,4,3,14,2,7.5],
-            [5,3,3,18.5,1.5,7.5],
-            [3,3,4,22.5,1.5,8],
-            [2,2,3,25,1,7.5],
-            [3,2,9,22.5,1,1.5],
-            [9,2,3,19.5,1,-4.5],
-            [8,4,2,-5,12,4], // Long top of the L
-            [2, 4, 6, 0, 12, 3], // Short top of the L
-            [12,6,4,6,3,7] // Back building NE of L
+            [-11.5,3,5      ,5, 6, 6],
+            [-5.5,5,4       ,7, 10,4],
+            [0,5,3          ,4, 10,6],
+            [1.5,3,-3       ,9, 6, 6],
+            [10.5,2.5,-4    ,9, 5, 4],
+            [13.5,1,2       ,3, 2, 8],
+            [14,2,7.5       ,4, 4, 3],
+            [18.5,1.5,7.5   ,5, 3, 3],
+            [22.5,1.5,8     ,3, 3, 4],
+            [25,1,7.5       ,2, 2, 3],
+            [22.5,1,1.5     ,3, 2, 9],
+            [19.5,1,-4.5    ,9, 2, 3],
+            [-5,12,4        ,8, 4, 2], // Long top of the L
+            [0, 12, 3       ,2, 4, 6], // Short top of the L
+            [6,3,7          ,12,6, 4] // Back building NE of L
 
         ]
 
-        boxes.forEach((boxData) => {
-            const [width, height, depth, x, y, z] = boxData
-            const wall = BABYLON.MeshBuilder.CreateBox("wall", {
+        boxes.forEach((boxData, index) => {
+            const [x, y, z, width, height, depth] = boxData
+            const wall = BABYLON.MeshBuilder.CreateTiledBox(`castle-wall${index}`, {
                 width,
                 height,
                 depth,
-                wrap: true
+                 tileSize: 2,
+                // wrap: true
             }, this.scene)
             wall.position = new Vector3(x, y , z)
-            wall.material = castleMaterial(this.scene)
+            wall.material = castleMaterial(true, this.scene)
             wall.setParent(this.parent)
         })
     
@@ -107,7 +112,7 @@ export class Castle {
                 diameter
             }, this.scene)
             turret.position = new Vector3(x, y, z)
-            turret.material = castleMaterial(this.scene)
+            turret.material = castleMaterial(false, this.scene)
             turret.setParent(this.parent)
             if (coneHeight) {
                 const cone = BABYLON.MeshBuilder.CreateCylinder(`turret${i}`, {

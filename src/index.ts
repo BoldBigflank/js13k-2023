@@ -1,10 +1,11 @@
-import { SlideTilePuzzle } from '@/puzzles/SlideTilePuzzle'
 import { Castle } from '@/puzzles/Castle'
 import { InfoBubble } from '@/puzzles/InfoBubble'
 import type { InteractiveMesh } from '@/Types'
 import { columnMaterial, wallMaterial, floorMaterial, grassMaterial } from './core/textures'
 import { jarHeads } from './core/Utils'
 import { Mesh } from 'babylonjs'
+import { Witch } from './puzzles/Witch'
+import { Garden } from './puzzles/Garden'
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, Color4, PointerEventTypes } = BABYLON
 const init = async () => {
@@ -63,12 +64,12 @@ const init = async () => {
     ground.position.y = -0.01
     
     const floor = MeshBuilder.CreateGround("floor", {
-        width: 12,
-        height: 8,
+        width: 24,
+        height: 24,
         subdivisions: 100
     }, scene)
     floor.material = floorMaterial(scene)
-    floor.position = new Vector3(0, 0, 3)
+    floor.position = new Vector3(-15, 0, 32)
     floor.checkCollisions = true
     // const ceiling = floor.clone('ceiling')
     // ceiling.position.y = 3.14
@@ -200,10 +201,12 @@ const init = async () => {
     window.addEventListener('resize', () => {
         engine.resize()
     })
-    const jarPuzzle = new Castle(scene)
-    jarPuzzle.position = new Vector3(3, 0, 20)
-    const slideTile = new SlideTilePuzzle(scene)
-    slideTile.position = new Vector3(0, 0, 4)
+    const castle = new Castle(scene)
+    castle.position = new Vector3(3, 0, 40)
+    castle.scale = new Vector3(2, 2, 2)
+    const modelCastle = castle.model.clone("model-castle", null, false)
+    modelCastle!.scaling = new Vector3(0.05, 0.05, 0.05);
+    modelCastle!.position = new Vector3(0, 1, 4)
 
     const infoBubblesOpts = [
         {
@@ -270,7 +273,11 @@ const init = async () => {
         infoBubbles.push(infoBubble)
     })
 
-
+    const witch = new Witch(scene)
+    witch.position = new Vector3(0, 2, 2)
+    const garden = new Garden(scene)
+    garden.position = new Vector3(12, 0.05, 8)
+    garden.scale = new Vector3(3,3,3)
 }
 
 window.addEventListener('DOMContentLoaded', () => {
