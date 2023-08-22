@@ -10,7 +10,7 @@ export interface Tile {
 }
 
 export interface InteractiveMesh extends BABYLON.Mesh {
-    onPointerPick?: (pointerInfo: BABYLON.PointerInfo) => void
+    onPointerPick?: () => void
 }
 
 export interface MeshOpts {

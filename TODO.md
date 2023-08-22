@@ -8,6 +8,12 @@
 * Create thin instances of trees/bushes
 * Make a noise/tint NME shader
 
+## Scenery
+
+### Castle
+ * Texture the cones
+ * Add a slanted roof field for boxes
+
 ## Puzzles/Ideas
 
 ### Flower puzzle

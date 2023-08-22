@@ -429,3 +429,25 @@ export const ColorMaterial = (color: string, scene: BABYLON.Scene) => {
     material.diffuseColor = BABYLON.Color3.FromHexString(color)
     return material
 }
+
+export const GridMaterial = (color1: string, color2: string, rows: number, columns: number, scene: BABYLON.Scene) => {
+    const canvasSize = 512
+    const [canvas, ctx] = initCanvas(canvasSize)
+    ctx.imageSmoothingEnabled = false
+    const tileWidth = canvasSize / rows
+    const tileHeight = canvasSize / columns
+    ctx.fillStyle = color1
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = color2
+    for (let y = 0; y < columns; y++) {
+        for (let x = 0; x < rows; x++) {
+            if ((x + y) % 2) continue
+            ctx.fillRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight)
+        }
+    }
+
+    const material = new StandardMaterial(`material${++pc}`, scene)
+    const texture = Texture.LoadFromDataString(`texture${++pc}`, canvas.toDataURL(), scene)
+    material.diffuseTexture = texture
+    return material
+}

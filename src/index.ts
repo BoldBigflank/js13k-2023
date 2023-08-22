@@ -3,15 +3,16 @@ import type { InteractiveMesh } from '@/Types'
 import { GrassMaterial, CursorMaterial } from './core/textures'
 import { Witch } from './puzzles/Witch'
 import { Garden } from './puzzles/Garden'
+import { FlowerBoxPuzzle } from './puzzles/FlowerBoxPuzzle'
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON
 const init = async () => {
     document.getElementById('intro')!.style.display = 'none'
     const canvas: HTMLCanvasElement = document.getElementById('c') as HTMLCanvasElement
     canvas.style.display = 'block'
-    // canvas.addEventListener("click", async () => {
-    //     await canvas.requestPointerLock()
-    // })
+    canvas.addEventListener("click", async () => {
+        await canvas.requestPointerLock()
+    })
     const engine = new Engine(canvas, true)
     const scene = new Scene(engine)
     // const infoBubbles: InfoBubble[] = []
@@ -44,6 +45,7 @@ const init = async () => {
     const cursor = BABYLON.MeshBuilder.CreatePlane("cursor", {
         
     }, scene)
+    cursor.isPickable = false
     cursor.material = CursorMaterial(scene)
     cursor.setParent(camera)
     cursor.position = new Vector3 (0, 0, 1.1)
@@ -160,28 +162,26 @@ const init = async () => {
     // testCapsule.material = mat
 
 
+    const pointerPickCenterScreen = () => {
+        const pickedInfo = scene.pick(engine.getRenderWidth() / 2, engine.getRenderHeight() / 2)
+        console.log('pickedInfo', pickedInfo)
+        let pickedMesh = pickedInfo?.pickedMesh as InteractiveMesh
+        while (pickedMesh && !pickedMesh.onPointerPick) {
+            pickedMesh = pickedMesh.parent as InteractiveMesh
+        }
+        if (pickedMesh && pickedMesh.onPointerPick) {
+            pickedMesh.onPointerPick()
+            // camera.detachControl()
+        }
+    }
     // Custom pointer events
     scene.onPointerObservable.add((pointerInfo) => {      		
         switch (pointerInfo.type) {
         case PointerEventTypes.POINTERDOWN:
-            if (
-                pointerInfo && 
-                pointerInfo.pickInfo &&
-                pointerInfo.pickInfo.pickedMesh) {
-                // const pickedMesh = pointerInfo.pickInfo.pickedMesh as InteractiveMesh
-                const pickedInfo = scene.pick(engine.getRenderWidth() / 2, engine.getRenderHeight() / 2)
-                console.log('pickedInfo', pickedInfo)
-                const pickedMesh = pickedInfo?.pickedMesh as InteractiveMesh
-                if (!pickedMesh) return
-                // infoBubbles.forEach((bubble) => {
-                //     bubble.blur()
-                // })
-                if (pickedMesh.onPointerPick) {
-                    pickedMesh.onPointerPick(pointerInfo)
-                    camera.detachControl()
-                }
-                
-            }
+            // if (!pointerInfo) break
+            // if (!pointerInfo.pickInfo) break
+            // if (!pointerInfo.pickInfo.pickedMesh) break
+            pointerPickCenterScreen()
             break
         case PointerEventTypes.POINTERUP:
             if (!camera.inputs.attachedToElement)
@@ -210,7 +210,7 @@ const init = async () => {
     castle.position = new Vector3(3, 0, 40)
     castle.scale = new Vector3(2, 2, 2)
     const modelCastle = castle.model.clone("model-castle", null, false)
-    modelCastle!.scaling = new Vector3(0.05, 0.05, 0.05);
+    modelCastle!.scaling = new Vector3(0.05, 0.05, 0.05)
     modelCastle!.position = new Vector3(0, 1, 4)
 
     // const infoBubblesOpts = [
@@ -280,9 +280,14 @@ const init = async () => {
 
     const witch = new Witch(scene)
     witch.position = new Vector3(0, 2, 2)
-    const garden = new Garden(scene)
-    garden.position = new Vector3(12, 0.05, 8)
-    garden.scale = new Vector3(3,3,3)
+
+    // const garden = new Garden(scene)
+    // garden.position = new Vector3(12, 0.05, 8)
+    // garden.scale = new Vector3(3,3,3)
+
+    const flowerBoxPuzzle = new FlowerBoxPuzzle(scene)
+    flowerBoxPuzzle.position = new Vector3(0, 0, 1)
+
 }
 
 window.addEventListener('DOMContentLoaded', () => {

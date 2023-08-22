@@ -80,7 +80,7 @@ export class Witch {
             }
 
         })
-        this.headMesh.onPointerPick = (pointerInfo: BABYLON.PointerInfo) => {
+        this.headMesh.onPointerPick = () => {
             console.log('clicked!', this.attention)
             this.attention = true
             zzfx(...[1.01,,275,.01,.01,.15,1,1.03,-3.7,,-93,.07,,,,-0.1,,.5,.04,.09]); // Pickup 121 - Mutation 2

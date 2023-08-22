@@ -156,7 +156,7 @@ export class SlideTilePuzzle {
             const xPos = i % this.width - 0.5 * this.width + 0.5
             const yPos = -1 * Math.floor(tile.slot / this.width) + 0.5 * this.height - 0.5
             tile.mesh.checkCollisions = true
-            tile.mesh.onPointerPick = (pointerInfo: BABYLON.PointerInfo) => {
+            tile.mesh.onPointerPick = () => {
                 this.attemptMove(tile)
             }
 
