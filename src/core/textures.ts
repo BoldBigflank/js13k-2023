@@ -4,7 +4,7 @@ const { StandardMaterial, Texture, Scene } = BABYLON
 
 let pc = 0
 
-/* OLD TEXTURES */
+/* OLD TEXTURES
 
 export const coffinMaterial = (scene: BABYLON.Scene) => {
     // Setup
@@ -179,10 +179,43 @@ export const infoBillboardMaterial = (lines: string[], scene: BABYLON.Scene) => 
     material.diffuseTexture = texture
     return material
 }
+*/
 
 /* NEW TEXTURES */
 
-export const castleMaterial = (windows = true, scene: BABYLON.Scene) => {
+
+export const CursorMaterial = (scene: BABYLON.Scene) => {
+    // Setup
+    const [canvas, ctx] = initCanvas(512)
+    ctx.imageSmoothingEnabled = false
+    // TODO: Draw out a cursor
+    ctx.lineCap = "round"
+    ctx.beginPath()
+    ctx.moveTo(256 - 6, 256) // Horiz
+    ctx.lineTo(256 + 6, 256)
+    ctx.moveTo(256, 256 - 6) // Vert
+    ctx.lineTo(256, 256 + 6)
+    // Outer
+    ctx.lineWidth = 2
+    ctx.strokeStyle = "#000000"
+    ctx.stroke()
+    // Inner
+    ctx.lineWidth = 1.5
+    ctx.strokeStyle = "#ffffff"
+    ctx.stroke()
+
+    // Send it
+    const material = new StandardMaterial(`cursorMaterial${++pc}`, scene)
+    const texture = Texture.LoadFromDataString(`cursorTexture${++pc}`, canvas.toDataURL(), scene)
+    material.diffuseTexture = texture
+    material.disableLighting = true
+    material.emissiveColor = BABYLON.Color3.White()
+    texture.hasAlpha = true
+    return material
+}
+
+
+export const CastleMaterial = (windows = true, scene: BABYLON.Scene) => {
     // Setup
     const [canvas,ctx] = initCanvas(512)
 
@@ -245,7 +278,7 @@ export const castleMaterial = (windows = true, scene: BABYLON.Scene) => {
     return material
 }
 
-export const grassMaterial = (scene: BABYLON.Scene) => {
+export const GrassMaterial = (scene: BABYLON.Scene) => {
     // Setup
     const [canvas, ctx] = initCanvas(512)
     const [tempCanvas, tempCtx] = initCanvas(canvas.width * 2)
@@ -391,7 +424,7 @@ export const GardenHeightMap = () => {
 
 /* HELPERS */
 
-export const colorMaterial = (color: string, scene: BABYLON.Scene) => {
+export const ColorMaterial = (color: string, scene: BABYLON.Scene) => {
     const material = new StandardMaterial(`billboardMaterial${++pc}`, scene)
     material.diffuseColor = BABYLON.Color3.FromHexString(color)
     return material

@@ -1,4 +1,4 @@
-import { castleMaterial } from '@/core/textures'
+import { CastleMaterial } from '@/core/textures'
 
 const { TransformNode, Vector3 } = BABYLON
 
@@ -74,7 +74,7 @@ export class Castle {
                 // wrap: true
             }, this.scene)
             wall.position = new Vector3(x, y , z)
-            wall.material = castleMaterial(true, this.scene)
+            wall.material = CastleMaterial(true, this.scene)
             wall.setParent(this.parent)
         })
     
@@ -112,7 +112,7 @@ export class Castle {
                 diameter
             }, this.scene)
             turret.position = new Vector3(x, y, z)
-            turret.material = castleMaterial(false, this.scene)
+            turret.material = CastleMaterial(false, this.scene)
             turret.setParent(this.parent)
             if (coneHeight) {
                 const cone = BABYLON.MeshBuilder.CreateCylinder(`turret${i}`, {

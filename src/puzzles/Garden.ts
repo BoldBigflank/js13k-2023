@@ -1,4 +1,4 @@
-import { GardenHeightMap, grassMaterial } from '@/core/textures'
+import { GardenHeightMap, GrassMaterial } from '@/core/textures'
 
 const { TransformNode, Vector3 } = BABYLON
 
@@ -62,7 +62,7 @@ export class Garden {
             }, this.scene)
         ground.position = new Vector3(0, 0, 0)
         // ground.material = colorMaterial("#ff00ff", this.scene)
-        ground.material = grassMaterial(this.scene)
+        ground.material = GrassMaterial(this.scene)
         ground.setParent(this.parent)
 
         

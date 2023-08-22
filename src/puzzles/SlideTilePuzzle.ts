@@ -1,7 +1,7 @@
 import { sample, heiroglyphics } from '@/core/Utils'
 import type { Tile, InteractiveMesh } from '@/Types'
 import { zzfx } from 'zzfx'
-import { coffinMaterial } from '@/core/textures'
+import { CursorMaterial } from '@/core/textures'
 
 const { TransformNode, Engine, Scene, MeshBuilder, HemisphericLight, FreeCamera, Vector3, PointerEventTypes, PointerInfo, StandardMaterial } = BABYLON
 
@@ -101,7 +101,7 @@ export class SlideTilePuzzle {
         coffin.position = new Vector3(0, 0.5, 0)
         coffin.checkCollisions = true
         coffin.setParent(this.parent)
-        coffin.material = coffinMaterial(this.scene)
+        coffin.material = CursorMaterial(this.scene)
 
         // Put a mummy decal on it
         const mummyCanvas = document.createElement('canvas')

@@ -1,13 +1,10 @@
 import { Castle } from '@/puzzles/Castle'
-import { InfoBubble } from '@/puzzles/InfoBubble'
 import type { InteractiveMesh } from '@/Types'
-import { columnMaterial, wallMaterial, floorMaterial, grassMaterial } from './core/textures'
-import { jarHeads } from './core/Utils'
-import { Mesh } from 'babylonjs'
+import { GrassMaterial, CursorMaterial } from './core/textures'
 import { Witch } from './puzzles/Witch'
 import { Garden } from './puzzles/Garden'
 
-const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, Color4, PointerEventTypes } = BABYLON
+const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON
 const init = async () => {
     document.getElementById('intro')!.style.display = 'none'
     const canvas: HTMLCanvasElement = document.getElementById('c') as HTMLCanvasElement
@@ -17,7 +14,7 @@ const init = async () => {
     // })
     const engine = new Engine(canvas, true)
     const scene = new Scene(engine)
-    const infoBubbles: InfoBubble[] = []
+    // const infoBubbles: InfoBubble[] = []
     scene.gravity = new Vector3(0, -0.15, 0)
     scene.collisionsEnabled = true
     // scene.debugLayer.show({
@@ -42,7 +39,15 @@ const init = async () => {
     camera.ellipsoid = new Vector3(0.4, 0.8, 0.4)
     camera.checkCollisions = true
     camera.minZ = 0.5
-    
+
+    // Camera cursor
+    const cursor = BABYLON.MeshBuilder.CreatePlane("cursor", {
+        
+    }, scene)
+    cursor.material = CursorMaterial(scene)
+    cursor.setParent(camera)
+    cursor.position = new Vector3 (0, 0, 1.1)
+    cursor.renderingGroupId = 1
     new HemisphericLight("light", new Vector3(0, 1, 0), scene)
 
     // const ground = MeshBuilder.CreateGround("ground", { width: 100, height: 100, subdivisions: 100}, scene)
@@ -58,7 +63,7 @@ const init = async () => {
             h: 10
         }
     })
-    ground.material = grassMaterial(scene)
+    ground.material = GrassMaterial(scene)
 
     ground.checkCollisions = true
     ground.position.y = -0.01
@@ -68,7 +73,7 @@ const init = async () => {
         height: 24,
         subdivisions: 100
     }, scene)
-    floor.material = floorMaterial(scene)
+    // floor.material = floorMaterial(scene)
     floor.position = new Vector3(-15, 0, 32)
     floor.checkCollisions = true
     // const ceiling = floor.clone('ceiling')
@@ -168,9 +173,9 @@ const init = async () => {
                 console.log('pickedInfo', pickedInfo)
                 const pickedMesh = pickedInfo?.pickedMesh as InteractiveMesh
                 if (!pickedMesh) return
-                infoBubbles.forEach((bubble) => {
-                    bubble.blur()
-                })
+                // infoBubbles.forEach((bubble) => {
+                //     bubble.blur()
+                // })
                 if (pickedMesh.onPointerPick) {
                     pickedMesh.onPointerPick(pointerInfo)
                     camera.detachControl()
@@ -208,70 +213,70 @@ const init = async () => {
     modelCastle!.scaling = new Vector3(0.05, 0.05, 0.05);
     modelCastle!.position = new Vector3(0, 1, 4)
 
-    const infoBubblesOpts = [
-        {
-            x: 0,
-            y: 2,
-            z: 3,
-            angle: 0,
-            lines: [
-                'Tut\'s tomb was not actually',
-                'this big, it was roughly half',
-                'the length, width, and height',
-                'of what you see. This token',
-                'marks the halfway point.'
-            ]
-        },
-        {
-            x: 3.6,
-            y: .7,
-            z: 2.7,
-            angle: Math.PI / 2,
-            lines: [
-                'Four canopic jars hold Tut\'s',
-                'stomach, intestines, lungs,',
-                'and liver. These were',
-                'considered necessary for the',
-                'afterlife, and preserved here.'
-            ]
-        },
-        {
-            x: 5.6,
-            y: 2,
-            z: 5,
-            angle: Math.PI / 2,
-            lines: [
-                'This wall lead to the Treasury',
-                'where Tut\'s canopic jars were',
-                'actually kept. It also held a',
-                'statue of Anubis on a golden',
-                'shrine, keeping guard.'
-            ]
-        },
-        {
-            x: 0,
-            y: 1,
-            z: 5,
-            angle: 0,
-            lines: [
-                'Scarabs are a symbol of new',
-                'life. Funerary workers place',
-                'a scarab over the mummy\'s',
-                'chest to provide protection',
-                'and guidance being reborn',
-                'in the afterlife'
-            ]
-        }
+    // const infoBubblesOpts = [
+    //     {
+    //         x: 0,
+    //         y: 2,
+    //         z: 3,
+    //         angle: 0,
+    //         lines: [
+    //             'Tut\'s tomb was not actually',
+    //             'this big, it was roughly half',
+    //             'the length, width, and height',
+    //             'of what you see. This token',
+    //             'marks the halfway point.'
+    //         ]
+    //     },
+    //     {
+    //         x: 3.6,
+    //         y: .7,
+    //         z: 2.7,
+    //         angle: Math.PI / 2,
+    //         lines: [
+    //             'Four canopic jars hold Tut\'s',
+    //             'stomach, intestines, lungs,',
+    //             'and liver. These were',
+    //             'considered necessary for the',
+    //             'afterlife, and preserved here.'
+    //         ]
+    //     },
+    //     {
+    //         x: 5.6,
+    //         y: 2,
+    //         z: 5,
+    //         angle: Math.PI / 2,
+    //         lines: [
+    //             'This wall lead to the Treasury',
+    //             'where Tut\'s canopic jars were',
+    //             'actually kept. It also held a',
+    //             'statue of Anubis on a golden',
+    //             'shrine, keeping guard.'
+    //         ]
+    //     },
+    //     {
+    //         x: 0,
+    //         y: 1,
+    //         z: 5,
+    //         angle: 0,
+    //         lines: [
+    //             'Scarabs are a symbol of new',
+    //             'life. Funerary workers place',
+    //             'a scarab over the mummy\'s',
+    //             'chest to provide protection',
+    //             'and guidance being reborn',
+    //             'in the afterlife'
+    //         ]
+    //     }
         
-    ]
+    // ]
     
-    infoBubblesOpts.forEach((opts) => {
-        const infoBubble = new InfoBubble(opts.lines, scene)
-        console.log('placing bubble at ', opts.x, opts.y, opts.z)
-        infoBubble.position = new Vector3(opts.x, opts.y, opts.z)
-        infoBubble.rotation = new Vector3(0, opts.angle, 0)
-        infoBubbles.push(infoBubble)
-    })
+    // infoBubblesOpts.forEach((opts) => {
+    //     const infoBubble = new InfoBubble(opts.lines, scene)
+    //     console.log('placing bubble at ', opts.x, opts.y, opts.z)
+    //     infoBubble.position = new Vector3(opts.x, opts.y, opts.z)
+    //     infoBubble.rotation = new Vector3(0, opts.angle, 0)
+    //     infoBubbles.push(infoBubble)
+    // })
 
     const witch = new Witch(scene)
     witch.position = new Vector3(0, 2, 2)

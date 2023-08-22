@@ -1,4 +1,4 @@
-import { colorMaterial, infoBillboardMaterial } from '@/core/textures'
+import { ColorMaterial } from '@/core/textures'
 import { zzfx } from 'zzfx'
 import { waterNME } from '@/shaders/waterNME'
 import type { InteractiveMesh } from '@/Types'
@@ -40,7 +40,7 @@ export class Witch {
             size: 0.25
         }, this.scene)
         
-        this.headMesh.material = colorMaterial('#00ff00', this.scene)
+        this.headMesh.material = ColorMaterial('#00ff00', this.scene)
         this.headMesh.setParent(this.parent)
 
         // TODO: Give a hat
