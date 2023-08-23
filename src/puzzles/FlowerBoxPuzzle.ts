@@ -156,7 +156,6 @@ export class FlowerBoxPuzzle {
                 if (y > 0 && y < boardHeight - 1 &&
                     x > 0 && x < boardWidth - 1) continue
                 const bush = this.createBush() 
-                console.log('created bush', x, y)
                 bush.position = new BABYLON.Vector3(x - 1.5, 0, y - 0.5)
             }
         }

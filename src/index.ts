@@ -11,7 +11,11 @@ const init = async () => {
     const canvas: HTMLCanvasElement = document.getElementById('c') as HTMLCanvasElement
     canvas.style.display = 'block'
     canvas.addEventListener("click", async () => {
-        await canvas.requestPointerLock()
+        if (document.pointerLockElement === canvas) return
+        // @ts-ignore
+        await canvas.requestPointerLock({
+            unadjustedMovement: true
+        })
     })
     const engine = new Engine(canvas, true)
     const scene = new Scene(engine)
@@ -24,7 +28,7 @@ const init = async () => {
     engine.displayLoadingUI()
 
     const camera = new UniversalCamera('MainCamera', new Vector3(0, 1.615, 0), scene)
-    camera.inertia = 0.5
+    camera.inertia = 0
     camera.speed = 1
     camera.keysUp.push(87)    		// W
     camera.keysDown.push(83)   		// D
