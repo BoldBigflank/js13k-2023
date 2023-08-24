@@ -1,8 +1,8 @@
 # TODO
 ## Top Priority
-* Create a cursor
-* Make interactable objects to click
-* Make a "held" object slot
+* X Create a cursor
+* X Make interactable objects to click
+* X Make a "held" object slot
 * Make sure XR works as expected
 * skybox
 * Create thin instances of trees/bushes
@@ -30,3 +30,25 @@
 ### Make a more fantasy-based experience
  * Open a portal that takes you to a magical room
  * Solve a puzzle to get "home", perhaps
+
+
+# Harvest Puzzle Box
+ * Lights out
+ * Musical tones
+ * Tsuro Path
+ * Code/Cloud
+
+# Tut's Tomb
+ * 8-tile sliding puzzle
+ * Jars
+
+# 404 Sculpting Done Quick
+ * Shaving parts off of a sculpture
+ * Trampoline game
+
+# Backlit - Treasure Escape
+ * Moving sculptures to cast a shadow
+ * Moving Crystals to direct a beam of light
+ * Holding an item to cast a shadow in two spots
+
+# 

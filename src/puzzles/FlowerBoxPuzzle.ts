@@ -11,7 +11,8 @@ export class FlowerBoxPuzzle {
         ["R", "Y"],
         ["B", "B"]
     ]
-    selected = ""
+    selectedMesh: BABYLON.Mesh|null
+    inventoryTransform: BABYLON.TransformNode
     meshes: BABYLON.Mesh[] = []
     // jars: Jar[] = []
     parent: BABYLON.TransformNode
@@ -19,7 +20,8 @@ export class FlowerBoxPuzzle {
         "R": "#ff0000",
         "G": "#00aa00",
         "B": "#0000ff",
-        "Y": "#ffff00"
+        "Y": "#ffff00",
+        "Br": "#6E260E" // Brown, patch of dirt
     }
     // Meta
     solved = false
@@ -28,6 +30,10 @@ export class FlowerBoxPuzzle {
         this.scene = scene
         // Parent position
         this.parent = new TransformNode('Castle', this.scene)
+        this.inventoryTransform = new TransformNode('Holding', this.scene)
+        this.inventoryTransform.setParent(scene.activeCamera)
+        this.inventoryTransform.position = new Vector3(-.5, 0, 2)
+        this.selectedMesh = null
         this.reset()
     }
 
@@ -43,9 +49,11 @@ export class FlowerBoxPuzzle {
         this.parent.scaling = s
     }
 
-    cellAt(x: number, y: number) {
+    cellAt(x: number, y: number, newValue?: string) {
         try {
-            return this.board[y][x]
+            const value = this.board[y][x]
+            if (newValue) this.board[y][x] = newValue
+            return value
         } catch {
             return null
         }
@@ -54,6 +62,12 @@ export class FlowerBoxPuzzle {
     isSolved() {
         if (this.solved) return true
         let rulesBroken = false
+
+        // RULE - No flowers in hand
+        if (this.selectedMesh && this.selectedMesh.metadata.color !== "Br"){
+            console.log("Rule 1 broken")
+            rulesBroken = true
+        }
 
         // RULE - Red cannot be next to Yellow
         this.board.forEach((row, y) => {
@@ -67,6 +81,8 @@ export class FlowerBoxPuzzle {
                     this.cellAt(x, y-1)
                 ]
                 if (adjCells.includes("Y")) {
+                    console.log("Rule 2 broken")
+            
                     rulesBroken = true
                 }
             })
@@ -83,10 +99,44 @@ export class FlowerBoxPuzzle {
         // 
     }
 
-    createFlower(color: string) {
+    swapMesh(pickedMesh: BABYLON.Mesh) {
+        const pickedMeshMetadata = pickedMesh.metadata || {}
+        const { x, y } = pickedMeshMetadata
+        const selectedMeshColor = this.selectedMesh ? this.selectedMesh.metadata.color : ""
+        // Move the selected mesh to the picked mesh's position
+        this.cellAt(x, y, selectedMeshColor)
+        if (this.selectedMesh) {
+            // Update the metadata
+            this.selectedMesh.metadata = {
+                ...this.selectedMesh.metadata,
+                picked: false,
+                x,
+                y
+            }
+            // Update the mesh
+            this.placeFlower(this.selectedMesh)
+            this.selectedMesh = null
+        }
+        // Assign the picked mesh to selectedMesh
+        pickedMesh.metadata = {
+            ...pickedMesh.metadata,
+            picked: true
+        }
+        this.selectedMesh = pickedMesh
+        this.placeFlower(this.selectedMesh)
+        this.isSolved()
+    }
+
+    createFlower(color: string, x: number, y: number) {
         const mesh = new BABYLON.Mesh("flower", this.scene) as InteractiveMesh
+        mesh.metadata = {
+            color,
+            x,
+            y
+        }
         mesh.onPointerPick = () => {
-            console.log("CLICKED!")
+            if (this.solved) return
+            this.swapMesh(mesh)
         }
         // Stem
         const stem = BABYLON.MeshBuilder.CreateCylinder("stem", {
@@ -127,6 +177,51 @@ export class FlowerBoxPuzzle {
         head.setParent(mesh)
         return mesh
     }
+    createEmpty(x: number, y: number) {
+        const mesh = new BABYLON.Mesh("empty", this.scene) as InteractiveMesh
+        mesh.onPointerPick = () => {
+            if (this.solved) return
+            this.swapMesh(mesh)
+        }
+        mesh.metadata = {
+            color: "Br",
+            x,
+            y
+        }
+
+        // Head
+        const head = BABYLON.MeshBuilder.CreateBox("head", {
+            height: 0.2,
+            width: 0.4,
+            depth: 0.4
+        }, this.scene)
+        head.position = new Vector3(0, 0.1, 0)
+        head.material = ColorMaterial(this.colors["Br"], this.scene)
+        head.setParent(mesh)
+        return mesh
+    }
+
+    placeFlower(mesh: BABYLON.Mesh) {
+        if (mesh.metadata.picked) {
+            mesh.setParent(this.inventoryTransform)
+            mesh.position = Vector3.Zero()
+            mesh.rotation = Vector3.Zero()
+            mesh.scaling = new Vector3(0.25, 0.25, 0.25)
+            mesh.renderingGroupId = 1
+            mesh.isPickable = false
+            // "Br" cells are invisible in inventory
+            mesh.setEnabled(mesh.metadata.color !== "Br")
+            return
+        }
+        const { x, y } = mesh.metadata
+        mesh.setParent(this.parent)
+        mesh.position = new Vector3(x - 0.5, 0, y - 0.5)
+        mesh.rotation = Vector3.Zero()
+        mesh.scaling = Vector3.One()
+        mesh.isPickable = true
+        mesh.setEnabled(true)
+        mesh.renderingGroupId = 0
+    }
 
     reset() {
         // Grid-based ground
@@ -135,7 +230,7 @@ export class FlowerBoxPuzzle {
         this.meshes.forEach(mesh => {
             mesh.dispose()
         })
-        this.selected = ""
+        this.selectedMesh = null
 
         const boardHeight = this.board.length + 2
         const boardWidth = this.board[0].length + 2
@@ -170,16 +265,29 @@ export class FlowerBoxPuzzle {
                 case "R": // Flowers
                 case "Y":
                 case "B":
-                    itemMesh = this.createFlower(column)
+                    itemMesh = this.createFlower(column, x, y)
                     itemMesh.name = `cell${x}-${y}`
-                    itemMesh.setParent(this.parent)
-                    itemMesh.position = new Vector3(x - 0.5, 0, y - 0.5)
+                    this.placeFlower(itemMesh)
+                    // itemMesh.setParent(this.parent)
+                    // itemMesh.position = new Vector3(x - 0.5, 0, y - 0.5)
                     break
+                case "Br":
+                    itemMesh = this.createEmpty(x, y)
+                    itemMesh.name = `cell${x}-${y}`
+                    this.placeFlower(itemMesh)
                 default:
                     break
                 }
             })
         })
+
+        // Inventory spot
+        this.selectedMesh = this.createEmpty(-1, -1)
+        this.selectedMesh.metadata = {
+            ...this.selectedMesh.metadata,
+            picked: true
+        }
+        this.placeFlower(this.selectedMesh)
 
         this.solved = false
     }
