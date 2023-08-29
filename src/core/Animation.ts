@@ -1,10 +1,13 @@
-type AnimationType = "position"|"scaling"|"rotation"
+type AnimationTransform = {
+    position?: BABYLON.Vector3
+    rotation?: BABYLON.Vector3
+    scaling?: BABYLON.Vector3
+}
 
 type Animating = {
     mesh: BABYLON.Mesh
-    type: AnimationType
-    start: BABYLON.Vector3
-    end: BABYLON.Vector3
+    start: AnimationTransform
+    end: AnimationTransform
     t: number
     duration: number
 }
@@ -33,11 +36,23 @@ export class AnimationFactory {
             this.animations = this.animations.filter((animation) => {
                 const t = animation.t + (this.scene?.deltaTime || 0)
                 if (t >= animation.duration) {
-                    animation.mesh.position = animation.end
+                    if (animation.end.position) animation.mesh.position = animation.end.position
+                    if (animation.end.rotation) animation.mesh.rotation = animation.end.rotation
+                    if (animation.end.scaling) animation.mesh.scaling = animation.end.scaling
                 } else {
-                    animation.mesh.position = BABYLON.Vector3.Lerp(
-                        animation.start,
-                        animation.end, 
+                    if (animation.end.position) animation.mesh.position = BABYLON.Vector3.Lerp(
+                        animation.start.position!,
+                        animation.end.position, 
+                        t / animation.duration
+                    )
+                    if (animation.end.rotation) animation.mesh.rotation = BABYLON.Vector3.Lerp(
+                        animation.start.rotation!,
+                        animation.end.rotation, 
+                        t / animation.duration
+                    )
+                    if (animation.end.scaling) animation.mesh.scaling = BABYLON.Vector3.Lerp(
+                        animation.start.scaling!,
+                        animation.end.scaling, 
                         t / animation.duration
                     )
                 }
@@ -51,9 +66,13 @@ export class AnimationFactory {
         })
     }
 
-    public animatePosition(mesh: BABYLON.Mesh, type: AnimationType, end: BABYLON.Vector3, duration: number) {
+    public animateTransform(mesh: BABYLON.Mesh, end: AnimationTransform, duration: number) {
         this.animations.push({
-            mesh, type, start: mesh.position.clone(), end: end, duration, t: 0
+            mesh, start: {
+                position: mesh.position,
+                rotation: mesh.rotation,
+                scaling: mesh.scaling
+            }, end, duration, t: 0
         })
     }
 }

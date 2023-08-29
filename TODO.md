@@ -3,6 +3,7 @@
 * X Create a cursor
 * X Make interactable objects to click
 * X Make a "held" object slot
+* X Animation Factory
 * Make sure XR works as expected
 * skybox
 * Create thin instances of trees/bushes
