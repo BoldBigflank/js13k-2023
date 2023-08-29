@@ -1,4 +1,5 @@
 import { InteractiveMesh } from '@/Types'
+import { AnimationFactory } from '@/core/Animation'
 import { ColorMaterial, GridMaterial } from '@/core/textures'
 import { zzfx } from 'zzfx'
 
@@ -204,7 +205,8 @@ export class FlowerBoxPuzzle {
     placeFlower(mesh: BABYLON.Mesh) {
         if (mesh.metadata.picked) {
             mesh.setParent(this.inventoryTransform)
-            mesh.position = Vector3.Zero()
+            AnimationFactory.Instance.animatePosition(mesh, "position", Vector3.Zero(), 200)
+            // mesh.position = Vector3.Zero()
             mesh.rotation = Vector3.Zero()
             mesh.scaling = new Vector3(0.25, 0.25, 0.25)
             mesh.renderingGroupId = 1
@@ -215,7 +217,8 @@ export class FlowerBoxPuzzle {
         }
         const { x, y } = mesh.metadata
         mesh.setParent(this.parent)
-        mesh.position = new Vector3(x - 0.5, 0, y - 0.5)
+        // mesh.position = new Vector3(x - 0.5, 0, y - 0.5)
+        AnimationFactory.Instance.animatePosition(mesh, "position", new Vector3(x - 0.5, 0, y - 0.5), 200)
         mesh.rotation = Vector3.Zero()
         mesh.scaling = Vector3.One()
         mesh.isPickable = true

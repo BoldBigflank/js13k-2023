@@ -2,8 +2,8 @@ import { Castle } from '@/puzzles/Castle'
 import type { InteractiveMesh } from '@/Types'
 import { GrassMaterial, CursorMaterial } from './core/textures'
 import { Witch } from './puzzles/Witch'
-import { Garden } from './puzzles/Garden'
 import { FlowerBoxPuzzle } from './puzzles/FlowerBoxPuzzle'
+import { AnimationFactory } from './core/Animation'
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON
 const init = async () => {
@@ -19,7 +19,7 @@ const init = async () => {
     })
     const engine = new Engine(canvas, true)
     const scene = new Scene(engine)
-    // const infoBubbles: InfoBubble[] = []
+    AnimationFactory.Instance.initScene(scene)
     scene.gravity = new Vector3(0, -0.15, 0)
     scene.collisionsEnabled = true
     // scene.debugLayer.show({
@@ -56,9 +56,6 @@ const init = async () => {
     cursor.renderingGroupId = 1
     new HemisphericLight("light", new Vector3(0, 1, 0), scene)
 
-    // const ground = MeshBuilder.CreateGround("ground", { width: 100, height: 100, subdivisions: 100}, scene)
-    // ground.material = grassMaterial(scene)
-    
     const ground = MeshBuilder.CreateTiledGround("ground", {
         xmin: -50,
         zmin: -50,
@@ -79,96 +76,13 @@ const init = async () => {
         height: 24,
         subdivisions: 100
     }, scene)
-    // floor.material = floorMaterial(scene)
+    
     floor.position = new Vector3(-15, 0, 32)
     floor.checkCollisions = true
-    // const ceiling = floor.clone('ceiling')
-    // ceiling.position.y = 3.14
-    // ceiling.rotate(Vector3.Right(), Math.PI, BABYLON.Space.WORLD)
-
-    // // Walls
-    // const walls = [
-    //     { x: 0, z: -1.5, width: 12, depth: 1 },
-    //     { x: 0, z: 7.5, width: 12, depth: 1 },
-    //     { x: -6.5, z: 3, width: 1, depth: 8 },
-    //     { x: 6.5, z: 3, width: 1, depth: 8 }
-    // ]
-    // walls.forEach((wall, i) => {
-    //     const wallMesh = MeshBuilder.CreateBox(`wall${i}`, {
-    //         width: wall.width,
-    //         depth: wall.depth,
-    //         height: 3.14
-    //     }, scene)
-    //     wallMesh.checkCollisions = true
-    //     wallMesh.position = new Vector3(wall.x, 1.57, wall.z)
-    //     wallMesh.material = wallMaterial([], scene)
-    // })
-
-    // // Pillars
-    // const pillars = [
-    //     { x: 4.5, z: 0.5, rotation: Math.PI },
-    //     { x: -4.5, z: 0.5, rotation: Math.PI * 3 / 2 },
-    //     { x: -4.5, z: 5.5, rotation: 0 },
-    //     { x: 4.5, z: 5.5, rotation: Math.PI / 2 }
-    // ]
-    // pillars.forEach((opts, i) => {
-    //     const mesh = MeshBuilder.CreateCylinder(`column${i}`, {
-    //         diameter: 1,
-    //         height: 3.14
-    //     })
-    //     mesh.checkCollisions = true
-    //     mesh.position = new Vector3(opts.x, 1.5, opts.z)
-    //     mesh.material = columnMaterial([jarHeads[i]], scene)
-    //     mesh.rotation = new Vector3(0, opts.rotation, 0)
-    // })
-
-    // // Test water cube
-    // const waterBox = MeshBuilder.CreateBox("box", {}, scene)
-    // waterBox.position = new Vector3(-3, 2, -2)
-    // const waterMat = waterNME()
-    // waterBox.material = waterMat
-
-    // // Test 
-    // const mat = new BABYLON.StandardMaterial("mat", scene)
-    // const tex = new BABYLON.Texture('./checker.png', scene)
-    // mat.diffuseTexture = tex
     
-    // const testBox = MeshBuilder.CreateBox("box", {}, scene)
-    // testBox.position = new Vector3(-1, 1, 0)
-    // testBox.material = mat
-    
-    // // The width is w = 1
-    // // The height is h = 2w
-    // // The circumference is c = PI*w
-    // // The uv height is 2/PI
-    // const testCylinder = MeshBuilder.CreateCylinder('cylinder', {
-    //     height: 3.14,
-    //     subdivisions: 2,
-    //     enclose: true,
-    //     faceUV: [
-    //         new Vector4(0,0,1,1), // bottom cap
-    //         new Vector4(1,0,0,1), // center
-    //         new Vector4(0,0,1,1) // top cap
-    //     ]
-    // }, scene)
-    // testCylinder.position = new Vector3(0, 3.14/4, 0)
-    // testCylinder.scaling = new Vector3(0.5, 0.5, 0.5)
-    // testCylinder.material = mat
-
-    // const testSphere = MeshBuilder.CreateSphere('sphere', {}, scene)
-    // testSphere.position = new Vector3(1, 1, 0)
-    // testSphere.material = mat
-
-    // const testCapsule = MeshBuilder.CreateCapsule('capsule', {
-    //     radiusTop: .3
-    // }, scene)
-    // testCapsule.position = new Vector3(2, 1, 0)
-    // testCapsule.material = mat
-
-
     const pointerPickCenterScreen = () => {
         const pickedInfo = scene.pick(engine.getRenderWidth() / 2, engine.getRenderHeight() / 2)
-        console.log('pickedInfo', pickedInfo)
+        // console.log('pickedInfo', pickedInfo)
         let pickedMesh = pickedInfo?.pickedMesh as InteractiveMesh
         while (pickedMesh && !pickedMesh.onPointerPick) {
             pickedMesh = pickedMesh.parent as InteractiveMesh
@@ -217,77 +131,8 @@ const init = async () => {
     modelCastle!.scaling = new Vector3(0.05, 0.05, 0.05)
     modelCastle!.position = new Vector3(0, 1, 4)
 
-    // const infoBubblesOpts = [
-    //     {
-    //         x: 0,
-    //         y: 2,
-    //         z: 3,
-    //         angle: 0,
-    //         lines: [
-    //             'Tut\'s tomb was not actually',
-    //             'this big, it was roughly half',
-    //             'the length, width, and height',
-    //             'of what you see. This token',
-    //             'marks the halfway point.'
-    //         ]
-    //     },
-    //     {
-    //         x: 3.6,
-    //         y: .7,
-    //         z: 2.7,
-    //         angle: Math.PI / 2,
-    //         lines: [
-    //             'Four canopic jars hold Tut\'s',
-    //             'stomach, intestines, lungs,',
-    //             'and liver. These were',
-    //             'considered necessary for the',
-    //             'afterlife, and preserved here.'
-    //         ]
-    //     },
-    //     {
-    //         x: 5.6,
-    //         y: 2,
-    //         z: 5,
-    //         angle: Math.PI / 2,
-    //         lines: [
-    //             'This wall lead to the Treasury',
-    //             'where Tut\'s canopic jars were',
-    //             'actually kept. It also held a',
-    //             'statue of Anubis on a golden',
-    //             'shrine, keeping guard.'
-    //         ]
-    //     },
-    //     {
-    //         x: 0,
-    //         y: 1,
-    //         z: 5,
-    //         angle: 0,
-    //         lines: [
-    //             'Scarabs are a symbol of new',
-    //             'life. Funerary workers place',
-    //             'a scarab over the mummy\'s',
-    //             'chest to provide protection',
-    //             'and guidance being reborn',
-    //             'in the afterlife'
-    //         ]
-    //     }
-        
-    // ]
-    
-    // infoBubblesOpts.forEach((opts) => {
-    //     const infoBubble = new InfoBubble(opts.lines, scene)
-    //     console.log('placing bubble at ', opts.x, opts.y, opts.z)
-    //     infoBubble.position = new Vector3(opts.x, opts.y, opts.z)
-    //     infoBubble.rotation = new Vector3(0, opts.angle, 0)
-    //     infoBubbles.push(infoBubble)
-    // })
-
     const witch = new Witch(scene)
     witch.position = new Vector3(0, 2, 2)
-
-    // const garden = new Garden(scene)
-    // garden.position = new Vector3(12, 0.05, 8)
-    // garden.scale = new Vector3(3,3,3)
 
     const flowerBoxPuzzle = new FlowerBoxPuzzle(scene)
     flowerBoxPuzzle.position = new Vector3(0, 0, 1)
