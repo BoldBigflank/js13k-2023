@@ -46,6 +46,14 @@ export class Witch {
         // TODO: Give a hat
 
         // TODO: Give a face
+        const eye = MeshBuilder.CreateBox('eye1', {
+            size: 0.08
+        })
+        eye.setParent(this.headMesh)
+        eye.position = new Vector3(-0.06, 0, 0.125)
+
+        const eye2 = eye.clone()
+        eye2.position.x = -1 * eye2.position.x
 
         this.reset()
     }
@@ -68,21 +76,21 @@ export class Witch {
         this.headMesh.registerBeforeRender((m) => {
             if (!this.scene.activeCamera) return
             if (this.attention) {
-                this.headMesh.lookAt(this.scene.activeCamera.position)
+                this.parent.lookAt(this.scene.activeCamera.position)
             } else {
                 // TODO: Rotate 180deg on the Y axis
                 this.lookAtPos.push(this.scene.activeCamera.absoluteRotation.clone())
                 if (this.lookAtPos.length > 60) {
                     const q = this.lookAtPos.shift()
                     if (!q) return
-                    this.headMesh.rotationQuaternion = q
+                    this.parent.rotationQuaternion = q
                 }
             }
 
         })
         this.headMesh.onPointerPick = () => {
             console.log('clicked!', this.attention)
-            this.attention = true
+            this.attention = !this.attention
             zzfx(...[1.01,,275,.01,.01,.15,1,1.03,-3.7,,-93,.07,,,,-0.1,,.5,.04,.09]); // Pickup 121 - Mutation 2
         }
         

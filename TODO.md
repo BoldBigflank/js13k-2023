@@ -9,6 +9,7 @@
 * Create thin instances of trees/bushes
 * Make a noise/tint NME shader
 * Ignore right clicks on pointer
+* W/S moves forward on Z plane always
 
 ## Scenery
 

@@ -18,3 +18,9 @@ export interface MeshOpts {
     rippleColor?: BABYLON.Color4
     frozen?: boolean
 }
+
+export interface TexturedMeshOpts {
+    color1?: string
+    color2?: string
+    scale?: number
+}

@@ -1,6 +1,6 @@
 import { Castle } from '@/puzzles/Castle'
 import type { InteractiveMesh } from '@/Types'
-import { GrassMaterial, CursorMaterial } from './core/textures'
+import { GrassMaterial, CursorMaterial, PerlinNoise, CanvasMaterial, ColorTextureMaterial } from './core/textures'
 import { Witch } from './puzzles/Witch'
 import { FlowerBoxPuzzle } from './puzzles/FlowerBoxPuzzle'
 import { AnimationFactory } from './core/Animation'
@@ -72,10 +72,30 @@ const init = async () => {
         }
     })
     ground.material = GrassMaterial(scene)
+    // ground.material = ColorTextureMaterial("#00ff00", scene)
 
     ground.checkCollisions = true
     ground.position.y = -0.01
     
+
+    // const heightMap = PerlinNoise()
+    // console.log('garden heightmap', heightMap.toDataURL('image/png'))
+    // const ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap("garden", heightMap.toDataURL('image/png'),
+    //     {
+    //         subdivisions: 256,
+    //         minHeight:0,
+    //         onReady: () => {
+    //             console.log("READY")
+    //         }
+    //     }, scene)
+
+    
+    // ground.position = new Vector3(0, 0, 0)
+    // ground.material = CanvasMaterial(heightMap, scene) //GrassMaterial(scene)
+    // ground.checkCollisions = true
+    // ground.position.y = -0.01
+
+
     const floor = MeshBuilder.CreateGround("floor", {
         width: 24,
         height: 24,

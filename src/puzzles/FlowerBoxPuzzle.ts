@@ -1,15 +1,11 @@
 import { InteractiveMesh } from '@/Types'
 import { AnimationFactory } from '@/core/Animation'
 import { debug } from '@/core/Utils'
-import { ColorMaterial, GridMaterial } from '@/core/textures'
+import { ColorMaterial, ColorTextureMaterial, GridMaterial } from '@/core/textures'
+import { TexturedMeshNME } from '@/shaders/TexturedMeshNME'
 import { zzfx } from 'zzfx'
 
 const { TransformNode, Vector3 } = BABYLON
-
-type CellPos = {
-    x: number
-    y: number
-}
 
 export class FlowerBoxPuzzle {
     // Puzzle Settings
@@ -74,7 +70,6 @@ export class FlowerBoxPuzzle {
     boardPos(x: number, y: number) {
         const xPos = 1.0 * x + 0.5
         const yPos = -1 * y - 0.5
-        if (debug) console.log(`(${x},${y}) -> (${xPos},${yPos})`)
         return new Vector3(xPos, 0, yPos)
     }
 
@@ -222,9 +217,13 @@ export class FlowerBoxPuzzle {
             depth: 0.9
         }, this.scene)
         head.setParent(mesh)
-        // head.position = new Vector3(-0.45, 0.1, -0.45)
-        head.position = Vector3.Zero()
-        head.material = ColorMaterial(this.colors["G"], this.scene)
+        head.position = new Vector3(0, 0.1, 0)
+        // head.material = ColorTextureMaterial(this.colors["G"], this.scene)
+        head.material = TexturedMeshNME({
+            color1: "#00aa00",
+            color2: "#006600",
+            scale: 100
+        })
         
         return mesh
     }
