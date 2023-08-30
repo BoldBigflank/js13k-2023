@@ -4,6 +4,8 @@ import { GrassMaterial, CursorMaterial } from './core/textures'
 import { Witch } from './puzzles/Witch'
 import { FlowerBoxPuzzle } from './puzzles/FlowerBoxPuzzle'
 import { AnimationFactory } from './core/Animation'
+import { debug } from './core/Utils'
+
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON
 const init = async () => {
@@ -22,10 +24,12 @@ const init = async () => {
     AnimationFactory.Instance.initScene(scene)
     scene.gravity = new Vector3(0, -0.15, 0)
     scene.collisionsEnabled = true
-    // // DEBUG
-    // scene.debugLayer.show({
-    //     embedMode: true
-    // })
+    // DEBUG
+    if (debug) {
+        scene.debugLayer.show({
+            embedMode: true
+        })
+    }
     engine.displayLoadingUI()
 
     const camera = new UniversalCamera('MainCamera', new Vector3(0, 1.615, 0), scene)
@@ -139,6 +143,11 @@ const init = async () => {
         ["R", "Y"],
         ["B", "B"]
     ]
+    // const flowerBoxBoardOne = [
+    //     ["R", "W"],
+    //     ["B", "Y"]
+    // ]
+    
     const flowerBoxPuzzle = new FlowerBoxPuzzle(flowerBoxBoardOne, scene)
     flowerBoxPuzzle.position = new Vector3(-5, 0, 5)
 

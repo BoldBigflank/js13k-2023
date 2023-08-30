@@ -8,6 +8,7 @@
 * skybox
 * Create thin instances of trees/bushes
 * Make a noise/tint NME shader
+* Ignore right clicks on pointer
 
 ## Scenery
 

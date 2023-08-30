@@ -4,6 +4,7 @@
   "main": "index.js",
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.10",
+    "@types/node": "^20.5.7",
     "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/parser": "^5.33.0",
     "copy-webpack-plugin": "^9.0.1",
