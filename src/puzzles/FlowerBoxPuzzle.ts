@@ -5,13 +5,15 @@ import { zzfx } from 'zzfx'
 
 const { TransformNode, Vector3 } = BABYLON
 
+type CellPos = {
+    x: number
+    y: number
+}
+
 export class FlowerBoxPuzzle {
     // Puzzle Settings
     scene: BABYLON.Scene
-    board: string[][] = [
-        ["R", "Y"],
-        ["B", "B"]
-    ]
+    board: string[][]
     selectedMesh: BABYLON.Mesh|null
     inventoryTransform: BABYLON.TransformNode
     meshes: BABYLON.Mesh[] = []
@@ -22,13 +24,15 @@ export class FlowerBoxPuzzle {
         "G": "#00aa00",
         "B": "#0000ff",
         "Y": "#ffff00",
+        "W": "#ffffff",
         "Br": "#6E260E" // Brown, patch of dirt
     }
     // Meta
     solved = false
 
-    constructor(scene: BABYLON.Scene) {        
+    constructor(board: string[][], scene: BABYLON.Scene) {        
         this.scene = scene
+        this.board = board
         // Parent position
         this.parent = new TransformNode('Castle', this.scene)
         this.inventoryTransform = new TransformNode('Holding', this.scene)
@@ -60,6 +64,28 @@ export class FlowerBoxPuzzle {
         }
     }
 
+    groupedCellCount(startX: number, startY: number) {
+        const queue = [`${startX},${startY}`]
+        const match = this.cellAt(startX, startY)
+        let result = 0
+        for (let i = 0; i < queue.length; i++) {
+            const [xString, yString] = queue[i].split(',')
+            const x = parseInt(xString)
+            const y = parseInt(yString)
+            if (this.cellAt(x, y) === match) {
+                result += 1
+                const adjCells = [
+                    `${x+1},${y}`,
+                    `${x-1},${y}`,
+                    `${x},${y+1}`,
+                    `${x},${y-1}`
+                ]
+                queue.push(...adjCells.filter((coord) => !queue.includes(coord)))
+            }
+        }
+        return result
+    }
+
     isSolved() {
         if (this.solved) return true
         let rulesBroken = false
@@ -70,21 +96,29 @@ export class FlowerBoxPuzzle {
             rulesBroken = true
         }
 
-        // RULE - Red cannot be next to Yellow
         this.board.forEach((row, y) => {
             row.forEach((cell, x) => {
-                if (cell !== "R") return
+                // RULE - Red cannot be next to Yellow
+                if (cell === "R") {
+                    const adjCells = [
+                        this.cellAt(x+1, y),
+                        this.cellAt(x-1, y),
+                        this.cellAt(x, y+1),
+                        this.cellAt(x, y-1)
+                    ]
+                    if (adjCells.includes("Y")) {
+                        console.log("Rule 2 broken")
+                        rulesBroken = true
+                    }
+                }
 
-                const adjCells = [
-                    this.cellAt(x+1, y),
-                    this.cellAt(x-1, y),
-                    this.cellAt(x, y+1),
-                    this.cellAt(x, y-1)
-                ]
-                if (adjCells.includes("Y")) {
-                    console.log("Rule 2 broken")
-            
-                    rulesBroken = true
+                if (cell === "W") {
+                    // Check each adjacent tile for another white
+                    // For each found one, check that for adj
+                    if (this.groupedCellCount(x, y) !== 3) {
+                        console.log("Rule 3 broken")
+                        rulesBroken = true
+                    }
                 }
             })
         })
@@ -144,24 +178,24 @@ export class FlowerBoxPuzzle {
             height: 0.4,
             diameter: 0.1
         }, this.scene)
-        stem.position = new Vector3(0, 0.2, 0)
         stem.setParent(mesh)
+        stem.position = new Vector3(-0.5, 0.2, -0.5)
         stem.material = ColorMaterial("#00ff00", this.scene)
         // Leaf
         const leaf = BABYLON.MeshBuilder.CreateCylinder("leaf", {
             diameter: 0.3,
             height: 0.1
         }, this.scene)
-        leaf.position = new Vector3(0.15, 0.15, 0)
-        leaf.material = ColorMaterial("#00ff00", this.scene)
         leaf.setParent(mesh)
+        leaf.position = new Vector3(-0.35, 0.15, -0.5)
+        leaf.material = ColorMaterial("#00ff00", this.scene)
         // Head
         const head = BABYLON.MeshBuilder.CreateBox("head", {
             size: 0.4
         }, this.scene)
-        head.position = new Vector3(0, 0.6, 0)
-        head.material = ColorMaterial(this.colors[color], this.scene)
         head.setParent(mesh)
+        head.position = new Vector3(-0.5, 0.6, -0.5)
+        head.material = ColorMaterial(this.colors[color], this.scene)
         return mesh
     }
 
@@ -173,9 +207,13 @@ export class FlowerBoxPuzzle {
             width: 0.9,
             depth: 0.9
         }, this.scene)
-        head.position = new Vector3(0, 0.1, 0)
+        head.position = new Vector3(-0.45, 0.1, -0.45)
         head.material = ColorMaterial(this.colors["G"], this.scene)
         head.setParent(mesh)
+
+        mesh.showBoundingBox = true
+        head.showBoundingBox = true
+        
         return mesh
     }
     createEmpty(x: number, y: number) {
@@ -196,9 +234,9 @@ export class FlowerBoxPuzzle {
             width: 0.4,
             depth: 0.4
         }, this.scene)
-        head.position = new Vector3(0, 0.1, 0)
-        head.material = ColorMaterial(this.colors["Br"], this.scene)
         head.setParent(mesh)
+        head.position = new Vector3(-0.5, 0.1, -0.5)
+        head.material = ColorMaterial(this.colors["Br"], this.scene)
         return mesh
     }
 
@@ -247,8 +285,9 @@ export class FlowerBoxPuzzle {
         })
         ground.material = GridMaterial("#00aa00", "#006600", boardWidth, boardHeight, this.scene)
         ground.setParent(this.parent)
-        // ground.position = new Vector3(-0.5 * boardWidth, 0.01, -0.5 * boardHeight)
+        ground.position = new Vector3(-0.5 * boardWidth, 0.01, -0.5 * boardHeight)
         ground.position = Vector3.Zero()
+        ground.showBoundingBox = true
 
         // Border it with 
         for (let y = 0; y < boardHeight; y++) {
@@ -256,7 +295,9 @@ export class FlowerBoxPuzzle {
                 if (y > 0 && y < boardHeight - 1 &&
                     x > 0 && x < boardWidth - 1) continue
                 const bush = this.createBush() 
-                bush.position = new BABYLON.Vector3(x - 1.5, 0, y - 0.5)
+                bush.setParent(this.parent)
+                bush.showBoundingBox = true
+                bush.position = new BABYLON.Vector3(x - 1.5, 0, y - 1.5)
             }
         }
 
@@ -270,6 +311,7 @@ export class FlowerBoxPuzzle {
                 case "R": // Flowers
                 case "Y":
                 case "B":
+                case "W":
                     itemMesh = this.createFlower(column, x, y)
                     itemMesh.name = `cell${x}-${y}`
                     this.placeFlower(itemMesh)

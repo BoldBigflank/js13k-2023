@@ -22,6 +22,7 @@ const init = async () => {
     AnimationFactory.Instance.initScene(scene)
     scene.gravity = new Vector3(0, -0.15, 0)
     scene.collisionsEnabled = true
+    // // DEBUG
     // scene.debugLayer.show({
     //     embedMode: true
     // })
@@ -134,15 +135,24 @@ const init = async () => {
     const witch = new Witch(scene)
     witch.position = new Vector3(0, 2, 2)
 
-    const flowerBoxPuzzle = new FlowerBoxPuzzle(scene)
-    flowerBoxPuzzle.position = new Vector3(0, 0, 1)
+    const flowerBoxBoardOne = [
+        ["R", "Y"],
+        ["B", "B"]
+    ]
+    const flowerBoxPuzzle = new FlowerBoxPuzzle(flowerBoxBoardOne, scene)
+    flowerBoxPuzzle.position = new Vector3(-5, 0, 5)
 
+    const flowerBoxBoardTwo = [
+        ["W", "B", "W"],
+        ["B", "W", "W"],
+        ["W", "B", "W"]
+    ]
+
+    const flowerBoxPuzzleTwo = new FlowerBoxPuzzle(flowerBoxBoardTwo, scene)
+    flowerBoxPuzzleTwo.position = new Vector3(5, 0, 5)
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-
-    // Test 
-
     const b = document.getElementById('playButton') as HTMLButtonElement
     b.onclick = init
 })
