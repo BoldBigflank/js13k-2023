@@ -5,6 +5,7 @@ import { Witch } from './puzzles/Witch'
 import { FlowerBoxPuzzle } from './puzzles/FlowerBoxPuzzle'
 import { AnimationFactory } from './core/Animation'
 import { debug } from './core/Utils'
+import { Garden } from './puzzles/Garden'
 
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON
@@ -159,26 +160,8 @@ const init = async () => {
     const witch = new Witch(scene)
     witch.position = new Vector3(0, 2, 2)
 
-    const flowerBoxBoardOne = [
-        ["R", "Y"],
-        ["B", "B"]
-    ]
-    // const flowerBoxBoardOne = [
-    //     ["R", "W"],
-    //     ["B", "Y"]
-    // ]
-    
-    const flowerBoxPuzzle = new FlowerBoxPuzzle(flowerBoxBoardOne, scene)
-    flowerBoxPuzzle.position = new Vector3(-5, 0, 5)
-
-    const flowerBoxBoardTwo = [
-        ["W", "B", "W"],
-        ["B", "W", "W"],
-        ["W", "B", "W"]
-    ]
-
-    const flowerBoxPuzzleTwo = new FlowerBoxPuzzle(flowerBoxBoardTwo, scene)
-    flowerBoxPuzzleTwo.position = new Vector3(5, 0, 5)
+    const garden = new Garden(scene)
+    garden.position = new Vector3(15, 0, 18)
 }
 
 window.addEventListener('DOMContentLoaded', () => {

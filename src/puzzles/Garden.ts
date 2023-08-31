@@ -1,5 +1,5 @@
-import { GardenHeightMap, GrassMaterial } from '@/core/textures'
-
+import { DirtMaterial, GardenHeightMap, GrassMaterial } from '@/core/textures'
+import { FlowerBoxPuzzle } from './FlowerBoxPuzzle'
 const { TransformNode, Vector3 } = BABYLON
 
 export class Garden {
@@ -14,7 +14,7 @@ export class Garden {
     constructor(scene: BABYLON.Scene) {        
         this.scene = scene
         // Parent position
-        this.parent = new TransformNode('Castle', this.scene)
+        this.parent = new TransformNode('Garden', this.scene)
         this.reset()
     }
 
@@ -41,34 +41,47 @@ export class Garden {
     }
 
     reset() {
-        // this.solved = false
-        // this.jars = []
-
-        // x, y, z, w, h, d
-        const boxes = [
-            [-11.5,3,5      ,5,6,6]
-
-        ]
-        
-        const gardenHeightMap = GardenHeightMap()
-        console.log('garden heightmap', gardenHeightMap)
-        const ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap("garden", gardenHeightMap,
-            {
-                subdivisions: 256,
-                minHeight:0,
-                onReady: () => {
-                    console.log("READY")
-                }
-            }, this.scene)
-        ground.position = new Vector3(0, 0, 0)
-        // ground.material = colorMaterial("#ff00ff", this.scene)
-        ground.material = GrassMaterial(this.scene)
+        const ground = BABYLON.MeshBuilder.CreateTiledGround("Garden-ground", {
+            xmin: -18,
+            xmax: 18,
+            zmin: -6,
+            zmax: 10,
+            // precision: {
+            //     h: 2,
+            //     w: 2
+            // },
+            subdivisions: {
+                h: 12,
+                w: 24
+            }
+        }, this.scene)
+        ground.material = DirtMaterial(this.scene)
         ground.setParent(this.parent)
+        ground.position = new Vector3(0, 0.01, 0)
 
         
-        // Slanted roofs
+        const flowerBoxBoardOne = [
+            ["R", "Y"],
+            ["B", "B"]
+        ]
+        // const flowerBoxBoardOne = [
+        //     ["R", "W"],
+        //     ["B", "Y"]
+        // ]
+    
+        const flowerBoxPuzzle = new FlowerBoxPuzzle(flowerBoxBoardOne, this.scene)
+        flowerBoxPuzzle.model.setParent(this.parent)
+        flowerBoxPuzzle.position = new Vector3(-15, 0, 5)
 
-        // Chimneys
+        const flowerBoxBoardTwo = [
+            ["W", "B", "W"],
+            ["B", "W", "W"],
+            ["W", "B", "W"]
+        ]
+
+        const flowerBoxPuzzleTwo = new FlowerBoxPuzzle(flowerBoxBoardTwo, this.scene)
+        flowerBoxPuzzleTwo.model.setParent(this.parent)
+        flowerBoxPuzzleTwo.position = new Vector3(-9, 0, -1)
 
     }
 }

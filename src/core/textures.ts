@@ -447,6 +447,7 @@ export const CanvasMaterial = (canvas: HTMLCanvasElement, scene: BABYLON.Scene) 
     return material
 }
 
+// Used for Flower Puzzles
 export const GridMaterial = (color1: string, color2: string, rows: number, columns: number, scene: BABYLON.Scene) => {
     const canvasSize = 512
     const [canvas, ctx] = initCanvas(canvasSize)
@@ -468,6 +469,21 @@ export const GridMaterial = (color1: string, color2: string, rows: number, colum
     material.diffuseTexture = texture
     return material
 }
+
+export const DirtMaterial = (scene: BABYLON.Scene) => {
+    const [canvas, ctx] = initCanvas(256)
+    ctx.fillStyle = "#6d4d41"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = "#49332b"
+    const speckSize = 12
+    for (let i = 0; i < 12; i++) {
+        const x = Math.random() * (canvas.width - speckSize)
+        const y = Math.random() * (canvas.height - speckSize)
+        ctx.fillRect(x, y, speckSize, speckSize)
+    }
+    return CanvasMaterial(canvas, scene)
+}
+
 export const PerlinNoise = () => {
     const size = 512
     const [noiseCanvas, noiseCtx] = initCanvas(size)

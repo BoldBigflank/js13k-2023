@@ -299,7 +299,7 @@ export class FlowerBoxPuzzle {
         })
         ground.material = GridMaterial("#00aa00", "#006600", this.boardWidth, this.boardHeight, this.scene)
         ground.setParent(this.parent)
-        ground.position = new Vector3(0.5 * this.boardWidth, 0.01, -0.5 * this.boardHeight)
+        ground.position = new Vector3(0.5 * this.boardWidth, 0.02, -0.5 * this.boardHeight)
         // ground.position = Vector3.Zero()
 
         // Border it with 
