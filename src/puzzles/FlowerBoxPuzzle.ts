@@ -1,7 +1,7 @@
 import { InteractiveMesh } from '@/Types'
 import { AnimationFactory } from '@/core/Animation'
 import { debug } from '@/core/Utils'
-import { ColorMaterial, ColorTextureMaterial, GridMaterial } from '@/core/textures'
+import { ColorMaterial, GridMaterial } from '@/core/textures'
 import { TexturedMeshNME } from '@/shaders/TexturedMeshNME'
 import { zzfx } from 'zzfx'
 
@@ -101,7 +101,7 @@ export class FlowerBoxPuzzle {
 
         // RULE - No flowers in hand
         if (this.selectedMesh && this.selectedMesh.metadata.color !== "Br"){
-            console.log("Rule 1 broken")
+            if (debug) console.log("Rule 1 broken")
             rulesBroken = true
         }
 
@@ -116,7 +116,7 @@ export class FlowerBoxPuzzle {
                         this.cellAt(x, y-1)
                     ]
                     if (adjCells.includes("Y")) {
-                        console.log("Rule 2 broken")
+                        if (debug) console.log("Rule 2 broken")
                         rulesBroken = true
                     }
                 }
@@ -125,7 +125,7 @@ export class FlowerBoxPuzzle {
                     // Check each adjacent tile for another white
                     // For each found one, check that for adj
                     if (this.groupedCellCount(x, y) !== 3) {
-                        console.log("Rule 3 broken")
+                        if (debug) console.log("Rule 3 broken")
                         rulesBroken = true
                     }
                 }
@@ -328,13 +328,12 @@ export class FlowerBoxPuzzle {
                     itemMesh = this.createFlower(column, x, y)
                     itemMesh.name = `cell${x}-${y}`
                     this.placeFlower(itemMesh)
-                    // itemMesh.setParent(this.parent)
-                    // itemMesh.position = new Vector3(x - 0.5, 0, y - 0.5)
                     break
                 case "Br":
                     itemMesh = this.createEmpty(x, y)
                     itemMesh.name = `cell${x}-${y}`
                     this.placeFlower(itemMesh)
+                    break
                 default:
                     break
                 }

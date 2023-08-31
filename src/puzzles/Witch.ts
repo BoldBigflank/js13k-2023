@@ -1,19 +1,11 @@
 import { ColorMaterial } from '@/core/textures'
 import { zzfx } from 'zzfx'
-import { waterNME } from '@/shaders/waterNME'
 import type { InteractiveMesh } from '@/Types'
+import { debug } from '@/core/Utils'
 
 const { TransformNode, 
-    Quaternion, 
-    Scene,
     MeshBuilder,
-    HemisphericLight,
-    FreeCamera,
-    Vector3,
-    PointerEventTypes,
-    PointerInfo,
-    StandardMaterial,
-    Color4
+    Vector3
 } = BABYLON
 let pc = 0
 
@@ -73,7 +65,7 @@ export class Witch {
 
     reset() {
         this.attention = false
-        this.headMesh.registerBeforeRender((m) => {
+        this.headMesh.registerBeforeRender(() => {
             if (!this.scene.activeCamera) return
             if (this.attention) {
                 this.parent.lookAt(this.scene.activeCamera.position)
@@ -89,9 +81,9 @@ export class Witch {
 
         })
         this.headMesh.onPointerPick = () => {
-            console.log('clicked!', this.attention)
+            if (debug) console.log('clicked!', this.attention)
             this.attention = !this.attention
-            zzfx(...[1.01,,275,.01,.01,.15,1,1.03,-3.7,,-93,.07,,,,-0.1,,.5,.04,.09]); // Pickup 121 - Mutation 2
+            zzfx(...[1.01,,275,.01,.01,.15,1,1.03,-3.7,,-93,.07,,,,-0.1,,.5,.04,.09]) // Pickup 121 - Mutation 2
         }
         
     }

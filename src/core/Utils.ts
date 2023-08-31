@@ -6,9 +6,9 @@ export const sample = (group: any[]): any => {
 }
 
 export const shuffle = (group: any[]): any[] => {
-    // TODO: Fisher yates shuffle
+    // Fisher yates shuffle
     for (let i = group.length - 1; i > 1; i--) {
-        let j = Math.floor(Math.random() * i)
+        const j = Math.floor(Math.random() * i)
         const temp = group[i]
         group[i] = group[j]
         group[j] = temp

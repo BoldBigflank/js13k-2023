@@ -31,12 +31,10 @@ export class AnimationFactory {
         this.scene = scene
         this.scene.registerBeforeRender(() => {
             const now = Date.now()
-            this.animations = this.animations.filter((animation, index) => {
-                console.log(`animation ${index} at ${now}`)
+            this.animations = this.animations.filter((animation) => {
                 const msElapsed = now - animation.startTime
                 const duration = animation.endTime - animation.startTime
                 const lerpAmount = Clamp(msElapsed / duration, 0, 1)
-                console.log(now, animation.startTime, msElapsed, duration, lerpAmount)
                 // It's over
                 if (now >= animation.endTime) {
                     if (animation.end.position) animation.mesh.position = animation.end.position

@@ -1,4 +1,4 @@
-import { DirtMaterial, GardenHeightMap, GrassMaterial } from '@/core/textures'
+import { DirtMaterial } from '@/core/textures'
 import { FlowerBoxPuzzle } from './FlowerBoxPuzzle'
 const { TransformNode, Vector3 } = BABYLON
 
@@ -7,12 +7,13 @@ export class Garden {
     scene: BABYLON.Scene
     // jars: Jar[] = []
     parent: BABYLON.TransformNode
-
+    puzzles: FlowerBoxPuzzle[]
     // Meta
     solved = false
 
     constructor(scene: BABYLON.Scene) {        
         this.scene = scene
+        this.puzzles = []
         // Parent position
         this.parent = new TransformNode('Garden', this.scene)
         this.reset()
@@ -31,12 +32,11 @@ export class Garden {
     }
 
     isSolved() {
-        // if (this.solved) return true
-        // this.solved = this.jars.every((jar, index) => {
-        //     return jar.orientation === index
-        // })
-        // // Solved sfx
-        // if (this.solved) zzfx(...[2.07,0,130.81,.01,.26,.47,3,1.15,,.1,,,.05,,,,.14,.26,.15,.02]) // Music 112 - Mutation 2
+        if (this.solved) return true
+        this.solved = 
+            this.puzzles.length > 0 &&
+            this.puzzles.every((puzzle) => puzzle.solved)
+        // if solved, Play Solved SFX
         return this.solved
     }
 
@@ -64,14 +64,11 @@ export class Garden {
             ["R", "Y"],
             ["B", "B"]
         ]
-        // const flowerBoxBoardOne = [
-        //     ["R", "W"],
-        //     ["B", "Y"]
-        // ]
     
         const flowerBoxPuzzle = new FlowerBoxPuzzle(flowerBoxBoardOne, this.scene)
         flowerBoxPuzzle.model.setParent(this.parent)
         flowerBoxPuzzle.position = new Vector3(-15, 0, 5)
+        this.puzzles.push(flowerBoxPuzzle)
 
         const flowerBoxBoardTwo = [
             ["W", "B", "W"],
@@ -82,6 +79,8 @@ export class Garden {
         const flowerBoxPuzzleTwo = new FlowerBoxPuzzle(flowerBoxBoardTwo, this.scene)
         flowerBoxPuzzleTwo.model.setParent(this.parent)
         flowerBoxPuzzleTwo.position = new Vector3(-9, 0, -1)
-
+        this.puzzles.push(flowerBoxPuzzleTwo)
+        
+        this.solved = false
     }
 }
