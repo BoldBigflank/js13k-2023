@@ -254,11 +254,14 @@ export class FlowerBoxPuzzle {
     placeFlower(mesh: BABYLON.Mesh) {
         if (mesh.metadata.picked) {
             mesh.setParent(this.inventoryTransform)
-            AnimationFactory.Instance.animateTransform(mesh, {
-                position: Vector3.Zero(),
-                rotation: Vector3.Zero(),
-                scaling: new Vector3(0.25, 0.25, 0.25)
-            }, 200)
+            AnimationFactory.Instance.animateTransform({
+                mesh, end: {
+                    position: Vector3.Zero(),
+                    rotation: Vector3.Zero(),
+                    scaling: new Vector3(0.25, 0.25, 0.25)
+                }, 
+                duration: 200
+            })
             mesh.renderingGroupId = 1
             mesh.isPickable = false
             // "Br" cells are invisible in inventory
@@ -267,11 +270,14 @@ export class FlowerBoxPuzzle {
         }
         const { x, y } = mesh.metadata
         mesh.setParent(this.parent)
-        AnimationFactory.Instance.animateTransform(mesh, {
-            position: this.boardPos(x, y),
-            rotation: Vector3.Zero(),
-            scaling: Vector3.One()
-        }, 200)
+        AnimationFactory.Instance.animateTransform({
+            mesh, 
+            end: {
+                position: this.boardPos(x, y),
+                rotation: Vector3.Zero(),
+                scaling: Vector3.One()
+            }, duration: 200
+        })
         mesh.isPickable = true
         mesh.setEnabled(true)
         mesh.renderingGroupId = 0

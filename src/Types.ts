@@ -24,3 +24,16 @@ export interface TexturedMeshOpts {
     color2?: string
     scale?: number
 }
+
+export type AnimationTransform = {
+    position?: BABYLON.Vector3
+    rotation?: BABYLON.Vector3
+    scaling?: BABYLON.Vector3
+}
+
+export interface AnimateTransformOpts {
+    mesh: BABYLON.Mesh
+    end: AnimationTransform
+    duration: number
+    delay?: number
+}

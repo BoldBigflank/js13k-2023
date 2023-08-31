@@ -1,15 +1,12 @@
-type AnimationTransform = {
-    position?: BABYLON.Vector3
-    rotation?: BABYLON.Vector3
-    scaling?: BABYLON.Vector3
-}
+import { AnimationTransform, AnimateTransformOpts } from "@/Types"
+import { Clamp } from "./Utils"
 
 type Animating = {
     mesh: BABYLON.Mesh
     start: AnimationTransform
     end: AnimationTransform
-    t: number
-    duration: number
+    startTime: number
+    endTime: number
 }
 
 export class AnimationFactory {
@@ -33,46 +30,57 @@ export class AnimationFactory {
         if (this.scene) return
         this.scene = scene
         this.scene.registerBeforeRender(() => {
-            this.animations = this.animations.filter((animation) => {
-                const t = animation.t + (this.scene?.deltaTime || 0)
-                if (t >= animation.duration) {
+            const now = Date.now()
+            this.animations = this.animations.filter((animation, index) => {
+                console.log(`animation ${index} at ${now}`)
+                const msElapsed = now - animation.startTime
+                const duration = animation.endTime - animation.startTime
+                const lerpAmount = Clamp(msElapsed / duration, 0, 1)
+                console.log(now, animation.startTime, msElapsed, duration, lerpAmount)
+                // It's over
+                if (now >= animation.endTime) {
                     if (animation.end.position) animation.mesh.position = animation.end.position
                     if (animation.end.rotation) animation.mesh.rotation = animation.end.rotation
                     if (animation.end.scaling) animation.mesh.scaling = animation.end.scaling
-                } else {
-                    if (animation.end.position) animation.mesh.position = BABYLON.Vector3.Lerp(
-                        animation.start.position!,
-                        animation.end.position, 
-                        t / animation.duration
-                    )
-                    if (animation.end.rotation) animation.mesh.rotation = BABYLON.Vector3.Lerp(
-                        animation.start.rotation!,
-                        animation.end.rotation, 
-                        t / animation.duration
-                    )
-                    if (animation.end.scaling) animation.mesh.scaling = BABYLON.Vector3.Lerp(
-                        animation.start.scaling!,
-                        animation.end.scaling, 
-                        t / animation.duration
-                    )
+                    return false
                 }
-                animation.t = t
-                return {
-                    ...animation,
-                    t
-                }
+
+                if (animation.end.position) animation.mesh.position = BABYLON.Vector3.Lerp(
+                    animation.start.position!,
+                    animation.end.position, 
+                    lerpAmount
+                )
+                if (animation.end.rotation) animation.mesh.rotation = BABYLON.Vector3.Lerp(
+                    animation.start.rotation!,
+                    animation.end.rotation, 
+                    lerpAmount
+                )
+                if (animation.end.scaling) animation.mesh.scaling = BABYLON.Vector3.Lerp(
+                    animation.start.scaling!,
+                    animation.end.scaling, 
+                    lerpAmount
+                )
+                return true
             })
-            this.animations.filter((animation) => animation.t < animation.duration)
         })
     }
 
-    public animateTransform(mesh: BABYLON.Mesh, end: AnimationTransform, duration: number) {
+    public animateTransform(opts: AnimateTransformOpts) {
+        const { mesh, end } = opts
+        const duration = opts.duration || 1000
+        const delay = opts.delay || 0
+        const now = Date.now()
+
         this.animations.push({
-            mesh, start: {
+            mesh, 
+            start: {
                 position: mesh.position,
                 rotation: mesh.rotation,
                 scaling: mesh.scaling
-            }, end, duration, t: 0
+            },
+            end,
+            startTime: now + delay,
+            endTime: now + delay + duration
         })
     }
 }
