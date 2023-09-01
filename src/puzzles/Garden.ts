@@ -7,6 +7,7 @@ export class Garden {
     scene: BABYLON.Scene
     // jars: Jar[] = []
     parent: BABYLON.TransformNode
+    floors: BABYLON.Mesh[]
     puzzles: FlowerBoxPuzzle[]
     // Meta
     solved = false
@@ -14,6 +15,7 @@ export class Garden {
     constructor(scene: BABYLON.Scene) {        
         this.scene = scene
         this.puzzles = []
+        this.floors = []
         // Parent position
         this.parent = new TransformNode('Garden', this.scene)
         this.reset()
@@ -41,6 +43,7 @@ export class Garden {
     }
 
     reset() {
+        this.floors = []
         const ground = BABYLON.MeshBuilder.CreateTiledGround("Garden-ground", {
             xmin: -18,
             xmax: 18,
@@ -58,6 +61,7 @@ export class Garden {
         ground.material = DirtMaterial(this.scene)
         ground.setParent(this.parent)
         ground.position = new Vector3(0, 0.01, 0)
+        this.floors.push(ground)
 
         
         const flowerBoxBoardOne = [

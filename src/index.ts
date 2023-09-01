@@ -1,10 +1,11 @@
 import { Castle } from '@/puzzles/Castle'
 import type { InteractiveMesh } from '@/Types'
-import { GrassMaterial, CursorMaterial } from './core/textures'
+import { GrassMaterial, CursorMaterial, GravelMaterial } from './core/textures'
 import { Witch } from './puzzles/Witch'
 import { AnimationFactory } from './core/Animation'
 import { debug } from './core/Utils'
 import { Garden } from './puzzles/Garden'
+import { DialPuzzle } from './puzzles/DialPuzzle'
 
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON
@@ -33,9 +34,9 @@ const init = async () => {
     engine.displayLoadingUI()
 
     // *** CAMERA ***
-    const camera = new UniversalCamera('MainCamera', new Vector3(-30, 1.615, 0), scene)
+    const camera = new UniversalCamera('MainCamera', new Vector3(-23, 1.615, 13.5), scene)
     camera.inertia = 0
-    camera.speed = 1
+    camera.speed = 2
     camera.keysUp.push(87)    		// W
     camera.keysDown.push(83)   		// D
     camera.keysLeft.push(65)  		// A
@@ -119,19 +120,30 @@ const init = async () => {
     ground.position.y = -0.01
     
     // *** DRIVEWAY ***
-    const floor = MeshBuilder.CreateGround("driveway", {
-        width: 24,
-        height: 24,
-        subdivisions: 100
-    }, scene)
-    floor.position = new Vector3(-15, 0, 32)
-    floor.checkCollisions = true
+    const driveway = MeshBuilder.CreateTiledGround("ground", {
+        xmin: -10,
+        xmax: 12,
+        zmin: -20,
+        zmax: 12,
+        subdivisions: {
+            w: 11,
+            h: 16
+        }
+    })
+    driveway.material = GravelMaterial(scene)
+    driveway.position.y = -0.01
+    driveway.position = new Vector3(-15, 0.01, 32)
     
+    // *** DIAL ***
+    const dialPuzzle = new DialPuzzle({}, scene)
+    dialPuzzle.model.position = new Vector3(-6, 1, 41)
+    dialPuzzle.model.rotation = new Vector3(0, Math.PI / 4, 0)
+
     // *** CASTLE ***
     const castle = new Castle(scene)
     castle.position = new Vector3(3, 0, 40)
     castle.scale = new Vector3(2, 2, 2)
-    camera.setTarget(new Vector3(-10, 10, 32))
+    camera.setTarget(new Vector3(-1, 10, 43))
     
 
     // *** MODEL CASTLE ***
@@ -149,7 +161,7 @@ const init = async () => {
     
     // WebXR
     const xr = await scene.createDefaultXRExperienceAsync({
-        floorMeshes: [floor]
+        floorMeshes: [driveway, ...garden.floors]
     })
 }
 

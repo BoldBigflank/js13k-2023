@@ -27,13 +27,10 @@ export const CursorMaterial = (scene: BABYLON.Scene) => {
     ctx.strokeStyle = "#ffffff"
     ctx.stroke()
 
-    // Send it
-    const material = new StandardMaterial(`cursorMaterial${++pc}`, scene)
-    const texture = Texture.LoadFromDataString(`cursorTexture${++pc}`, canvas.toDataURL(), scene)
-    material.diffuseTexture = texture
+    const material = CanvasMaterial(canvas, scene)
     material.disableLighting = true
     material.emissiveColor = BABYLON.Color3.White()
-    texture.hasAlpha = true
+    material.diffuseTexture!.hasAlpha = true
     return material
 }
 
@@ -93,17 +90,8 @@ export const CastleMaterial = (windows = true, scene: BABYLON.Scene) => {
         ctx.moveTo(192, 224) // horizontal line
         ctx.lineTo(320, 224)
         ctx.stroke()
-        // ctx.strokeRect(192, 128, 64, 64)
-        // ctx.strokeRect(256, 128, 64, 64)
     }
-    
-    
-
-    // Send it
-    const material = new StandardMaterial(`material${++pc}`, scene)
-    const texture = Texture.LoadFromDataString(`texture${++pc}`, canvas.toDataURL(), scene)
-    material.diffuseTexture = texture
-    return material
+    return CanvasMaterial(canvas, scene)
 }
 
 export const GrassMaterial = (scene: BABYLON.Scene) => {
@@ -188,12 +176,7 @@ export const GrassMaterial = (scene: BABYLON.Scene) => {
         canvas.width,
         canvas.height
     )
-
-    // Send it
-    const material = new StandardMaterial(`material${++pc}`, scene)
-    const texture = Texture.LoadFromDataString(`texture${++pc}`, canvas.toDataURL(), scene)
-    material.diffuseTexture = texture
-    return material
+    return CanvasMaterial(canvas, scene)
 }
 
 export const GardenHeightMap = () => {
@@ -309,6 +292,61 @@ export const DirtMaterial = (scene: BABYLON.Scene) => {
         const y = Math.random() * (canvas.height - speckSize)
         ctx.fillRect(x, y, speckSize, speckSize)
     }
+    return CanvasMaterial(canvas, scene)
+}
+
+export const GravelMaterial = (scene: BABYLON.Scene) => {
+    // Setup
+    const [canvas,ctx] = initCanvas(512)
+
+    ctx.fillStyle = '#c5a296'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    // Horizontal lines
+    ctx.save()
+    ctx.strokeStyle = "#000000"
+    ctx.lineWidth = 4
+
+    const colors = [
+        "#4A4B46",
+        "#484848",
+        "#4E523F",
+        "#63645F",
+        "#64655f"
+    ]
+
+    ctx.fillStyle = "#30312D"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    colors.forEach((hex) => {
+        ctx.fillStyle = hex
+        for (let i = 0; i < 128; i++) {
+            const x = Math.random() * (canvas.width - 16) + 8
+            const y = Math.random() * (canvas.height - 16) + 8
+            ctx.beginPath()
+            ctx.moveTo(x, y)
+            ctx.arc(x, y, 8, 0, 2 * Math.PI)
+            ctx.fill()
+        }
+    })
+    
+    return CanvasMaterial(canvas, scene)
+}
+
+export const DialMaterial = (alphabet: string[], scene: BABYLON.Scene) => {
+    const [canvas, ctx] = initCanvas(512)
+    ctx.fillStyle = "#ffffff"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = "#000000"
+    const tileWidth = canvas.width / alphabet.length
+    ctx.font = `${tileWidth}px Helvetica`
+    ctx.scale(1.0, canvas.height / tileWidth)
+    ctx.textBaseline = "middle"
+    ctx.textAlign = "center"
+    alphabet.forEach((char, index) => {
+        ctx.strokeStyle = "#888888"
+        ctx.strokeRect(index * tileWidth, 0, (index+1) * tileWidth, tileWidth)
+        ctx.fillText(`${char}`, index * tileWidth + 0.5 * tileWidth, 0.5 * tileWidth)
+    })
     return CanvasMaterial(canvas, scene)
 }
 
