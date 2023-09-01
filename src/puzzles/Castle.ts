@@ -75,6 +75,7 @@ export class Castle {
             }, this.scene)
             wall.position = new Vector3(x, y , z)
             wall.material = CastleMaterial(true, this.scene)
+            wall.checkCollisions = true
             wall.setParent(this.parent)
         })
     
@@ -113,6 +114,7 @@ export class Castle {
             }, this.scene)
             turret.position = new Vector3(x, y, z)
             turret.material = CastleMaterial(false, this.scene)
+            turret.checkCollisions = true
             turret.setParent(this.parent)
             if (coneHeight) {
                 const cone = BABYLON.MeshBuilder.CreateCylinder(`turret${i}`, {
