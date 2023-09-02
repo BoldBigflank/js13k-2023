@@ -10,6 +10,7 @@ import { DialPuzzle } from './puzzles/DialPuzzle'
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON
 const init = async () => {
+    let inXRMode = false
     document.getElementById('intro')!.style.display = 'none'
     const canvas: HTMLCanvasElement = document.getElementById('c') as HTMLCanvasElement
     canvas.style.display = 'block'
@@ -36,7 +37,7 @@ const init = async () => {
     // *** CAMERA ***
     const camera = new UniversalCamera('MainCamera', new Vector3(-23, 1.615, 13.5), scene)
     camera.inertia = 0
-    camera.speed = 2
+    camera.speed = 3
     camera.keysUp.push(87)    		// W
     camera.keysDown.push(83)   		// D
     camera.keysLeft.push(65)  		// A
@@ -49,38 +50,25 @@ const init = async () => {
     camera.applyGravity = true
     camera.ellipsoid = new Vector3(0.4, 0.8, 0.4)
     camera.checkCollisions = true
-    camera.minZ = 0.5
+    camera.minZ = 0.1
 
     const pointerPickCenterScreen = () => {
-        const pickedInfo = scene.pick(engine.getRenderWidth() / 2, engine.getRenderHeight() / 2)
-        // console.log('pickedInfo', pickedInfo)
+        return scene.pick(engine.getRenderWidth() / 2, engine.getRenderHeight() / 2)
+    }
+    // Custom pointerdown event for Mouse/keyboard
+    scene.onPointerObservable.add((pointerInfo) => {      		
+        if (pointerInfo.type !== PointerEventTypes.POINTERDOWN) return
+        if (!scene) return
+        if (!inXRMode && pointerInfo.event.button !== 0) return // Only left mouse click
+        const pickedInfo = (inXRMode) ? pointerInfo.pickInfo : pointerPickCenterScreen()
         let pickedMesh = pickedInfo?.pickedMesh as InteractiveMesh
         while (pickedMesh && !pickedMesh.onPointerPick) {
             pickedMesh = pickedMesh.parent as InteractiveMesh
         }
         if (pickedMesh && pickedMesh.onPointerPick) {
             pickedMesh.onPointerPick()
-            // camera.detachControl()
-        }
-    }
-    // Custom pointer events
-    scene.onPointerObservable.add((pointerInfo) => {      		
-        switch (pointerInfo.type) {
-        case PointerEventTypes.POINTERDOWN:
-            // if (!pointerInfo) break
-            // if (!pointerInfo.pickInfo) break
-            // if (!pointerInfo.pickInfo.pickedMesh) break
-            pointerPickCenterScreen()
-            break
-        case PointerEventTypes.POINTERUP:
-            if (!camera.inputs.attachedToElement)
-                camera.attachControl(canvas, true)
-            break
         }
     })
-
-    engine.hideLoadingUI()
-
     // run the render loop
     engine.runRenderLoop(() => {
         scene.render()
@@ -159,9 +147,29 @@ const init = async () => {
     const garden = new Garden(scene)
     garden.position = new Vector3(15, 0, 18)
     
+    // *** BOUNDING BOX ***
+    const bounds = MeshBuilder.CreateBox('bounds', {
+        width: 58,
+        height: 5,
+        depth: 32,
+        sideOrientation: BABYLON.Mesh.BACKSIDE
+    }, scene)
+    bounds.position = new Vector3(4, 0, 28)
+    bounds.checkCollisions = true
+    bounds.visibility = 0
+
+    // Done loading meshes
+    engine.hideLoadingUI()
+
     // WebXR
     const xr = await scene.createDefaultXRExperienceAsync({
         floorMeshes: [driveway, ...garden.floors]
+    })
+    const xrHelper = await BABYLON.WebXRExperienceHelper.CreateAsync(scene)
+    xrHelper.onStateChangedObservable.add((state) => {
+        inXRMode = state === BABYLON.WebXRState.IN_XR
+        cursor.isEnabled(!inXRMode)
+        // Inventory transform parent
     })
 }
 

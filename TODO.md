@@ -1,31 +1,41 @@
 # TODO
-## Top Priority
-* X Create a cursor
-* X Make interactable objects to click
-* X Make a "held" object slot
-* X Animation Factory
+## General Bugs
 * Make sure XR works as expected
+    * X Disable the cursor sprite
+    * X Use the default controller pointers
+    * Flower Puzzle - inventory transform parent to controller model
+* X Ignore right clicks on pointer
+* W/S moves forward on Z plane always
+* X Prevent walking off the edge of the level
+
+## Art
+* Garden - create bushy wall and door
+* Castle - Texture the cones
+* Castle - Add a slanted roof field for boxes
 * skybox
 * Create thin instances of trees/bushes
-* Make a noise/tint NME shader
-* Ignore right clicks on pointer
-* W/S moves forward on Z plane always
 
-## Scenery
+## Design
+### Dial Puzzle
+ * Create a clue to lead the player
+ * Solved state - Hide door, create path to garden wall
 
-### Castle
- * Texture the cones
- * Add a slanted roof field for boxes
+### Flower Box Puzzle
+ * Rules
+    * Red and Yellow can't be next to each other
+    * White must be in groups of exactly 3
+    * TODO: Third puzzle with a new rule
+    * TODO: Fourth puzzle with all 3 previous rules
+    * Optionally create different shapes for each flower color
+ * Mechanics - When clicking another puzzle, remove the inventory item of other puzzles
+ * Art - Make a clear "success" state with particles
 
-## Puzzles/Ideas
-
-### Flower puzzle
- * Rules such as "Red and yellow can't be next to each other" and "White must be 2+ grouped"
- * Each planter could be its own puzzle
- * Make a clear "success" state
+### Third Puzzle
 
 ### Sculpture/Fountain puzzle
  * Rotate 3d blocks by clicking to create the desired shape
+ * Jumping fountain puzzle - A sequence of jumpers can be rotated around, and must be rotated to point toward the next one in the sequence. When the 
+ * Solving creates a door that when clicked will teleport to the next room
 
 ### Dining Room puzzle
  * Another rules based puzzle, figure out where to put each meal to match the guest's preferences
@@ -35,6 +45,7 @@
  * Solve a puzzle to get "home", perhaps
 
 
+# Previously created puzzles
 # Harvest Puzzle Box
  * Lights out
  * Musical tones
