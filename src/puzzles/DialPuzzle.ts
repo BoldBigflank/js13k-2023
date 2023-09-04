@@ -115,7 +115,7 @@ export class DialPuzzle {
             depth: 0.2
         })
         dialAlign.setParent(this.parent)
-        dialAlign.position = new Vector3(0, codeLength * 0.15, -0.36)
+        dialAlign.position = new Vector3(0, codeLength * 0.15, -0.26)
         dialAlign.material = ColorMaterial("#ffff00", this.scene)
         
         this.updateDials()

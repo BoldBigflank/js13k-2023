@@ -1,12 +1,8 @@
 # TODO
 ## General Bugs
 * Make sure XR works as expected
-    * X Disable the cursor sprite
-    * X Use the default controller pointers
     * Flower Puzzle - inventory transform parent to controller model
-* X Ignore right clicks on pointer
 * W/S moves forward on Z plane always
-* X Prevent walking off the edge of the level
 
 ## Art
 * Garden - create bushy wall and door
@@ -19,6 +15,7 @@
 ### Dial Puzzle
  * Create a clue to lead the player
  * Solved state - Hide door, create path to garden wall
+ * X Place some trees in the middle, use the number of bushes to solve the code
 
 ### Flower Box Puzzle
  * Rules

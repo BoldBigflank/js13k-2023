@@ -6,6 +6,7 @@ import { AnimationFactory } from './core/Animation'
 import { debug } from './core/Utils'
 import { Garden } from './puzzles/Garden'
 import { DialPuzzle } from './puzzles/DialPuzzle'
+import { Entrance } from './puzzles/Entrance'
 
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON
@@ -107,25 +108,9 @@ const init = async () => {
     ground.checkCollisions = true
     ground.position.y = -0.01
     
-    // *** DRIVEWAY ***
-    const driveway = MeshBuilder.CreateTiledGround("ground", {
-        xmin: -10,
-        xmax: 12,
-        zmin: -20,
-        zmax: 12,
-        subdivisions: {
-            w: 11,
-            h: 16
-        }
-    })
-    driveway.material = GravelMaterial(scene)
-    driveway.position.y = -0.01
-    driveway.position = new Vector3(-15, 0.01, 32)
-    
-    // *** DIAL ***
-    const dialPuzzle = new DialPuzzle({}, scene)
-    dialPuzzle.model.position = new Vector3(-6, 1, 41)
-    dialPuzzle.model.rotation = new Vector3(0, Math.PI / 4, 0)
+    // *** ENTRANCE PUZZLE ***
+    const entrance = new Entrance(scene)
+    entrance.position = new Vector3(-15, 0, 32)
 
     // *** CASTLE ***
     const castle = new Castle(scene)
@@ -163,7 +148,7 @@ const init = async () => {
 
     // WebXR
     const xr = await scene.createDefaultXRExperienceAsync({
-        floorMeshes: [driveway, ...garden.floors]
+        floorMeshes: [...entrance.floors, ...garden.floors]
     })
     const xrHelper = await BABYLON.WebXRExperienceHelper.CreateAsync(scene)
     xrHelper.onStateChangedObservable.add((state) => {
