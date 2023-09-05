@@ -254,6 +254,7 @@ export const ColorTextureMaterial = (color: string, scene: BABYLON.Scene) => {
 export const CanvasMaterial = (canvas: HTMLCanvasElement, scene: BABYLON.Scene) => {
     const material = new StandardMaterial(`material${++pc}`, scene)
     const texture = Texture.LoadFromDataString(`texture${++pc}`, canvas.toDataURL(), scene)
+    texture.hasAlpha = true
     material.diffuseTexture = texture
     return material
 }
@@ -347,6 +348,26 @@ export const DialMaterial = (alphabet: string[], scene: BABYLON.Scene) => {
         ctx.strokeRect(index * tileWidth, 0, (index+1) * tileWidth, tileWidth)
         ctx.fillText(`${char}`, index * tileWidth + 0.5 * tileWidth, 0.5 * tileWidth)
     })
+    return CanvasMaterial(canvas, scene)
+}
+
+export const SymbolMaterial = (scene: BABYLON.Scene) => {
+    const [canvas, ctx] = initCanvas(512)
+    
+    ctx.fillStyle = "#0000ff"
+    ctx.fillRect(128, 0, 256, 512)
+
+    ctx.fillStyle = "#00ff00"
+    ctx.fillRect(256 - 64, 128 - 64, 128, 128)
+    ctx.beginPath()
+    ctx.moveTo(256, 256)
+    ctx.arc(256, 256, 64, 0, 2 * Math.PI)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.moveTo(256, 320)
+    ctx.lineTo(256 + 64, 320 + 111)
+    ctx.lineTo(256 - 64, 320 + 111)
+    ctx.fill()
     return CanvasMaterial(canvas, scene)
 }
 

@@ -1,12 +1,12 @@
 import { Castle } from '@/puzzles/Castle'
 import type { InteractiveMesh } from '@/Types'
-import { GrassMaterial, CursorMaterial, GravelMaterial } from './core/textures'
+import { GrassMaterial, CursorMaterial } from './core/textures'
 import { Witch } from './puzzles/Witch'
 import { AnimationFactory } from './core/Animation'
 import { debug } from './core/Utils'
 import { Garden } from './puzzles/Garden'
-import { DialPuzzle } from './puzzles/DialPuzzle'
 import { Entrance } from './puzzles/Entrance'
+import { Door } from './puzzles/Door'
 
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON
@@ -91,7 +91,7 @@ const init = async () => {
     cursor.renderingGroupId = 1
 
     // *** SUN ***
-    new HemisphericLight("light", new Vector3(0, 1, 0), scene)
+    new HemisphericLight("light", new Vector3(-0.5, 1, 0), scene)
 
     // *** GROUND ***
     const ground = MeshBuilder.CreateTiledGround("ground", {
@@ -155,6 +155,10 @@ const init = async () => {
         inXRMode = state === BABYLON.WebXRState.IN_XR
         cursor.isEnabled(!inXRMode)
         // Inventory transform parent
+        xr.input.controllers.forEach((controller) => {
+            // controller.motionController?.rootMesh
+        })
+        
     })
 }
 

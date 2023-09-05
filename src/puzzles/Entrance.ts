@@ -1,7 +1,9 @@
-import { GravelMaterial } from '@/core/textures'
+import { GravelMaterial, SymbolMaterial } from '@/core/textures'
 import { FlowerBoxPuzzle } from './FlowerBoxPuzzle'
 import { Tree, TreeOpts } from './Tree'
 import { DialPuzzle } from './DialPuzzle'
+import { Door } from './Door'
+import { Banner } from './Banner'
 const { MeshBuilder, TransformNode, Vector3 } = BABYLON
 
 export class Entrance {
@@ -81,11 +83,27 @@ export class Entrance {
             code: trees.map((tree) => tree.count).join(''),
             alphabet: "012345"
         }, this.scene)
-        dialPuzzle.model.position = new Vector3(-6, 1, 41)
+        dialPuzzle.model.setParent(this.parent)
+        dialPuzzle.model.position = new Vector3(11.5, 0.5, 7.5)
         dialPuzzle.model.rotation = new Vector3(0, Math.PI / 4, 0)
         this.puzzles.push(dialPuzzle)
+        
 
-    
+        // ** DOOR ***
+        const door = Door(this.scene)
+        door.setParent(this.parent)
+        door.position = new Vector3(9.5, 0, 9.5)
+        door.rotation = new Vector3(0, Math.PI / 4, 0)
+        
+        const banner = Banner(this.scene)
+        banner.setParent(this.parent)
+        banner.position = new Vector3(-5, 8, 11.5)
+
+        const banner2 = Banner(this.scene)
+        banner2.setParent(this.parent)
+        banner2.position = new Vector3(11.6, 8, 0)
+        banner2.rotation = new Vector3(0, Math.PI / 2, 0)
+
         this.floors.push(driveway)
 
         

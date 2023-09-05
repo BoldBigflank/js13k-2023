@@ -77,6 +77,8 @@ export class DialPuzzle {
         this.solved = false
         this.dials = []
         const codeLength = this.code.length
+        const diameter = 1
+        const dialHeight = diameter * Math.sin(Math.PI / this.alphabet.length)
         for (let i = 0; i < codeLength; i++) {
             
             const faceUV = []
@@ -85,8 +87,8 @@ export class DialPuzzle {
             faceUV[2] = new BABYLON.Vector4(0, 0, 0, 0)
             
             const dial = BABYLON.MeshBuilder.CreateCylinder(`dial-${i}`, {
-                height: 0.25,
-                diameter: 1,
+                height: dialHeight,
+                diameter,
                 faceUV,
                 tessellation: this.alphabet.length
             }, this.scene) as InteractiveMesh
@@ -103,20 +105,20 @@ export class DialPuzzle {
                 this.isSolved()
             }
             dial.setParent(this.parent)
-            dial.position = new Vector3(0, (codeLength - i - 1) * 0.30 + 0.15, 0)
+            dial.position = new Vector3(0, (codeLength - i - 1) * (dialHeight + 0.05) + 0.15, 0)
             dial.material = DialMaterial(this.alphabet, this.scene)
             dial.metadata = { index: i, alphabetIndex: 0 }
             this.dials.push(dial)
         }
 
         const dialAlign = BABYLON.MeshBuilder.CreateBox('dial-align', {
-            height: 0.3 * (codeLength + 1),
-            width: 0.2,
-            depth: 0.2
+            height: (dialHeight + 0.05) * (codeLength + 1),
+            width: 0.2 * diameter,
+            depth: 0.2 * diameter
         })
         dialAlign.setParent(this.parent)
-        dialAlign.position = new Vector3(0, codeLength * 0.15, -0.26)
-        dialAlign.material = ColorMaterial("#ffff00", this.scene)
+        dialAlign.position = new Vector3(0, codeLength * 0.15, -0.26 * diameter)
+        dialAlign.material = ColorMaterial("#0000ff", this.scene)
         
         this.updateDials()
     }

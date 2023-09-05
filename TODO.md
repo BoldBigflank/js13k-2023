@@ -1,7 +1,6 @@
 # TODO
 ## General Bugs
-* Make sure XR works as expected
-    * Flower Puzzle - inventory transform parent to controller model
+* VR - Flower Puzzle - inventory transform parent to controller model
 * W/S moves forward on Z plane always
 
 ## Art
@@ -10,10 +9,11 @@
 * Castle - Add a slanted roof field for boxes
 * skybox
 * Create thin instances of trees/bushes
+* Stretch goal - Window depth shader
 
 ## Design
 ### Dial Puzzle
- * Create a clue to lead the player
+ * X Create a clue to lead the player
  * Solved state - Hide door, create path to garden wall
  * X Place some trees in the middle, use the number of bushes to solve the code
 
