@@ -7,6 +7,7 @@ import { zzfx } from 'zzfx'
 type DialPuzzleOpts = {
     alphabet?: string
     code?: string
+    solvedEvent?: () => void
 }
 
 const { TransformNode, Vector3 } = BABYLON
@@ -20,6 +21,7 @@ export class DialPuzzle {
 
     parent: BABYLON.TransformNode
     solved = false
+    solvedEvent: () => void
 
     constructor(opts: DialPuzzleOpts, scene: BABYLON.Scene) {
         this.scene = scene
@@ -31,6 +33,7 @@ export class DialPuzzle {
         this.parent = new TransformNode('DialPuzzle', this.scene)
         this.parent.position = Vector3.Zero()
         this.dials = []
+        this.solvedEvent = (opts.solvedEvent) ? opts.solvedEvent : () => {}
         this.reset()
     }
     
@@ -62,14 +65,14 @@ export class DialPuzzle {
 
     isSolved() {
         if (this.solved) return true
-
+        
         this.solved = this.code.every((char, index) => this.guess[index] === char )
-
+        
         if (this.solved) {
             // Success SFX
-
+            zzfx(...[2.07,0,130.81,.01,.26,.47,3,1.15,,.1,,,.05,,,,.14,.26,.15,.02]) // Music 112 - Mutation 2
+            this.solvedEvent()
         }
-        if (this.solved) zzfx(...[2.07,0,130.81,.01,.26,.47,3,1.15,,.1,,,.05,,,,.14,.26,.15,.02]) // Music 112 - Mutation 2
         return this.solved
     }
 

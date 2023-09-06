@@ -2,7 +2,7 @@ import { AnimationTransform, AnimateTransformOpts } from "@/Types"
 import { Clamp } from "./Utils"
 
 type Animating = {
-    mesh: BABYLON.Mesh
+    mesh: BABYLON.Mesh|BABYLON.TransformNode
     start: AnimationTransform
     end: AnimationTransform
     startTime: number

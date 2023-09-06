@@ -4,6 +4,8 @@ import { Tree, TreeOpts } from './Tree'
 import { DialPuzzle } from './DialPuzzle'
 import { Door } from './Door'
 import { Banner } from './Banner'
+import { Bush } from './Bush'
+import { AnimationFactory } from '@/core/Animation'
 const { MeshBuilder, TransformNode, Vector3 } = BABYLON
 
 export class Entrance {
@@ -12,6 +14,7 @@ export class Entrance {
     // jars: Jar[] = []
     parent: BABYLON.TransformNode
     floors: BABYLON.Mesh[]
+    bushes: BABYLON.TransformNode[]
     puzzles: DialPuzzle[]
     // Meta
     solved = false
@@ -20,6 +23,7 @@ export class Entrance {
         this.scene = scene
         this.puzzles = []
         this.floors = []
+        this.bushes = []
         // Parent position
         this.parent = new TransformNode('Entrance', this.scene)
         this.reset()
@@ -44,6 +48,19 @@ export class Entrance {
             this.puzzles.every((puzzle) => puzzle.solved)
         // if solved, Play Solved SFX
         // TODO: When solved, open the gate to the garden
+        // between 12.5 and 28.5 z
+        this.bushes.forEach((bush, i) => {
+            if (bush.position.z < -14 || bush.position.z > -12) return
+            // if (i < 6 || i > 7) return
+            AnimationFactory.Instance.animateTransform({
+                mesh: bush,
+                end: {
+                    position: bush.position.add(new Vector3(0, 3, 0))
+                },
+                duration: 5000,
+                delay: 100
+            })
+        })
         return this.solved
     }
 
@@ -81,7 +98,10 @@ export class Entrance {
         // *** DIAL ***
         const dialPuzzle = new DialPuzzle({
             code: trees.map((tree) => tree.count).join(''),
-            alphabet: "012345"
+            alphabet: "012345",
+            solvedEvent: () => {
+                this.isSolved()
+            }
         }, this.scene)
         dialPuzzle.model.setParent(this.parent)
         dialPuzzle.model.position = new Vector3(11.5, 0.5, 7.5)
@@ -105,6 +125,16 @@ export class Entrance {
         banner2.rotation = new Vector3(0, Math.PI / 2, 0)
 
         this.floors.push(driveway)
+
+        const bush = Bush(this.scene)
+        for (let i = 0; i < 16; i++) {
+            const newBush = bush.clone(`Bush${i}`, this.parent, false)
+            if (!newBush) continue
+            newBush.position = new Vector3(12.5, 0, -19.5 + i)
+            this.bushes.push(newBush)
+        }
+        bush.dispose()
+
 
         
         this.solved = false

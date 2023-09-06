@@ -32,7 +32,7 @@ export type AnimationTransform = {
 }
 
 export interface AnimateTransformOpts {
-    mesh: BABYLON.Mesh
+    mesh: BABYLON.Mesh|BABYLON.TransformNode
     end: AnimationTransform
     duration: number
     delay?: number
