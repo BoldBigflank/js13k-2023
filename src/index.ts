@@ -1,12 +1,12 @@
 import { Castle } from '@/puzzles/Castle'
 import type { InteractiveMesh } from '@/Types'
 import { GrassMaterial, CursorMaterial } from './core/textures'
-import { Witch } from './puzzles/Witch'
+import { Witch } from './meshes/Witch'
 import { AnimationFactory } from './core/Animation'
 import { debug } from './core/Utils'
 import { Garden } from './puzzles/Garden'
 import { Entrance } from './puzzles/Entrance'
-import { Door } from './puzzles/Door'
+import { Door } from './meshes/Door'
 
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON
@@ -125,7 +125,7 @@ const init = async () => {
     modelCastle!.position = new Vector3(0, 1, 4)
 
     // *** WITCH ***
-    const witch = new Witch(scene)
+    const witch = Witch(scene)
     witch.position = new Vector3(0, 2, 2)
 
     // *** GARDEN ***

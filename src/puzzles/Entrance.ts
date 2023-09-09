@@ -1,10 +1,10 @@
 import { GravelMaterial, SymbolMaterial } from '@/core/textures'
 import { FlowerBoxPuzzle } from './FlowerBoxPuzzle'
-import { Tree, TreeOpts } from './Tree'
+import { Tree, TreeOpts } from '../meshes/Tree'
 import { DialPuzzle } from './DialPuzzle'
-import { Door } from './Door'
-import { Banner } from './Banner'
-import { Bush } from './Bush'
+import { Door } from '../meshes/Door'
+import { Banner } from '../meshes/Banner'
+import { Bush } from '../meshes/Bush'
 import { AnimationFactory } from '@/core/Animation'
 const { MeshBuilder, TransformNode, Vector3 } = BABYLON
 
@@ -89,8 +89,9 @@ export class Entrance {
             {shape:'triangle', count:4}
         ] as TreeOpts[]
         trees.forEach((opts, i) => {
-            const tree = new Tree(opts, this.scene)
-            tree.model.setParent(this.parent)
+            const tree = Tree(opts, this.scene)
+            if (!tree) return
+            tree.setParent(this.parent)
             tree.position = new Vector3(0, 0, -4 * i + 4)
         })
 
