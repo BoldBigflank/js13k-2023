@@ -1,5 +1,4 @@
 import { ColorMaterial } from '@/core/textures'
-import { debug } from '@/core/Utils'
 import { TexturedMeshNME } from '@/shaders/TexturedMeshNME'
 
 const { TransformNode, 

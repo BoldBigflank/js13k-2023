@@ -6,7 +6,6 @@ import { AnimationFactory } from './core/Animation'
 import { debug } from './core/Utils'
 import { Garden } from './puzzles/Garden'
 import { Entrance } from './puzzles/Entrance'
-import { Door } from './meshes/Door'
 
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON

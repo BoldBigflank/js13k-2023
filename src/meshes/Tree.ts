@@ -1,4 +1,3 @@
-import { debug } from '@/core/Utils'
 import { TexturedMeshNME } from '@/shaders/TexturedMeshNME'
 
 const { TransformNode, 

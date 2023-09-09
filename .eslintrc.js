@@ -61,10 +61,6 @@ module.exports = {
             enforceForRenamedProperties: false
         }],
 
-        'no-plusplus': ['error', {
-            allowForLoopAfterthoughts: true 
-        }],
-
         'no-unused-vars': ['error', {
             vars: 'all',
             args: 'none'

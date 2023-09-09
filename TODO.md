@@ -4,7 +4,7 @@
 * W/S moves forward on Z plane always
 
 ## Art
-* Garden - create bushy wall and door
+* X Garden - create bushy wall and door
 * Castle - Texture the cones
 * Castle - Add a slanted roof field for boxes
 * skybox

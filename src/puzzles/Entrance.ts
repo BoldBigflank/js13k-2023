@@ -1,5 +1,4 @@
-import { GravelMaterial, SymbolMaterial } from '@/core/textures'
-import { FlowerBoxPuzzle } from './FlowerBoxPuzzle'
+import { GravelMaterial } from '@/core/textures'
 import { Tree, TreeOpts } from '../meshes/Tree'
 import { DialPuzzle } from './DialPuzzle'
 import { Door } from '../meshes/Door'
