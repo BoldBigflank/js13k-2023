@@ -1,11 +1,14 @@
 import { InteractiveMesh } from '@/Types'
 import { AnimationFactory } from '@/core/Animation'
+import { BLUE, BROWN, DARK_GREEN, GREEN, RED, WHITE, YELLOW } from '@/core/Colors'
 import { debug } from '@/core/Utils'
 import { ColorMaterial, GridMaterial } from '@/core/textures'
 import { TexturedMeshNME } from '@/shaders/TexturedMeshNME'
 import { zzfx } from 'zzfx'
 
 const { TransformNode, Vector3 } = BABYLON
+
+let pc = 0
 
 export class FlowerBoxPuzzle {
     // Puzzle Settings
@@ -19,12 +22,12 @@ export class FlowerBoxPuzzle {
     // jars: Jar[] = []
     parent: BABYLON.TransformNode
     colors: Record<string,string> = {
-        "R": "#ff0000",
-        "G": "#00aa00",
-        "B": "#0000ff",
-        "Y": "#ffff00",
-        "W": "#ffffff",
-        "Br": "#6E260E" // Brown, patch of dirt
+        "R": RED,
+        "G": GREEN,
+        "B": BLUE,
+        "Y": YELLOW,
+        "W": WHITE,
+        "D": BROWN // Dirt, brown patch
     }
     // Meta
     solved = false
@@ -100,37 +103,76 @@ export class FlowerBoxPuzzle {
         let rulesBroken = false
 
         // RULE - No flowers in hand
-        if (this.selectedMesh && this.selectedMesh.metadata.color !== "Br"){
-            if (debug) console.log("Rule 1 broken")
+        if (this.selectedMesh && this.selectedMesh.metadata.color !== "D"){
+            if (debug) console.log("RULE - No flowers in hand")
             rulesBroken = true
         }
+        if (rulesBroken) return
 
+        let cubeCount = 0
+        const cubePositions: { x: number, y: number }[] = []
+        let cubeXMin = Number.MAX_SAFE_INTEGER
+        let cubeXMax = -1
+        let cubeYMin = Number.MAX_SAFE_INTEGER
+        let cubeYMax = -1
         this.board.forEach((row, y) => {
+            if (rulesBroken) return
             row.forEach((cell, x) => {
-                // RULE - Red cannot be next to Yellow
-                if (cell === "R") {
-                    const adjCells = [
-                        this.cellAt(x+1, y),
-                        this.cellAt(x-1, y),
-                        this.cellAt(x, y+1),
-                        this.cellAt(x, y-1)
-                    ]
-                    if (adjCells.includes("Y")) {
-                        if (debug) console.log("Rule 2 broken")
+                if (rulesBroken) return
+                const [count, color, shape] = cell.split("")
+                // RULE Color - Red cannot be next to Yellow
+                const adjCells = [
+                    this.cellAt(x+1, y),
+                    this.cellAt(x-1, y),
+                    this.cellAt(x, y+1),
+                    this.cellAt(x, y-1)
+                ]
+                if (color === "R") {
+                    if (adjCells.some((cell) => cell?.split("")[1] === "Y")) {
+                        if (debug) console.log("RULE - Red cannot be next to Yellow")
                         rulesBroken = true
                     }
                 }
 
-                if (cell === "W") {
-                    // Check each adjacent tile for another white
-                    // For each found one, check that for adj
-                    if (this.groupedCellCount(x, y) !== 3) {
-                        if (debug) console.log("Rule 3 broken")
+                // TODO: RULE Count must be +1 or -1 from adj cells
+                if (parseInt(count) > 0) {
+                    if (!adjCells.every((cell) => {
+                        if (!cell) return true
+                        const [adjCount, adjColor, adjShape] = cell?.split("")
+                        if (parseInt(adjCount) === 0) return true
+                        return (
+                            parseInt(count) === parseInt(adjCount) - 1 
+                            || parseInt(count) === parseInt(adjCount) + 1
+                        )
+                    })) {
+                        if (debug) console.log("RULE - Adjacent cells must be 1 or -1 flowers")
                         rulesBroken = true
                     }
+                }
+
+                // RULE Cube flowers must be in a square pattern
+                if (shape === "C") {
+                    cubeCount += 1
+                    cubeXMin = Math.min(cubeXMin, x)
+                    cubeXMax = Math.max(cubeXMax, x)
+                    cubeYMin = Math.min(cubeYMin, y)
+                    cubeYMax = Math.max(cubeYMax, y)
+                    cubePositions.push({x, y})
                 }
             })
         })
+
+        if (cubeCount > 0 && cubeCount < 4) {
+            if (debug) console.log("RULE - Cube must have 4 points")
+            rulesBroken = true
+        }
+        if (!cubePositions.every((pos, i) => {
+            return (pos.x === cubeXMin || pos.x === cubeXMax)
+            && (pos.y === cubeYMin || pos.y === cubeYMax)
+        })) {
+            if (debug) console.log("RULE - Cube flowers must be in square positions")
+            rulesBroken = true
+        }
 
         if (!rulesBroken) this.solved = true
 
@@ -139,16 +181,14 @@ export class FlowerBoxPuzzle {
         return this.solved
     }
 
-    updateRender() {
-        // 
-    }
-
     swapMesh(pickedMesh: BABYLON.Mesh) {
         const pickedMeshMetadata = pickedMesh.metadata || {}
         const { x, y } = pickedMeshMetadata
-        const selectedMeshColor = this.selectedMesh ? this.selectedMesh.metadata.color : ""
+        const selectedMeshInfo = this.selectedMesh ? 
+            `${this.selectedMesh.metadata.count}${this.selectedMesh.metadata.color}${this.selectedMesh.metadata.shape}`
+            : ""
         // Move the selected mesh to the picked mesh's position
-        this.cellAt(x, y, selectedMeshColor)
+        this.cellAt(x, y, selectedMeshInfo)
         if (this.selectedMesh) {
             // Update the metadata
             this.selectedMesh.metadata = {
@@ -171,10 +211,12 @@ export class FlowerBoxPuzzle {
         this.isSolved()
     }
 
-    createFlower(color: string, x: number, y: number) {
+    createFlower(count: number, color: string, shape: string, x: number, y: number) {
         const mesh = new BABYLON.Mesh("flower", this.scene) as InteractiveMesh
         mesh.metadata = {
+            count,
             color,
+            shape,
             x,
             y
         }
@@ -182,14 +224,41 @@ export class FlowerBoxPuzzle {
             if (this.solved) return
             this.swapMesh(mesh)
         }
-        // Stem
-        const stem = BABYLON.MeshBuilder.CreateCylinder("stem", {
-            height: 0.4,
-            diameter: 0.1
-        }, this.scene)
-        stem.setParent(mesh)
-        stem.position = new Vector3(0, 0.2, 0)
-        stem.material = ColorMaterial("#00ff00", this.scene)
+        
+        for(let i = 0; i < count; i++) {
+            // Stem
+            const stem = BABYLON.MeshBuilder.CreateCylinder(`stem${++pc}`, {
+                height: 0.4,
+                diameter: 0.1
+            }, this.scene)
+            stem.setParent(mesh)
+            stem.position.y = 0.2
+            
+            // Head
+            let head: BABYLON.Mesh
+            if (shape === "T") head = BABYLON.MeshBuilder.CreateCylinder(`head${++pc}`, {
+                diameterBottom: 0,
+                diameterTop: 0.4,
+                height: 0.4,
+                tessellation: 3
+            }, this.scene)
+            else if (shape === "S") head = BABYLON.MeshBuilder.CreateSphere(`head${++pc}`, {
+                diameter: 0.3
+            }, this.scene)
+            else head = BABYLON.MeshBuilder.CreateBox(`head${++pc}`, {
+                size: 0.25
+            }, this.scene)
+
+            head.setParent(stem) 
+            head.position = new Vector3(0, 0.3, 0)
+            head.material = ColorMaterial(this.colors[color], this.scene)
+
+            stem.position = new Vector3(0, 0.2, 0)
+            if (count > 1) stem.rotateAround(Vector3.Zero(), Vector3.Right(), Math.PI / 8) // Lean
+            stem.rotateAround(Vector3.Zero(), Vector3.Up(), i * 2 * Math.PI / count) // Spin
+            stem.material = ColorMaterial(GREEN, this.scene)
+        }
+        
         // Leaf
         const leaf = BABYLON.MeshBuilder.CreateCylinder("leaf", {
             diameter: 0.3,
@@ -197,14 +266,7 @@ export class FlowerBoxPuzzle {
         }, this.scene)
         leaf.setParent(mesh)
         leaf.position = new Vector3(.15, 0.15, 0)
-        leaf.material = ColorMaterial("#00ff00", this.scene)
-        // Head
-        const head = BABYLON.MeshBuilder.CreateBox("head", {
-            size: 0.4
-        }, this.scene)
-        head.setParent(mesh)
-        head.position = new Vector3(0, 0.6, 0)
-        head.material = ColorMaterial(this.colors[color], this.scene)
+        leaf.material = ColorMaterial(GREEN, this.scene)
         return mesh
     }
 
@@ -220,8 +282,8 @@ export class FlowerBoxPuzzle {
         head.position = new Vector3(0, 0.1, 0)
         // head.material = ColorTextureMaterial(this.colors["G"], this.scene)
         head.material = TexturedMeshNME({
-            color1: "#00aa00",
-            color2: "#006600",
+            color1: GREEN,
+            color2: DARK_GREEN,
             scale: 100
         })
         
@@ -234,7 +296,9 @@ export class FlowerBoxPuzzle {
             this.swapMesh(mesh)
         }
         mesh.metadata = {
-            color: "Br",
+            count: 1,
+            color: "D",
+            shape: "",
             x,
             y
         }
@@ -247,7 +311,7 @@ export class FlowerBoxPuzzle {
         }, this.scene)
         head.setParent(mesh)
         head.position = new Vector3(0, 0.1, 0)
-        head.material = ColorMaterial(this.colors["Br"], this.scene)
+        head.material = ColorMaterial(this.colors["D"], this.scene)
         return mesh
     }
 
@@ -264,8 +328,8 @@ export class FlowerBoxPuzzle {
             })
             mesh.renderingGroupId = 1
             mesh.isPickable = false
-            // "Br" cells are invisible in inventory
-            mesh.setEnabled(mesh.metadata.color !== "Br")
+            // "D" cells are invisible in inventory
+            mesh.setEnabled(mesh.metadata.color !== "D")
             return
         }
         const { x, y } = mesh.metadata
@@ -297,7 +361,7 @@ export class FlowerBoxPuzzle {
             width: this.boardWidth,
             height: this.boardHeight
         })
-        ground.material = GridMaterial("#00aa00", "#006600", this.boardWidth, this.boardHeight, this.scene)
+        ground.material = GridMaterial(GREEN, DARK_GREEN, this.boardWidth, this.boardHeight, this.scene)
         ground.setParent(this.parent)
         ground.position = new Vector3(0.5 * this.boardWidth, 0.02, -0.5 * this.boardHeight)
         // ground.position = Vector3.Zero()
@@ -318,22 +382,24 @@ export class FlowerBoxPuzzle {
         this.board.forEach((row, y) => {
             row.forEach((column, x) => {
                 let itemMesh
-                switch (column) {
+                const [count, color, shape] = column.split("")
+                switch (color) {
                 case "": 
                     return
                 case "R": // Flowers
                 case "Y":
                 case "B":
                 case "W":
-                    itemMesh = this.createFlower(column, x, y)
+                    itemMesh = this.createFlower(parseInt(count), color, shape, x, y)
                     itemMesh.name = `cell${x}-${y}`
                     this.placeFlower(itemMesh)
                     break
-                case "Br":
-                    itemMesh = this.createEmpty(x, y)
-                    itemMesh.name = `cell${x}-${y}`
-                    this.placeFlower(itemMesh)
-                    break
+                case "E":
+                    break // Do nothing
+                    // itemMesh = this.createEmpty(x, y)
+                    // itemMesh.name = `cell${x}-${y}`
+                    // this.placeFlower(itemMesh)
+                    // break
                 default:
                     break
                 }

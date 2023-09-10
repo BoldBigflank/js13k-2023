@@ -1,3 +1,27 @@
+import {
+    BLACK,
+    BLUE,
+    BRICK1,
+    BRICK2,
+    BRICK3,
+    BRICK4,
+    BRICK5,
+    DIRT1,
+    DIRT2,
+    GRASS1,
+    GRASS2,
+    GRASS3,
+    GRASS4,
+    GRASS5,
+    GRAVEL0,
+    GRAVEL1,
+    GRAVEL2,
+    GRAVEL3,
+    GRAVEL4,
+    GRAVEL5,
+    LIGHT_GREEN,
+    MID_GREY,
+    WHITE } from "./Colors"
 import { initCanvas, sample, shuffle } from "./Utils"
 
 const { StandardMaterial, Texture} = BABYLON
@@ -20,11 +44,11 @@ export const CursorMaterial = (scene: BABYLON.Scene) => {
     ctx.lineTo(256, 256 + 6)
     // Outer
     ctx.lineWidth = 2
-    ctx.strokeStyle = "#000000"
+    ctx.strokeStyle = BLACK
     ctx.stroke()
     // Inner
     ctx.lineWidth = 1.5
-    ctx.strokeStyle = "#ffffff"
+    ctx.strokeStyle = WHITE
     ctx.stroke()
 
     const material = CanvasMaterial(canvas, scene)
@@ -46,19 +70,19 @@ export const CastleMaterial = (windows = true, scene: BABYLON.Scene) => {
     const brickHeight = 16
     const brickWidth = 32
     ctx.save()
-    ctx.strokeStyle = "#000000"
+    ctx.strokeStyle = BLACK
     ctx.lineWidth = 4
 
     const brickColors = [
-        "#dd7d7d",
-        "#cb6b6b",
-        "#b65454",
-        "#9e3333",
-        "#842020"
+        BRICK1,
+        BRICK2,
+        BRICK3,
+        BRICK4,
+        BRICK5
     ]
 
 
-    // TODO: Brick size based on orig 
+    // TODO: Brick size based on orig
 
     for (let y = 0; y * brickHeight < canvas.height; y++) {
         for (let x = 0; x * brickWidth < canvas.width; x++) {
@@ -76,12 +100,12 @@ export const CastleMaterial = (windows = true, scene: BABYLON.Scene) => {
         }
     }
     ctx.restore()
-    
+
     // Window
     if (windows) {
-        ctx.fillStyle = '#666666'
+        ctx.fillStyle = MID_GREY
         ctx.fillRect(192, 128, 128, 256)
-        ctx.strokeStyle = "#ffffff"
+        ctx.strokeStyle = WHITE
         ctx.lineWidth = 16
         ctx.strokeRect(192,128,128, 256)
         ctx.beginPath()
@@ -106,11 +130,11 @@ export const GrassMaterial = (scene: BABYLON.Scene) => {
     tempCtx.save()
 
     const grassColors = [
-        "#abb348",
-        "#7ca244",
-        "#426d38",
-        "#799c45",
-        "#a7af48"
+        GRASS1,
+        GRASS2,
+        GRASS3,
+        GRASS4,
+        GRASS5
     ]
 
     // Take all positions
@@ -179,60 +203,6 @@ export const GrassMaterial = (scene: BABYLON.Scene) => {
     return CanvasMaterial(canvas, scene)
 }
 
-export const GardenHeightMap = () => {
-    const [canvas,ctx] = initCanvas(512)
-    // ctx.fillStyle = "#000000"
-    // ctx.fillRect(0, 0, 512, 512)
-
-
-    // const canvas = document.getElementById('canvas')
-    // const ctx = canvas.getContext('2d')
-    
-    // x, y, w, h, stroke, fill
-    const WHITE = "#ffffff" as string
-    const GREEN = "#444444" as string
-    const BROWN = "#333333" as string
-    const BLACK = "#000000" as string
-    
-    const shapes = [
-        [8, 8, 400, 128, WHITE, null],// Border
-        [4, 4, 416, 8, null, BLACK],
-      
-        [24, 24, 64, 16, GREEN, BROWN],
-        [48, 56, 16, 16, GREEN, BROWN],
-        [24, 88, 64, 16, GREEN, BROWN],
-        [120, 24, 16, 16, GREEN, BROWN],
-        [96, 56, 16, 16, GREEN, BROWN],
-        [144, 56, 16, 16, GREEN, BROWN],
-        [120, 88, 16, 16, GREEN, BROWN],
-        [176, 24, 32, 32, GREEN, BROWN],
-        [176, 72, 32, 32, GREEN, BROWN],
-        [256, 24, 32, 32, GREEN, BROWN],
-        [256, 72, 32, 32, GREEN, BROWN],
-        [336, 24, 16, 16, GREEN, BROWN],
-        [312, 56, 16, 16, GREEN, BROWN],
-        [360, 56, 16, 16, GREEN, BROWN],
-        [336, 88, 16, 16, GREEN, BROWN]
-    ]
-    ctx.lineWidth = 8
-    ctx.strokeStyle = GREEN
-    ctx.fillStyle = "#00ff00"
-    
-    shapes.forEach((shape) => {
-        const [x, y, w, h, stroke, fill] = shape
-        if (fill) {
-            ctx.fillStyle = fill as string
-            ctx.fillRect(x as number, y as number, w as number, h as number)
-        }
-        if (stroke) {
-            ctx.strokeStyle = stroke as string
-            ctx.strokeRect(x as number, y as number, w as number, h as number)
-        }
-    })
-
-    return canvas.toDataURL('image/png')
-}
-
 /* HELPERS */
 
 export const ColorMaterial = (color: string, scene: BABYLON.Scene) => {
@@ -284,9 +254,9 @@ export const GridMaterial = (color1: string, color2: string, rows: number, colum
 
 export const DirtMaterial = (scene: BABYLON.Scene) => {
     const [canvas, ctx] = initCanvas(256)
-    ctx.fillStyle = "#6d4d41"
+    ctx.fillStyle = DIRT1
     ctx.fillRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = "#49332b"
+    ctx.fillStyle = DIRT2
     const speckSize = 12
     for (let i = 0; i < 12; i++) {
         const x = Math.random() * (canvas.width - speckSize)
@@ -305,18 +275,14 @@ export const GravelMaterial = (scene: BABYLON.Scene) => {
 
     // Horizontal lines
     ctx.save()
-    ctx.strokeStyle = "#000000"
+    ctx.strokeStyle = BLACK
     ctx.lineWidth = 4
 
     const colors = [
-        "#4A4B46",
-        "#484848",
-        "#4E523F",
-        "#63645F",
-        "#64655f"
+        GRAVEL1, GRAVEL2, GRAVEL3, GRAVEL4, GRAVEL5
     ]
 
-    ctx.fillStyle = "#30312D"
+    ctx.fillStyle = GRAVEL0
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     colors.forEach((hex) => {
         ctx.fillStyle = hex
@@ -329,22 +295,22 @@ export const GravelMaterial = (scene: BABYLON.Scene) => {
             ctx.fill()
         }
     })
-    
+
     return CanvasMaterial(canvas, scene)
 }
 
 export const DialMaterial = (alphabet: string[], scene: BABYLON.Scene) => {
     const [canvas, ctx] = initCanvas(512)
-    ctx.fillStyle = "#ffffff"
+    ctx.fillStyle = WHITE
     ctx.fillRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = "#000000"
+    ctx.fillStyle = BLACK
     const tileWidth = canvas.width / alphabet.length
     ctx.font = `${tileWidth}px Helvetica`
     ctx.scale(1.0, canvas.height / tileWidth)
     ctx.textBaseline = "middle"
     ctx.textAlign = "center"
     alphabet.forEach((char, index) => {
-        ctx.strokeStyle = "#888888"
+        ctx.strokeStyle = MID_GREY
         ctx.strokeRect(index * tileWidth, 0, (index+1) * tileWidth, tileWidth)
         ctx.fillText(`${char}`, index * tileWidth + 0.5 * tileWidth, 0.5 * tileWidth)
     })
@@ -353,11 +319,11 @@ export const DialMaterial = (alphabet: string[], scene: BABYLON.Scene) => {
 
 export const SymbolMaterial = (scene: BABYLON.Scene) => {
     const [canvas, ctx] = initCanvas(512)
-    
-    ctx.fillStyle = "#0000ff"
+
+    ctx.fillStyle = BLUE
     ctx.fillRect(128, 0, 256, 512)
 
-    ctx.fillStyle = "#00ff00"
+    ctx.fillStyle = LIGHT_GREEN
     ctx.fillRect(256 - 64, 128 - 64, 128, 128)
     ctx.beginPath()
     ctx.moveTo(256, 256)
@@ -397,46 +363,3 @@ export const PerlinNoise = () => {
 
     return canvas
 }
-/* Following canvas-based Perlin generation code originates from
- * iron_wallaby's code at: http://www.ozoneasylum.com/30982
- */
-/*
-function randomNoise(canvas, x, y, width, height, alpha) {
-    x = x || 0;
-    y = y || 0;
-    width = width || canvas.width;
-    height = height || canvas.height;
-    alpha = alpha || 255;
-    var g = canvas.getContext("2d"),
-        imageData = g.getImageData(x, y, width, height),
-        random = Math.random,
-        pixels = imageData.data,
-        n = pixels.length,
-        i = 0;
-    while (i < n) {
-        pixels[i++] = pixels[i++] = pixels[i++] = (random() * 256) | 0;
-        pixels[i++] = alpha;
-    }
-    g.putImageData(imageData, x, y);
-    return canvas;
-}
- */
-
-/* 
-function perlinNoise(canvas, noise) {
-    noise = noise || randomNoise(createCanvas(canvas.width, canvas.height));
-    var g = canvas.getContext("2d");
-    g.save();
-    
-    // Scale random iterations onto the canvas to generate Perlin noise.
-    for (var size = 4; size <= noise.width; size *= 2) {
-        var x = (Math.random() * (noise.width - size)) | 0,
-            y = (Math.random() * (noise.height - size)) | 0;
-        g.globalAlpha = 4 / size;
-        g.drawImage(noise, x, y, size, size, 0, 0, canvas.width, canvas.height);
-    }
-
-    g.restore();
-    return canvas;
-} 
-*/

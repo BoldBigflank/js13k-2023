@@ -63,28 +63,50 @@ export class Garden {
         ground.position = new Vector3(0, 0.01, 0)
         this.floors.push(ground)
 
-        
-        const flowerBoxBoardOne = [
-            ["R", "Y"],
-            ["B", "B"]
+        const flowerBoxBoards = [ // count{123}, Color{RYBWED}, shape{CST}
+            [ // Color - Red and yellow cannot be adjacent
+                ["1RT", "1YT"],
+                ["2BT", "2BT"]
+            ],
+            [ // Shape - Squares must be four corners
+                ["0ET", "1WS", "0ET", "0ET", "1WS"],
+                ["2RC", "0ET", "1WS", "2RC", "0ET"],
+                ["0ET", "1WS", "0ET", "0ET", "0ET"],
+                ["2RC", "0ET", "2RC", "0ET", "1WS"],
+                ["0ET", "1WS", "0ET", "0ET", "0ET"]
+            ],
+            [ // The number must be within 1 of adj
+                ["3RT"],
+                ["1RT"],
+                ["1RT"],
+                ["2RT"],
+                ["2RT"]
+            ],
+            [ // All three rules together
+                ["1EC", "1EC", "1RC", "1EC", "1EC"],
+                ["1EC", "1RC", "1RC", "1RC", "1EC"],
+                ["1RC", "1RC", "1RC", "1RC", "1RC"],
+                ["1EC", "1RC", "1RC", "1RC", "1EC"],
+                ["1EC", "1EC", "1RC", "1EC", "1EC"]
+            ]
         ]
-    
-        const flowerBoxPuzzle = new FlowerBoxPuzzle(flowerBoxBoardOne, this.scene)
-        flowerBoxPuzzle.model.setParent(this.parent)
-        flowerBoxPuzzle.position = new Vector3(-15, 0, 5)
-        this.puzzles.push(flowerBoxPuzzle)
 
-        const flowerBoxBoardTwo = [
-            ["W", "B", "W"],
-            ["B", "W", "W"],
-            ["W", "B", "W"]
+        const flowerBoxPositions = [
+            new Vector3(-15, 0, 6),
+            new Vector3(-9, 0, 2),
+            new Vector3(3, 0, 2),
+            new Vector3(8, 0, 5)
         ]
-
-        const flowerBoxPuzzleTwo = new FlowerBoxPuzzle(flowerBoxBoardTwo, this.scene)
-        flowerBoxPuzzleTwo.model.setParent(this.parent)
-        flowerBoxPuzzleTwo.position = new Vector3(-9, 0, -1)
-        this.puzzles.push(flowerBoxPuzzleTwo)
         
+        for (let i = 0; i < flowerBoxBoards.length; i++) {
+            const board = flowerBoxBoards[i]
+            const position = flowerBoxPositions[i]
+            const puzzle = new FlowerBoxPuzzle(board, this.scene)
+            puzzle.model.setParent(this.parent)
+            puzzle.position = position
+            this.puzzles.push(puzzle)
+        }
+
         this.solved = false
     }
 }

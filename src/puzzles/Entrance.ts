@@ -5,6 +5,7 @@ import { Door } from '../meshes/Door'
 import { Banner } from '../meshes/Banner'
 import { Bush } from '../meshes/Bush'
 import { AnimationFactory } from '@/core/Animation'
+import { debug } from '@/core/Utils'
 const { MeshBuilder, TransformNode, Vector3 } = BABYLON
 
 export class Entrance {
@@ -132,6 +133,7 @@ export class Entrance {
             if (!newBush) continue
             newBush.position = new Vector3(12.5, 0, -19.5 + i)
             this.bushes.push(newBush)
+            if (debug) newBush.setEnabled(false)
         }
         bush.dispose()
 

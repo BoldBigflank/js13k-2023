@@ -1,5 +1,5 @@
 // TODO: Take an env variable/inject debug here
-export const debug = true
+export const debug = window.location.search.includes('debug')
 
 export const sample = (group: any[]): any => {
     return group[Math.floor(Math.random() * group.length)]
