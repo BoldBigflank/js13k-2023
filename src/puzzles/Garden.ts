@@ -119,10 +119,10 @@ export class Garden {
                 ["2BT", "2BT"]
             ],
             [ // Shape - Squares must be four corners
-                ["0ET", "1BS", "0ET", "0ET", "1BS"],
-                ["2RC", "0ET", "1BS", "2RC", "0ET"],
-                ["0ET", "1BS", "0ET", "0ET", "0ET"],
-                ["2RC", "0ET", "2RC", "0ET", "1BS"],
+                ["0ET", "2RC", "0ET", "0ET", "1BS"],
+                ["2RC", "0ET", "1BS", "1BS", "0ET"],
+                ["0ET", "2RC", "0ET", "0ET", "0ET"],
+                ["2RC", "0ET", "1BS", "0ET", "1BS"],
                 ["0ET", "1BS", "0ET", "0ET", "0ET"]
             ],
             [ // Count - The number must be within 1 of adj
@@ -140,7 +140,22 @@ export class Garden {
                 ["0ET", "0ET", "2BS", "0ET", "0ET"]
             ]
         ]
+/*
+"2RC"
+"1BS"
 
+"2RC"
+"1BS"
+"1BS"
+
+"2RC"
+
+"2RC"
+"1BS"
+"1BS"
+
+"1BS"
+*/
         const flowerBoxPositions = [
             new Vector3(-15, 0, 6),
             new Vector3(-9, 0, 2),
@@ -159,6 +174,7 @@ export class Garden {
             }, this.scene)
             puzzle.model.setParent(this.parent)
             puzzle.position = position
+            puzzle.isSolved()
             this.puzzles.push(puzzle)
         }
 
