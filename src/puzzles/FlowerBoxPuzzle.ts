@@ -190,14 +190,13 @@ export class FlowerBoxPuzzle {
 
         if (cubeCount > 0 && cubeCount < 4) {
             if (debug) console.log("RULE - Cube must have 4 points")
-            // this.messageBoard.setLines(rules.shape)
             rulesBroken = true
         }
         if (!cubePositions.every((pos, i) => {
             return (pos.x === cubeXMin || pos.x === cubeXMax)
             && (pos.y === cubeYMin || pos.y === cubeYMax)
         })) {
-            if (debug) console.log("RULE - Cube flowers must be in square positions")
+            if (debug) console.log(JSON.stringify(rules.shape))
             this.messageBoard.setLines(rules.shape)
             rulesBroken = true
         }

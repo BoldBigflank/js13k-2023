@@ -120,8 +120,8 @@ export class Garden {
             ],
             [ // Shape - Squares must be four corners
                 ["0ET", "2RC", "0ET", "0ET", "1BS"],
-                ["2RC", "0ET", "1BS", "1BS", "0ET"],
-                ["0ET", "2RC", "0ET", "0ET", "0ET"],
+                ["2RC", "0ET", "1BS", "0ET", "0ET"],
+                ["0ET", "2RC", "0ET", "1BS", "0ET"],
                 ["2RC", "0ET", "1BS", "0ET", "1BS"],
                 ["0ET", "1BS", "0ET", "0ET", "0ET"]
             ],
