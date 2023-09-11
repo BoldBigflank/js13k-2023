@@ -318,6 +318,34 @@ export const DialMaterial = (alphabet: string[], scene: BABYLON.Scene) => {
     return CanvasMaterial(canvas, scene)
 }
 
+const textMaterials: Record<string, BABYLON.Material> = {}
+
+export const TextMaterial = (lines: string[], scene: BABYLON.Scene) => {
+    const key = lines.join("")
+    if (textMaterials[key]) return textMaterials[key]
+    const [canvas, ctx] = initCanvas(512)
+    ctx.fillStyle = ORANGE
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = BLACK
+    
+    ctx.font = `64px Helvetica`
+    ctx.scale(1.0, 3) // The only infobillboard I'm using is 3:1
+    ctx.textBaseline = "top"
+    ctx.textAlign = "left"
+    if (lines.length > 0) {
+        const m = ctx.measureText(lines[0])
+        const fontSize = 64 * (512-64) / m.width
+        ctx.font = `${fontSize}px Helvetica`
+    }
+    lines.forEach((line, index) => {
+        ctx.fillText(`${line}`, 32, 32 + 72 * index)
+    })
+    const material = CanvasMaterial(canvas, scene)
+    textMaterials[key] = material
+    return material
+}
+
+
 export const SymbolMaterial = (scene: BABYLON.Scene) => {
     const [canvas, ctx] = initCanvas(512)
 

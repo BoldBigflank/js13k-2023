@@ -2,8 +2,9 @@
 
 ## MVP Final Stretch
 * Finish the flower garden puzzle
-  - Create fourth puzzle
-  - Link them all (Garden isSolved)
+  - X Create fourth puzzle
+  - X Link them all (Garden isSolved)
+  - X Message for what rule is broken
   - Solved - Make a mystical door appear
   - Correct particles
   - Handle working on multiple puzzles

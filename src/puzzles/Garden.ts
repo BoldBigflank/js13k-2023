@@ -1,6 +1,7 @@
 import { DirtMaterial } from '@/core/textures'
 import { FlowerBoxPuzzle } from './FlowerBoxPuzzle'
 import { waterNME } from '@/shaders/waterNME'
+import { Engine, Scene } from 'babylonjs'
 const { TransformNode, Vector3, MeshBuilder } = BABYLON
 
 export class Garden {
@@ -12,6 +13,7 @@ export class Garden {
     puzzles: FlowerBoxPuzzle[]
     // Meta
     solved = false
+    solvedCount = 0
 
     constructor(scene: BABYLON.Scene) {        
         this.scene = scene
@@ -36,10 +38,15 @@ export class Garden {
 
     isSolved() {
         if (this.solved) return true
-        this.solved = 
-            this.puzzles.length > 0 &&
-            this.puzzles.every((puzzle) => puzzle.solved)
-        // if solved, Play Solved SFX
+        this.solvedCount = 0
+        for (let i = 0; i < this.puzzles.length; i++) {
+            if (this.puzzles[i].solved)
+                this.solvedCount += 1
+        }
+        this.solved = this.puzzles.length > 0 && this.solvedCount === this.puzzles.length
+        // For each puzzle, spin the sculpture on a new axis
+        // When all puzzles are solved, show a portal to the end
+
         return this.solved
     }
 
@@ -88,9 +95,21 @@ export class Garden {
             q: 2
         }, this.scene)
         statue.setParent(this.parent)
-        statue.position = new Vector3(0, 1.5, 0)
+        const center =  new Vector3(0, 1.5, 0)
+        statue.position = center
         statue.rotation.x = Math.PI / 2
         statue.scaling = new Vector3(0.5, 0.5, 1.5)
+        statue.registerBeforeRender((mesh) => {
+            if (this.solvedCount > 0) {
+                mesh.rotateAround(center, Vector3.Up(), Math.PI / 1700 * this.scene.getEngine().getDeltaTime())
+            }
+            if (this.solvedCount > 1) {
+                mesh.rotateAround(center, Vector3.Right(), Math.PI / 800 * this.scene.getEngine().getDeltaTime())
+            }
+            if (this.solvedCount > 2) {
+                mesh.rotateAround(center, Vector3.Forward(), Math.PI / 500 * this.scene.getEngine().getDeltaTime())
+            }
+        })
 
         // *** Flower Box Puzzles ***
 
@@ -115,10 +134,10 @@ export class Garden {
             ],
             [ // All three rules together
                 ["0ET", "0ET", "3BS", "0ET", "0ET"],
-                ["0ET", "1RC", "2BS", "3BC", "0ET"],
-                ["1RS", "2BS", "3BS", "2RS", "1BS"],
-                ["0ET", "3BC", "2RC", "1BC", "0ET"],
-                ["0ET", "0ET", "3BS", "0ET", "0ET"]
+                ["0ET", "2RS", "3BC", "3BS", "0ET"],
+                ["2RC", "2BS", "1RC", "3BC", "1BS"],
+                ["0ET", "1RS", "3BS", "1BC", "0ET"],
+                ["0ET", "0ET", "2BS", "0ET", "0ET"]
             ]
         ]
 
@@ -132,7 +151,12 @@ export class Garden {
         for (let i = 0; i < flowerBoxBoards.length; i++) {
             const board = flowerBoxBoards[i]
             const position = flowerBoxPositions[i]
-            const puzzle = new FlowerBoxPuzzle(board, this.scene)
+            const puzzle = new FlowerBoxPuzzle({
+                board,
+                solvedEvent: () => {
+                    this.isSolved()
+                }
+            }, this.scene)
             puzzle.model.setParent(this.parent)
             puzzle.position = position
             this.puzzles.push(puzzle)

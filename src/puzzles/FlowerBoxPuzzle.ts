@@ -4,11 +4,23 @@ import { BLUE, BROWN, DARK_GREEN, GREEN, RED, WHITE, YELLOW } from '@/core/Color
 import { PickupSFX, SolvedSFX } from '@/core/Sounds'
 import { debug } from '@/core/Utils'
 import { ColorMaterial, GridMaterial } from '@/core/textures'
+import { InfoBillboard } from '@/meshes/InfoBillboard'
 import { TexturedMeshNME } from '@/shaders/TexturedMeshNME'
 
 const { TransformNode, Vector3 } = BABYLON
 
 let pc = 0
+
+const rules = {
+    color: ["Red cannot be next to", "another Red"],
+    count: ["Number of flowers must be one", "more or less than neighbor"],
+    shape: ["Square must be placed", "in a square shape"]
+}
+
+type FlowerBoxOpts = {
+    board: string[][],
+    solvedEvent?: () => void
+}
 
 export class FlowerBoxPuzzle {
     // Puzzle Settings
@@ -21,6 +33,8 @@ export class FlowerBoxPuzzle {
     meshes: BABYLON.Mesh[] = []
     // jars: Jar[] = []
     parent: BABYLON.TransformNode
+    messageBoard: InfoBillboard
+    solvedEvent?: () => void
     colors: Record<string,string> = {
         "R": RED,
         "G": GREEN,
@@ -32,9 +46,10 @@ export class FlowerBoxPuzzle {
     // Meta
     solved = false
 
-    constructor(board: string[][], scene: BABYLON.Scene) {        
+    constructor(opts: FlowerBoxOpts, scene: BABYLON.Scene) {        
         this.scene = scene
-        this.board = board
+        this.board = opts.board
+        this.solvedEvent = opts.solvedEvent
         
         this.boardHeight = this.board.length
         this.boardWidth = this.board[0].length
@@ -45,6 +60,13 @@ export class FlowerBoxPuzzle {
         this.inventoryTransform.setParent(scene.activeCamera)
         this.inventoryTransform.position = new Vector3(-.5, 0, 2)
         this.selectedMesh = null
+
+        // Message board
+        this.messageBoard = new InfoBillboard(this.scene)
+        this.messageBoard.setLines([])
+        this.messageBoard.model.setParent(this.parent)
+        this.messageBoard.model.position = new Vector3(0.5 * this.boardWidth, 0, 0.5)
+
         this.reset()
     }
 
@@ -105,6 +127,7 @@ export class FlowerBoxPuzzle {
         // RULE - No flowers in hand
         if (this.selectedMesh && this.selectedMesh.metadata.color !== "D"){
             if (debug) console.log("RULE - No flowers in hand")
+            this.messageBoard.setLines([]) // Not ready to share
             rulesBroken = true
         }
         if (rulesBroken) return
@@ -130,11 +153,13 @@ export class FlowerBoxPuzzle {
                 if (color === "R") {
                     if (adjCells.some((cell) => cell?.split("")[1] === "R")) {
                         if (debug) console.log("RULE - Red cannot be next to another Red")
+                        this.messageBoard.setLines(rules.color)
                         rulesBroken = true
                     }
                 }
 
-                // TODO: RULE Count must be +1 or -1 from adj cells
+                if (rulesBroken) return
+
                 if (parseInt(count) > 0) {
                     if (!adjCells.every((cell) => {
                         if (!cell) return true
@@ -146,6 +171,7 @@ export class FlowerBoxPuzzle {
                         )
                     })) {
                         if (debug) console.log("RULE - Adjacent cells must be 1 or -1 flowers")
+                        this.messageBoard.setLines(rules.count)
                         rulesBroken = true
                     }
                 }
@@ -164,6 +190,7 @@ export class FlowerBoxPuzzle {
 
         if (cubeCount > 0 && cubeCount < 4) {
             if (debug) console.log("RULE - Cube must have 4 points")
+            // this.messageBoard.setLines(rules.shape)
             rulesBroken = true
         }
         if (!cubePositions.every((pos, i) => {
@@ -171,13 +198,18 @@ export class FlowerBoxPuzzle {
             && (pos.y === cubeYMin || pos.y === cubeYMax)
         })) {
             if (debug) console.log("RULE - Cube flowers must be in square positions")
+            this.messageBoard.setLines(rules.shape)
             rulesBroken = true
         }
 
         if (!rulesBroken) this.solved = true
 
         // Solved sfx
-        if (this.solved) SolvedSFX()
+        if (this.solved) {
+            SolvedSFX()
+            this.messageBoard.setLines(["COMPLETE"])
+            if (this.solvedEvent) this.solvedEvent()
+        }
         return this.solved
     }
 
@@ -362,6 +394,7 @@ export class FlowerBoxPuzzle {
             width: this.boardWidth,
             height: this.boardHeight
         })
+
         ground.material = GridMaterial(GREEN, DARK_GREEN, this.boardWidth, this.boardHeight, this.scene)
         ground.setParent(this.parent)
         ground.position = new Vector3(0.5 * this.boardWidth, 0.02, -0.5 * this.boardHeight)
@@ -407,6 +440,7 @@ export class FlowerBoxPuzzle {
             })
         })
 
+        
         // Inventory spot
         this.selectedMesh = this.createEmpty(-1, -1)
         this.selectedMesh.metadata = {
