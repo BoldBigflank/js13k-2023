@@ -1,10 +1,10 @@
 import { InteractiveMesh } from '@/Types'
 import { AnimationFactory } from '@/core/Animation'
 import { BLUE, BROWN, DARK_GREEN, GREEN, RED, WHITE, YELLOW } from '@/core/Colors'
+import { PickupSFX, SolvedSFX } from '@/core/Sounds'
 import { debug } from '@/core/Utils'
 import { ColorMaterial, GridMaterial } from '@/core/textures'
 import { TexturedMeshNME } from '@/shaders/TexturedMeshNME'
-import { zzfx } from 'zzfx'
 
 const { TransformNode, Vector3 } = BABYLON
 
@@ -128,8 +128,8 @@ export class FlowerBoxPuzzle {
                     this.cellAt(x, y-1)
                 ]
                 if (color === "R") {
-                    if (adjCells.some((cell) => cell?.split("")[1] === "Y")) {
-                        if (debug) console.log("RULE - Red cannot be next to Yellow")
+                    if (adjCells.some((cell) => cell?.split("")[1] === "R")) {
+                        if (debug) console.log("RULE - Red cannot be next to another Red")
                         rulesBroken = true
                     }
                 }
@@ -177,7 +177,7 @@ export class FlowerBoxPuzzle {
         if (!rulesBroken) this.solved = true
 
         // Solved sfx
-        if (this.solved) zzfx(...[2.07,0,130.81,.01,.26,.47,3,1.15,,.1,,,.05,,,,.14,.26,.15,.02]) // Music 112 - Mutation 2
+        if (this.solved) SolvedSFX()
         return this.solved
     }
 
@@ -221,6 +221,7 @@ export class FlowerBoxPuzzle {
             y
         }
         mesh.onPointerPick = () => {
+            PickupSFX()
             if (this.solved) return
             this.swapMesh(mesh)
         }

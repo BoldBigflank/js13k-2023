@@ -1,7 +1,7 @@
 import { ColorMaterial } from '@/core/textures'
-import { zzfx } from 'zzfx'
 import type { InteractiveMesh } from '@/Types'
 import { debug } from '@/core/Utils'
+import { PickupSFX } from '@/core/Sounds'
 
 const { TransformNode, 
     MeshBuilder,
@@ -57,7 +57,7 @@ export const Witch = (scene: BABYLON.Scene) => {
     parent.onPointerPick = () => {
         if (debug) console.log('clicked!', attention)
         parent.metadata = { attention: !parent.metadata.attention }
-        zzfx(...[1.01,,275,.01,.01,.15,1,1.03,-3.7,,-93,.07,,,,-0.1,,.5,.04,.09]) // Pickup 121 - Mutation 2
+        PickupSFX()
     }
     return parent
 }

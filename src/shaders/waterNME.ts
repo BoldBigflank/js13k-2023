@@ -210,7 +210,7 @@ const waterNME = function(opts: MeshOpts) {
     Time.max = 0
     Time.isBoolean = false
     Time.matrixMode = 0
-    Time.animationType = (frozen) ? BABYLON.AnimatedInputBlockTypes.Time : BABYLON.AnimatedInputBlockTypes.None
+    Time.animationType = (!frozen) ? BABYLON.AnimatedInputBlockTypes.Time : BABYLON.AnimatedInputBlockTypes.None
     Time.isConstant = frozen
 
     // InputBlock

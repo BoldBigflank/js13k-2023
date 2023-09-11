@@ -3,8 +3,11 @@
 ## MVP Final Stretch
 * Finish the flower garden puzzle
   - Create fourth puzzle
+  - Link them all (Garden isSolved)
+  - Solved - Make a mystical door appear
   - Correct particles
   - Handle working on multiple puzzles
+  - VR Inventory transform attaches to controller
 * Create an end game state (crown with dialog)
 * VR Mode bugs
 * Hint system/Story dialogs

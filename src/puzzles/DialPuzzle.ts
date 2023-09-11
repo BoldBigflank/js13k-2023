@@ -1,7 +1,8 @@
 import { InteractiveMesh } from "@/Types"
 import { AnimationFactory } from "@/core/Animation"
+import { BLUE } from "@/core/Colors"
+import { BlipSFX, SolvedSFX } from "@/core/Sounds"
 import { ColorMaterial, DialMaterial } from "@/core/textures"
-import { zzfx } from 'zzfx'
 
 
 type DialPuzzleOpts = {
@@ -70,7 +71,7 @@ export class DialPuzzle {
         
         if (this.solved) {
             // Success SFX
-            zzfx(...[2.07,0,130.81,.01,.26,.47,3,1.15,,.1,,,.05,,,,.14,.26,.15,.02]) // Music 112 - Mutation 2
+            SolvedSFX()
             this.solvedEvent()
         }
         return this.solved
@@ -96,6 +97,7 @@ export class DialPuzzle {
                 tessellation: this.alphabet.length
             }, this.scene) as InteractiveMesh
             dial.onPointerPick = () => {
+                BlipSFX()
                 if (this.solved) return
                 const { index, alphabetIndex } = dial.metadata
                 const newAlphabetIndex = alphabetIndex + 1
@@ -121,7 +123,7 @@ export class DialPuzzle {
         })
         dialAlign.setParent(this.parent)
         dialAlign.position = new Vector3(0, codeLength * 0.15, -0.26 * diameter)
-        dialAlign.material = ColorMaterial("#0000ff", this.scene)
+        dialAlign.material = ColorMaterial(BLUE, this.scene)
         
         this.updateDials()
     }

@@ -31,12 +31,6 @@ export class Castle {
     }
 
     isSolved() {
-        // if (this.solved) return true
-        // this.solved = this.jars.every((jar, index) => {
-        //     return jar.orientation === index
-        // })
-        // // Solved sfx
-        // if (this.solved) zzfx(...[2.07,0,130.81,.01,.26,.47,3,1.15,,.1,,,.05,,,,.14,.26,.15,.02]) // Music 112 - Mutation 2
         return this.solved
     }
 

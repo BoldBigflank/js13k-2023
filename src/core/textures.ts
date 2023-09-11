@@ -21,6 +21,7 @@ import {
     GRAVEL5,
     LIGHT_GREEN,
     MID_GREY,
+    ORANGE,
     WHITE } from "./Colors"
 import { initCanvas, sample, shuffle } from "./Utils"
 
@@ -301,7 +302,7 @@ export const GravelMaterial = (scene: BABYLON.Scene) => {
 
 export const DialMaterial = (alphabet: string[], scene: BABYLON.Scene) => {
     const [canvas, ctx] = initCanvas(512)
-    ctx.fillStyle = WHITE
+    ctx.fillStyle = ORANGE
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     ctx.fillStyle = BLACK
     const tileWidth = canvas.width / alphabet.length
@@ -323,7 +324,7 @@ export const SymbolMaterial = (scene: BABYLON.Scene) => {
     ctx.fillStyle = BLUE
     ctx.fillRect(128, 0, 256, 512)
 
-    ctx.fillStyle = LIGHT_GREEN
+    ctx.fillStyle = ORANGE
     ctx.fillRect(256 - 64, 128 - 64, 128, 128)
     ctx.beginPath()
     ctx.moveTo(256, 256)

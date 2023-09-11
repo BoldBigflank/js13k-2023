@@ -2,7 +2,6 @@ import { InteractiveMesh } from '@/Types'
 import { AnimationFactory } from '@/core/Animation'
 import { ColorMaterial, ColorTextureMaterial, GridMaterial } from '@/core/textures'
 import { TexturedMeshNME } from '@/shaders/TexturedMeshNME'
-import { zzfx } from 'zzfx'
 
 const { TransformNode, Vector3 } = BABYLON
 export class DripTimingPuzzle {
