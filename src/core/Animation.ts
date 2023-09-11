@@ -5,6 +5,7 @@ type Animating = {
     mesh: BABYLON.Mesh|BABYLON.TransformNode
     start: AnimationTransform
     end: AnimationTransform
+    ease: BABYLON.EasingFunction
     startTime: number
     endTime: number
 }
@@ -46,17 +47,17 @@ export class AnimationFactory {
                 if (animation.end.position) animation.mesh.position = BABYLON.Vector3.Lerp(
                     animation.start.position!,
                     animation.end.position, 
-                    lerpAmount
+                    animation.ease.ease(lerpAmount)
                 )
                 if (animation.end.rotation) animation.mesh.rotation = BABYLON.Vector3.Lerp(
                     animation.start.rotation!,
                     animation.end.rotation, 
-                    lerpAmount
+                    animation.ease.ease(lerpAmount)
                 )
                 if (animation.end.scaling) animation.mesh.scaling = BABYLON.Vector3.Lerp(
                     animation.start.scaling!,
                     animation.end.scaling, 
-                    lerpAmount
+                    animation.ease.ease(lerpAmount)
                 )
                 return true
             })
@@ -67,6 +68,7 @@ export class AnimationFactory {
         const { mesh, end } = opts
         const duration = opts.duration || 1000
         const delay = opts.delay || 0
+        const ease = opts.ease || new BABYLON.QuadraticEase()
         const now = Date.now()
 
         this.animations.push({
@@ -77,6 +79,7 @@ export class AnimationFactory {
                 scaling: mesh.scaling
             },
             end,
+            ease,
             startTime: now + delay,
             endTime: now + delay + duration
         })

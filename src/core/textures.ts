@@ -209,6 +209,7 @@ export const GrassMaterial = (scene: BABYLON.Scene) => {
 export const ColorMaterial = (color: string, scene: BABYLON.Scene) => {
     const material = new StandardMaterial(`billboardMaterial${++pc}`, scene)
     material.diffuseColor = BABYLON.Color3.FromHexString(color)
+    // material.emissiveColor = BABYLON.Color3.FromHexString(color)
     return material
 }
 

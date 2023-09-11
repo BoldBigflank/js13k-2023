@@ -1,3 +1,4 @@
+
 export interface Jar {
     orientation: number
     mesh: InteractiveMesh
@@ -34,6 +35,7 @@ export type AnimationTransform = {
 export interface AnimateTransformOpts {
     mesh: BABYLON.Mesh|BABYLON.TransformNode
     end: AnimationTransform
+    ease?: BABYLON.EasingFunction
     duration: number
     delay?: number
 }

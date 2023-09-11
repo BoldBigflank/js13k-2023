@@ -1,7 +1,10 @@
-import { DirtMaterial } from '@/core/textures'
+import { ColorMaterial, DirtMaterial } from '@/core/textures'
 import { FlowerBoxPuzzle } from './FlowerBoxPuzzle'
 import { waterNME } from '@/shaders/waterNME'
 import { Engine, Scene } from 'babylonjs'
+import { BLACK } from '@/core/Colors'
+import { InteractiveMesh } from '@/Types'
+import { AnimationFactory } from '@/core/Animation'
 const { TransformNode, Vector3, MeshBuilder } = BABYLON
 
 export class Garden {
@@ -11,6 +14,7 @@ export class Garden {
     parent: BABYLON.TransformNode
     floors: BABYLON.Mesh[]
     puzzles: FlowerBoxPuzzle[]
+    endgameSphere: InteractiveMesh|null
     // Meta
     solved = false
     solvedCount = 0
@@ -21,6 +25,7 @@ export class Garden {
         this.floors = []
         // Parent position
         this.parent = new TransformNode('Garden', this.scene)
+        this.endgameSphere = null
         this.reset()
     }
 
@@ -44,9 +49,19 @@ export class Garden {
                 this.solvedCount += 1
         }
         this.solved = this.puzzles.length > 0 && this.solvedCount === this.puzzles.length
-        // For each puzzle, spin the sculpture on a new axis
-        // When all puzzles are solved, show a portal to the end
-
+        if (this.solved) {
+            if (!this.endgameSphere) return
+            this.endgameSphere.setEnabled(true)
+            this.endgameSphere.scaling = Vector3.Zero()
+            AnimationFactory.Instance.animateTransform({
+                mesh: this.endgameSphere as InteractiveMesh,
+                end: {
+                    scaling: new Vector3(1, 1, 1)
+                },
+                ease: new BABYLON.ExponentialEase(2),
+                duration: 1000
+            })
+        }
         return this.solved
     }
 
@@ -88,6 +103,7 @@ export class Garden {
         water.checkCollisions = true
         water.setParent(this.parent)
 
+        // *** STATUE ***
         const statue = MeshBuilder.CreateTorusKnot('fountain-statue', {
             tube: 0.1,
             radialSegments: 128,
@@ -111,8 +127,28 @@ export class Garden {
             }
         })
 
+        // *** END GAME SPHERE ***
+        this.endgameSphere = MeshBuilder.CreateSphere('endgame-sphere', {
+            diameter: 1,
+            sideOrientation: BABYLON.Mesh.DOUBLESIDE
+        }, this.scene) as InteractiveMesh
+        this.endgameSphere.material = ColorMaterial(BLACK, this.scene)
+        this.endgameSphere.renderingGroupId = 1
+        this.endgameSphere.setParent(this.parent)
+        this.endgameSphere.position.y = 1.5
+        this.endgameSphere.onPointerPick = () => {
+            AnimationFactory.Instance.animateTransform({
+                mesh: this.endgameSphere as InteractiveMesh,
+                end: {
+                    scaling: new Vector3(100, 100, 100)
+                },
+                ease: new BABYLON.ExponentialEase(2),
+                duration: 10000
+            })
+        }
+        this.endgameSphere.setEnabled(false)
+        
         // *** Flower Box Puzzles ***
-
         const flowerBoxBoards = [ // count{123}, Color{RYBWED}, shape{CST}
             [ // Color - Red cannot be adjacent to itself
                 ["1RT", "1RT"],
@@ -140,22 +176,7 @@ export class Garden {
                 ["0ET", "0ET", "2BS", "0ET", "0ET"]
             ]
         ]
-/*
-"2RC"
-"1BS"
 
-"2RC"
-"1BS"
-"1BS"
-
-"2RC"
-
-"2RC"
-"1BS"
-"1BS"
-
-"1BS"
-*/
         const flowerBoxPositions = [
             new Vector3(-15, 0, 6),
             new Vector3(-9, 0, 2),
