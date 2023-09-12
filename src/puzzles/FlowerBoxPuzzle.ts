@@ -57,8 +57,12 @@ export class FlowerBoxPuzzle {
         // Parent position
         this.parent = new TransformNode('FlowerBoxPuzzle', this.scene)
         this.inventoryTransform = new TransformNode('Holding', this.scene)
-        this.inventoryTransform.setParent(scene.activeCamera)
-        this.inventoryTransform.position = new Vector3(-.5, 0, 2)
+        // this.inventoryTransform.setParent(scene.activeCamera)
+        // this.inventoryTransform.position = new Vector3(-.5, 0, 2)
+        const inventoryParent = scene.getNodeByName('inventory-parent')
+        this.inventoryTransform.setParent(inventoryParent)
+        this.inventoryTransform.position = Vector3.Zero()
+        this.inventoryTransform.rotation = Vector3.Zero()
         this.selectedMesh = null
 
         // Message board

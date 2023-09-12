@@ -1,7 +1,6 @@
 import { Castle } from '@/puzzles/Castle'
 import type { InteractiveMesh } from '@/Types'
 import { GrassMaterial, CursorMaterial } from './core/textures'
-import { Witch } from './meshes/Witch'
 import { AnimationFactory } from './core/Animation'
 import { debug } from './core/Utils'
 import { Garden } from './puzzles/Garden'
@@ -79,6 +78,11 @@ const init = async () => {
         engine.resize()
     })
     
+    // *** Inventory Parent
+    const inventoryParent = new BABYLON.TransformNode('inventory-parent', scene)
+    inventoryParent.setParent(scene.activeCamera)
+    inventoryParent.position = new Vector3(-.5, 0, 2)
+
     // *** CAMERA CURSOR ***
     const cursor = BABYLON.MeshBuilder.CreatePlane("cursor", {
         
@@ -118,14 +122,10 @@ const init = async () => {
     camera.setTarget(new Vector3(-1, 10, 43))
     
 
-    // *** MODEL CASTLE ***
-    const modelCastle = castle.model.clone("model-castle", null, false)
-    modelCastle!.scaling = new Vector3(0.05, 0.05, 0.05)
-    modelCastle!.position = new Vector3(0, 1, 4)
-
-    // *** WITCH ***
-    const witch = Witch(scene)
-    witch.position = new Vector3(0, 2, 2)
+    // // *** MODEL CASTLE ***
+    // const modelCastle = castle.model.clone("model-castle", null, false)
+    // modelCastle!.scaling = new Vector3(0.05, 0.05, 0.05)
+    // modelCastle!.position = new Vector3(0, 1, 4)
 
     // *** GARDEN ***
     const garden = new Garden(scene)
@@ -149,13 +149,33 @@ const init = async () => {
     const xr = await scene.createDefaultXRExperienceAsync({
         floorMeshes: [...entrance.floors, ...garden.floors]
     })
+    xr.input.onControllerAddedObservable.add((controller) => {
+        controller.onMotionControllerInitObservable.add((motionController) => {
+            motionController.onModelLoadedObservable.add((model) => {
+                inventoryParent.setParent(model.rootMesh)
+                inventoryParent.position = new Vector3(0, 0.1, 0.1)
+                inventoryParent.rotation = Vector3.Zero()
+            })
+        })
+    })
+    xr.input.onControllerRemovedObservable.add((xrInput, state) => {
+        inventoryParent.setParent(scene.activeCamera)
+        inventoryParent.position = new Vector3(-.5, 0, 2)
+        inventoryParent.rotation = Vector3.Zero()
+    })
+    // xr.input.controllers.forEach((controller) => {
+    // })
     xr.baseExperience.onStateChangedObservable.add((state) => {
         inXRMode = state === BABYLON.WebXRState.IN_XR
         cursor.isEnabled(!inXRMode)
-        // Inventory transform parent
-        xr.input.controllers.forEach((controller) => {
-            // controller.motionController?.rootMesh
-        })
+        if (debug) console.log('inXRMode', inXRMode, xr.input.controllers)
+        if (inXRMode) {
+            
+        } else {
+            inventoryParent.setParent(scene.activeCamera)
+            inventoryParent.position = new Vector3(-.5, 0, 2)
+            inventoryParent.rotation = Vector3.Zero()
+        }
         
     })
 }
