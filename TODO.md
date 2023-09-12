@@ -1,16 +1,18 @@
 # TODO
 
 ## MVP Final Stretch
+* Figure out the perf issue
 * Finish the flower garden puzzle
-  - X Create fourth puzzle
+  - FIX Fourth puzzle (only 4 square shapes)
   - X Link them all (Garden isSolved)
   - X Message for what rule is broken
-  - Solved - Make a mystical door appear
+  - X Solved - Make a mystical door appear
   - Correct particles
   - Handle working on multiple puzzles
   - VR Inventory transform attaches to controller
+* Entrance - Direct the player to the garden
+* Entrance - Helper rocks
 * Create an end game state (crown with dialog)
-* VR Mode bugs
 * Hint system/Story dialogs
 * Castle texture/top pass
 ---
