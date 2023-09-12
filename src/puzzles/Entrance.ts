@@ -114,7 +114,7 @@ export class Entrance {
             }
         }, this.scene)
         dialPuzzle.model.setParent(this.parent)
-        dialPuzzle.model.position = new Vector3(11.5, 0.5, 7.5)
+        dialPuzzle.model.position = new Vector3(7.5, 0.5, 11.5)
         dialPuzzle.model.rotation = new Vector3(0, Math.PI / 4, 0)
         this.puzzles.push(dialPuzzle)
         

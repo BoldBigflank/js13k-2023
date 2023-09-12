@@ -114,12 +114,13 @@ export const Door = (scene: BABYLON.Scene) => {
         cap: BABYLON.Mesh.CAP_ALL
     }, scene)
     arrow.setParent(parent)
-    arrow.position = new Vector3(0, 1.8, -1)
+    arrow.position = new Vector3(0, 1, -1)
     arrow.material = waterNME({
         baseColor: BLUE,
         rippleColor: ORANGE
     })
-    arrow.rotateAround(Vector3.Zero(), Vector3.Right(), Math.PI / 2)
+    arrow.rotateAround(new Vector3(0, 0, -1), Vector3.Up(), Math.PI / 4)
+    arrow.rotateAround(new Vector3(0, 0, 1), Vector3.Right(), Math.PI / 2)
     
 
     return parent

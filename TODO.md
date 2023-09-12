@@ -1,53 +1,27 @@
 # TODO
 
 ## MVP Final Stretch
-* Figure out the perf issue
-* Finish the flower garden puzzle
-  - X FIX Fourth puzzle (only 4 square shapes)
-  - X Link them all (Garden isSolved)
-  - X Message for what rule is broken
-  - X Solved - Make a mystical door appear
-  - Correct particles
-  - Handle working on multiple puzzles
-  - X VR Inventory transform attaches to controller
-* Entrance - Direct the player to the garden
-* Entrance - Helper rocks
 * Create an end game state (crown with dialog)
+* Figure out the perf issue
+* Garden - Correct particles
+* Entrance - Helper rocks
 * Hint system/Story dialogs
-* Castle texture/top pass
+* Castle - Texture the cones
+* Castle - Scale the cylinders
+* Castle - Add a slanted roof field for boxes
+* Outside - skybox
+* Outside - Create thin instances of trees/bushes
 ---
-* Throne room/witches room
-* Drip puzzle
 
 ## Story
 It is 1290 Scotland, and following the death of Queen Margaret there was no clear successor (the Great Cause). Witches placed a spell on Glamis Castle and whoever could solve the puzzles and enter will claim the kingdom.
 
-## General Bugs
-* VR - Flower Puzzle - inventory transform parent to controller model
+## Do Later
+* Garden - Handle working on multiple puzzles
 * W/S moves forward on Z plane always [Forum post](https://forum.babylonjs.com/t/universal-camera-move-on-the-xz-plane-always/43727/7)
-
-## Art
-* Castle - Texture the cones
-* Castle - Add a slanted roof field for boxes
-* Outside - skybox
-* Outside - Create thin instances of trees/bushes
-* Stretch goal - Castle Window depth shader
-
-## Design
-### Dial Puzzle
- * Solved state - Direct the player to the actual door
- * More direction - Color each dial, color each tree
-
-### Flower Box Puzzle
- * Rules
-    * Red and Yellow can't be next to each other
-    * White must be in groups of exactly 3
-    * TODO: Third puzzle with a new rule
-    * TODO: Fourth puzzle with all 3 previous rules
-    * Optionally create different shapes for each flower color
- * Mechanics - When clicking another puzzle, remove the inventory item of other puzzles
- * Art - Make a clear "success" state with particles
- * Art - Make the flowers spheres, cubes and triangles
+* Throne room/witches room
+* Drip puzzle
+* Art - Castle Window depth shader
 
 ### Drip puzzle
 * Rules
@@ -62,29 +36,3 @@ It is 1290 Scotland, and following the death of Queen Margaret there was no clea
 
 ### Model Puzzle
  * A model has an extra piece, when clicked sends the player to a secret room
-
-### Dining Room puzzle
- * Another rules based puzzle, figure out where to put each meal to match the guest's preferences
-
-
-# Previously created puzzles
-# Harvest Puzzle Box
- * Lights out
- * Musical tones
- * Tsuro Path
- * Code/Cloud
-
-# Tut's Tomb
- * 8-tile sliding puzzle
- * Jars
-
-# 404 Sculpting Done Quick
- * Shaving parts off of a sculpture
- * Trampoline game
-
-# Backlit - Treasure Escape
- * Moving sculptures to cast a shadow
- * Moving Crystals to direct a beam of light
- * Holding an item to cast a shadow in two spots
-
-# 
