@@ -1,4 +1,6 @@
-import { CastleMaterial } from '@/core/textures'
+import { BLACK } from '@/core/Colors'
+import { CastleMaterial, ColorTextureMaterial, GravelMaterial } from '@/core/textures'
+import { TexturedMeshNME } from '@/shaders/TexturedMeshNME'
 
 const { TransformNode, Vector3 } = BABYLON
 
@@ -116,6 +118,11 @@ export class Castle {
                     diameterBottom: diameter * 1.1,
                     diameterTop: 0
                 }, this.scene)
+                cone.material = TexturedMeshNME({
+                    color1: "#043132",
+                    color2: BLACK,
+                    scale: 40
+                })
                 cone.position = new Vector3(x, y + 0.5 * (height + coneHeight), z)
                 cone.setParent(this.parent)
             }

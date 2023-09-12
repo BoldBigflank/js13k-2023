@@ -2,7 +2,7 @@ import { InteractiveMesh } from "@/Types"
 import { AnimationFactory } from "@/core/Animation"
 import { BLUE } from "@/core/Colors"
 import { BlipSFX, SolvedSFX } from "@/core/Sounds"
-import { ColorMaterial, DialMaterial } from "@/core/textures"
+import { ColorMaterial, DialMaterial, SymbolMaterial } from "@/core/textures"
 
 
 type DialPuzzleOpts = {
@@ -125,6 +125,13 @@ export class DialPuzzle {
         dialAlign.position = new Vector3(0, codeLength * 0.15, -0.26 * diameter)
         dialAlign.material = ColorMaterial(BLUE, this.scene)
         
+        const banner = BABYLON.MeshBuilder.CreatePlane('dial-banner', {
+
+        }, this.scene)
+        banner.setParent(this.parent)
+        banner.position = new Vector3(0, codeLength * 0.15 + 2, -0.26 * diameter)
+        banner.material = SymbolMaterial(this.scene)
+
         this.updateDials()
     }
 }

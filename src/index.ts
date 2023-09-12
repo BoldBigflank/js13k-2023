@@ -5,6 +5,8 @@ import { AnimationFactory } from './core/Animation'
 import { debug } from './core/Utils'
 import { Garden } from './puzzles/Garden'
 import { Entrance } from './puzzles/Entrance'
+import { TexturedMeshNME } from './shaders/TexturedMeshNME'
+import { BLUE, WHITE } from './core/Colors'
 
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON
@@ -95,6 +97,22 @@ const init = async () => {
 
     // *** SUN ***
     new HemisphericLight("light", new Vector3(-0.5, 1, 0), scene)
+    const light2 = new HemisphericLight("light", new Vector3(0.5, -1, 0), scene)
+    
+    // *** SKYBOX
+    const skybox = BABYLON.MeshBuilder.CreateSphere('skybox', {
+        diameter: 100,
+        sideOrientation: BABYLON.Mesh.DOUBLESIDE
+    }, scene)
+    const skyboxMaterial = TexturedMeshNME({
+        color1: BLUE,
+        color2: WHITE,
+        scale: 0.1
+    })
+    skybox.material = skyboxMaterial
+    skybox.infiniteDistance = true
+    light2.includedOnlyMeshes.push(skybox)
+    // skybox.light
 
     // *** GROUND ***
     const ground = MeshBuilder.CreateTiledGround("ground", {
