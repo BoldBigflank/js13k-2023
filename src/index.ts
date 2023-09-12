@@ -56,7 +56,7 @@ const init = async () => {
         return scene.pick(engine.getRenderWidth() / 2, engine.getRenderHeight() / 2)
     }
     // Custom pointerdown event for Mouse/keyboard
-    scene.onPointerObservable.add((pointerInfo) => {      		
+    scene.onPointerObservable.add((pointerInfo) => {
         if (pointerInfo.type !== PointerEventTypes.POINTERDOWN) return
         if (!scene) return
         if (!inXRMode && pointerInfo.event.button !== 0) return // Only left mouse click
@@ -149,8 +149,7 @@ const init = async () => {
     const xr = await scene.createDefaultXRExperienceAsync({
         floorMeshes: [...entrance.floors, ...garden.floors]
     })
-    const xrHelper = await BABYLON.WebXRExperienceHelper.CreateAsync(scene)
-    xrHelper.onStateChangedObservable.add((state) => {
+    xr.baseExperience.onStateChangedObservable.add((state) => {
         inXRMode = state === BABYLON.WebXRState.IN_XR
         cursor.isEnabled(!inXRMode)
         // Inventory transform parent
