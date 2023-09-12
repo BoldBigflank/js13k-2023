@@ -171,7 +171,7 @@ export class Garden {
             [ // All three rules together
                 ["0ET", "0ET", "3BS", "0ET", "0ET"],
                 ["0ET", "2RS", "3BC", "3BS", "0ET"],
-                ["2RC", "2BS", "1RC", "3BC", "1BS"],
+                ["2RS", "2BS", "1RC", "3BC", "1BS"],
                 ["0ET", "1RS", "3BS", "1BC", "0ET"],
                 ["0ET", "0ET", "2BS", "0ET", "0ET"]
             ]
