@@ -15,8 +15,8 @@ export interface InteractiveMesh extends BABYLON.Mesh {
 }
 
 export interface MeshOpts {
-    baseColor?: BABYLON.Color4
-    rippleColor?: BABYLON.Color4
+    baseColor?: string
+    rippleColor?: string
     frozen?: boolean
 }
 

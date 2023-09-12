@@ -1,5 +1,7 @@
+import { BLUE, ORANGE } from '@/core/Colors'
 import { ColorMaterial } from '@/core/textures'
 import { TexturedMeshNME } from '@/shaders/TexturedMeshNME'
+import { waterNME } from '@/shaders/waterNME'
 
 const { TransformNode, 
     MeshBuilder,
@@ -44,6 +46,17 @@ export const Door = (scene: BABYLON.Scene) => {
         new Vector3(.2, 0, 0),
         new Vector3(.2, 0.05, 0),
         new Vector3(.1, 0.05, 0)
+    ]
+
+    const arrowShape = [
+        new Vector3( 1, 0.5, 0),
+        new Vector3( 0, 0.5, 0),
+        new Vector3( 0, 1, 0),
+        new Vector3( -1, 0, 0),
+        new Vector3( 0, -1, 0),
+        new Vector3( 0, -0.5, 0),
+        new Vector3( 1, -0.5, 0)
+
     ]
 
     const door = MeshBuilder.ExtrudeShape("door", {
@@ -91,6 +104,23 @@ export const Door = (scene: BABYLON.Scene) => {
 
     const handle2 = handle.clone("handle2")
     handle2.position.x *= -1
+
+    // *** ARROW
+    
+    const arrow = MeshBuilder.ExtrudeShape("door", {
+        shape: arrowShape,
+        path: doorPath,
+        closeShape: true,
+        cap: BABYLON.Mesh.CAP_ALL
+    }, scene)
+    arrow.setParent(parent)
+    arrow.position = new Vector3(0, 1.8, -1)
+    arrow.material = waterNME({
+        baseColor: BLUE,
+        rippleColor: ORANGE
+    })
+    arrow.rotateAround(Vector3.Zero(), Vector3.Right(), Math.PI / 2)
+    
 
     return parent
 }

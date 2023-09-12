@@ -1,8 +1,8 @@
 // Taken from https://nme.babylonjs.com/#9YQCNE#3
 import { MeshOpts } from "@/Types"
 const waterNME = function(opts: MeshOpts) {
-    const baseColorValue = opts.baseColor || new BABYLON.Color4(0.1450980392156863, 0.23921568627450981, 0.6470588235294118, 1)
-    const rippleColorValue = opts.rippleColor || new BABYLON.Color4(0.0392156862745098, 0.8352941176470589, 0.8784313725490196, 1)
+    const baseColorValue = opts.baseColor ? BABYLON.Color4.FromHexString(`${opts.baseColor}FF`) : BABYLON.Color4.FromHexString("#243DA6FF")
+    const rippleColorValue = opts.rippleColor ? BABYLON.Color4.FromHexString(`${opts.rippleColor}FF`) : BABYLON.Color4.FromHexString("#0AD6E0FF")
     const frozen = opts.frozen || false
 
     const nodeMaterial = new BABYLON.NodeMaterial('node')

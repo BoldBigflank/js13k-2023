@@ -15,6 +15,7 @@ export class Entrance {
     parent: BABYLON.TransformNode
     floors: BABYLON.Mesh[]
     bushes: BABYLON.TransformNode[]
+    door?: BABYLON.TransformNode
     puzzles: DialPuzzle[]
     // Meta
     solved = false
@@ -46,21 +47,29 @@ export class Entrance {
         this.solved = 
             this.puzzles.length > 0 &&
             this.puzzles.every((puzzle) => puzzle.solved)
-        // if solved, Play Solved SFX
-        // TODO: When solved, open the gate to the garden
-        // between 12.5 and 28.5 z
-        this.bushes.forEach((bush, i) => {
-            if (bush.position.z < -14 || bush.position.z > -12) return
-            // if (i < 6 || i > 7) return
-            AnimationFactory.Instance.animateTransform({
-                mesh: bush,
-                end: {
-                    position: bush.position.add(new Vector3(0, 3, 0))
-                },
-                duration: 5000,
-                delay: 100
+        if (this.solved) {
+            this.bushes.forEach((bush, i) => {
+                if (bush.position.z < -14 || bush.position.z > -12) return
+                // if (i < 6 || i > 7) return
+                AnimationFactory.Instance.animateTransform({
+                    mesh: bush,
+                    end: {
+                        position: bush.position.add(new Vector3(0, 3, 0))
+                    },
+                    duration: 4000,
+                    delay: 3000
+                })
             })
-        })
+            if (this.door) {
+                AnimationFactory.Instance.animateTransform({
+                    mesh: this.door,
+                    end: {
+                        rotation: this.door.rotation.add(new Vector3(- 1 * Math.PI / 2, 0, 0))
+                    },
+                    duration: 5000
+                })
+            }
+        }
         return this.solved
     }
 
@@ -115,6 +124,7 @@ export class Entrance {
         door.setParent(this.parent)
         door.position = new Vector3(9.5, 0, 9.5)
         door.rotation = new Vector3(0, Math.PI / 4, 0)
+        this.door = door
         
         const banner = Banner(this.scene)
         banner.setParent(this.parent)
