@@ -161,7 +161,7 @@ export class Garden {
             AnimationFactory.Instance.animateTransform({
                 mesh: crown,
                 end: {
-                    scaling: new Vector3(0.25, 0.25, 0.25)
+                    scaling: new Vector3(0.15, 0.15, 0.15)
                 },
                 duration: 1000,
                 delay: 500
@@ -181,7 +181,7 @@ export class Garden {
 
         winnerText.setEndgame()
         winnerText.model.setParent(this.parent)
-        winnerText.model.position = this.endgameSphere.position.add(new Vector3 (0, 2, 0))
+        winnerText.model.position = this.endgameSphere.position.add(new Vector3 (0, 1.5, 0))
         winnerText.model.scaling = Vector3.Zero()
         
         
