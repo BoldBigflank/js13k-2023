@@ -130,7 +130,6 @@ export class FlowerBoxPuzzle {
 
         // RULE - No flowers in hand
         if (this.selectedMesh && this.selectedMesh.metadata.color !== "D"){
-            if (debug) console.log("RULE - No flowers in hand")
             this.messageBoard.setLines([]) // Not ready to share
             rulesBroken = true
         }
@@ -156,7 +155,6 @@ export class FlowerBoxPuzzle {
                 ]
                 if (color === "R") {
                     if (adjCells.some((cell) => cell?.split("")[1] === "R")) {
-                        if (debug) console.log("RULE - Red cannot be next to another Red")
                         this.messageBoard.setLines(rules.color)
                         rulesBroken = true
                     }
@@ -174,7 +172,6 @@ export class FlowerBoxPuzzle {
                             || parseInt(count) === parseInt(adjCount) + 1
                         )
                     })) {
-                        if (debug) console.log("RULE - Adjacent cells must be 1 or -1 flowers")
                         this.messageBoard.setLines(rules.count)
                         rulesBroken = true
                     }
@@ -193,14 +190,12 @@ export class FlowerBoxPuzzle {
         })
 
         if (cubeCount > 0 && cubeCount < 4) {
-            if (debug) console.log("RULE - Cube must have 4 points")
             rulesBroken = true
         }
         if (!cubePositions.every((pos, i) => {
             return (pos.x === cubeXMin || pos.x === cubeXMax)
             && (pos.y === cubeYMin || pos.y === cubeYMax)
         })) {
-            if (debug) console.log(JSON.stringify(rules.shape))
             this.messageBoard.setLines(rules.shape)
             rulesBroken = true
         }

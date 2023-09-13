@@ -30,9 +30,7 @@ export const Banner = (scene: BABYLON.Scene) => {
         // Wave the flag
         const positions = mesh.getVerticesData(BABYLON.VertexBuffer.PositionKind)
         if (!positions) return
-        // console.log(timer)
         for (let i = 0; i < positions?.length; i += 3) {
-            // console.log('point', positions[i], positions[i+1], positions[i+2])
             positions[i + 1] = 0.1 * (positions[i+2] - 2) * Math.sin(0.8 * timer / 100 + positions[i + 2])
         }
         mesh.updateVerticesData(BABYLON.VertexBuffer.PositionKind, positions)

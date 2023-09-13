@@ -211,7 +211,6 @@ const init = async () => {
     xr.baseExperience.onStateChangedObservable.add((state) => {
         inXRMode = state === BABYLON.WebXRState.IN_XR
         cursor.isEnabled(!inXRMode)
-        if (debug) console.log('inXRMode', inXRMode, xr.input.controllers)
         if (inXRMode) {
             
         } else {

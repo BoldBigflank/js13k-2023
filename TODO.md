@@ -1,7 +1,6 @@
 # TODO
 
 ## MVP Final Stretch
-* Create an end game state (crown with dialog)
 * Figure out the perf issue
 * Garden - Correct particles
 * Entrance - Helper rocks

@@ -55,7 +55,6 @@ export const Witch = (scene: BABYLON.Scene) => {
 
     })
     parent.onPointerPick = () => {
-        if (debug) console.log('clicked!', attention)
         parent.metadata = { attention: !parent.metadata.attention }
         PickupSFX()
     }
