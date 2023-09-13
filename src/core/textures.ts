@@ -31,9 +31,11 @@ const { StandardMaterial, Texture} = BABYLON
 let pc = 0
 
 /* NEW TEXTURES */
-
+const textures: Record<string,BABYLON.Material> = {}
 
 export const CursorMaterial = (scene: BABYLON.Scene) => {
+    const key = 'cursor'
+    if (textures[key]) return textures[key]
     // Setup
     const [canvas, ctx] = initCanvas(512)
     ctx.imageSmoothingEnabled = false
@@ -57,11 +59,14 @@ export const CursorMaterial = (scene: BABYLON.Scene) => {
     material.disableLighting = true
     material.emissiveColor = BABYLON.Color3.White()
     material.diffuseTexture!.hasAlpha = true
+    textures[key] = material
     return material
 }
 
 
 export const CastleMaterial = (windows = true, scale: number, scene: BABYLON.Scene) => {
+    const key = `castle${scale}`
+    if (textures[key]) return textures[key]
     // Setup
     const [canvas,ctx] = initCanvas(512)
 
@@ -117,10 +122,14 @@ export const CastleMaterial = (windows = true, scale: number, scene: BABYLON.Sce
         ctx.lineTo(320, 224)
         ctx.stroke()
     }
-    return CanvasMaterial(canvas, scene)
+    const material = CanvasMaterial(canvas, scene)
+    textures[key] = material
+    return material
 }
 
 export const GrassMaterial = (scene: BABYLON.Scene) => {
+    const key = 'grass'
+    if (textures[key]) return textures[key]
     // Setup
     const [canvas, ctx] = initCanvas(512)
     const [tempCanvas, tempCtx] = initCanvas(canvas.width * 2)
@@ -202,25 +211,33 @@ export const GrassMaterial = (scene: BABYLON.Scene) => {
         canvas.width,
         canvas.height
     )
-    return CanvasMaterial(canvas, scene)
+    const material = CanvasMaterial(canvas, scene)
+    textures[key] = material
+    return material
 }
 
 /* HELPERS */
 
 export const ColorMaterial = (color: string, scene: BABYLON.Scene) => {
+    const key = `color${color}`
+    if (textures[key]) return textures[key]
     const material = new StandardMaterial(`billboardMaterial${++pc}`, scene)
     material.diffuseColor = BABYLON.Color3.FromHexString(color)
     // material.emissiveColor = BABYLON.Color3.FromHexString(color)
+    textures[key] = material
     return material
 }
 
 export const ColorTextureMaterial = (color: string, scene: BABYLON.Scene) => {
+    const key = `colortexture${color}`
+    if (textures[key]) return textures[key]
     const material = new StandardMaterial(`billboardMaterial${++pc}`, scene)
     material.diffuseColor = BABYLON.Color3.FromHexString(color)
     const canvas = PerlinNoise()
     const texture = Texture.LoadFromDataString(`texture${++pc}`, canvas.toDataURL(), scene)
     material.diffuseColor = BABYLON.Color3.FromHexString(color)
     material.diffuseTexture = texture
+    textures[key] = material
     return material
 }
 
@@ -234,6 +251,8 @@ export const CanvasMaterial = (canvas: HTMLCanvasElement, scene: BABYLON.Scene) 
 
 // Used for Flower Puzzles
 export const GridMaterial = (color1: string, color2: string, rows: number, columns: number, scene: BABYLON.Scene) => {
+    const key = `grid-${color1}-${color2}-${rows}-${columns}`
+    if (textures[key]) return textures[key]
     const canvasSize = 512
     const [canvas, ctx] = initCanvas(canvasSize)
     ctx.imageSmoothingEnabled = false
@@ -252,10 +271,13 @@ export const GridMaterial = (color1: string, color2: string, rows: number, colum
     const material = new StandardMaterial(`material${++pc}`, scene)
     const texture = Texture.LoadFromDataString(`texture${++pc}`, canvas.toDataURL(), scene)
     material.diffuseTexture = texture
+    textures[key] = material
     return material
 }
 
 export const DirtMaterial = (scene: BABYLON.Scene) => {
+    const key = 'dirt'
+    if (textures[key]) return textures[key]
     const [canvas, ctx] = initCanvas(256)
     ctx.fillStyle = DIRT1
     ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -266,10 +288,14 @@ export const DirtMaterial = (scene: BABYLON.Scene) => {
         const y = Math.random() * (canvas.height - speckSize)
         ctx.fillRect(x, y, speckSize, speckSize)
     }
-    return CanvasMaterial(canvas, scene)
+    const material = CanvasMaterial(canvas, scene)
+    textures[key] = material
+    return material
 }
 
 export const GravelMaterial = (scene: BABYLON.Scene) => {
+    const key = 'gravel'
+    if (textures[key]) return textures[key]
     // Setup
     const [canvas,ctx] = initCanvas(512)
 
@@ -299,10 +325,14 @@ export const GravelMaterial = (scene: BABYLON.Scene) => {
         }
     })
 
-    return CanvasMaterial(canvas, scene)
+    const material = CanvasMaterial(canvas, scene)
+    textures[key] = material
+    return material
 }
 
 export const DialMaterial = (alphabet: string[], scene: BABYLON.Scene) => {
+    const key = `dial-${alphabet}`
+    if (textures[key]) return textures[key]
     const [canvas, ctx] = initCanvas(512)
     ctx.fillStyle = ORANGE
     ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -317,14 +347,14 @@ export const DialMaterial = (alphabet: string[], scene: BABYLON.Scene) => {
         ctx.strokeRect(index * tileWidth, 0, (index+1) * tileWidth, tileWidth)
         ctx.fillText(`${char}`, index * tileWidth + 0.5 * tileWidth, 0.5 * tileWidth)
     })
-    return CanvasMaterial(canvas, scene)
+    const material = CanvasMaterial(canvas, scene)
+    textures[key] = material
+    return material
 }
 
-const textMaterials: Record<string, BABYLON.Material> = {}
-
 export const TextMaterial = (lines: string[], scene: BABYLON.Scene) => {
-    const key = lines.join("")
-    if (textMaterials[key]) return textMaterials[key]
+    const key = `text-${lines.join("")}`
+    if (textures[key]) return textures[key]
     const [canvas, ctx] = initCanvas(512)
     ctx.fillStyle = ORANGE
     ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -343,12 +373,14 @@ export const TextMaterial = (lines: string[], scene: BABYLON.Scene) => {
         ctx.fillText(`${line}`, 32, 32 + 72 * index)
     })
     const material = CanvasMaterial(canvas, scene)
-    textMaterials[key] = material
+    textures[key] = material
     return material
 }
 
 
 export const SymbolMaterial = (scene: BABYLON.Scene) => {
+    const key = 'symbol'
+    if (textures[key]) return textures[key]
     const [canvas, ctx] = initCanvas(512)
 
     ctx.fillStyle = SPANISH_BLUE
@@ -365,7 +397,9 @@ export const SymbolMaterial = (scene: BABYLON.Scene) => {
     ctx.lineTo(256 + 64, 320 + 111)
     ctx.lineTo(256 - 64, 320 + 111)
     ctx.fill()
-    return CanvasMaterial(canvas, scene)
+    const material = CanvasMaterial(canvas, scene)
+    textures[key] = material
+    return material
 }
 
 export const PerlinNoise = () => {
