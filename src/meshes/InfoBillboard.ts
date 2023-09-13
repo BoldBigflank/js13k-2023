@@ -31,9 +31,19 @@ export class InfoBillboard {
     setLines = (lines: string[]) => {
         this.billboard.material = TextMaterial(lines, this.scene)
     }
+
+    setEndgame = () => {
+        this.billboard.material = TextMaterial(["Thanks for playing!"], this.scene)
+        this.billboard.rotation = Vector3.Zero()
+        this.billboard.renderingGroupId = 1
+    }
     
     set position(pos: BABYLON.Vector3) {
         this.parent.position = pos
+    }
+
+    set rotation(rot: BABYLON.Vector3) {
+        this.billboard.rotation = rot
     }
 
 

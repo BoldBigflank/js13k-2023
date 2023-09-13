@@ -6,6 +6,9 @@ import { BLACK } from '@/core/Colors'
 import { InteractiveMesh } from '@/Types'
 import { AnimationFactory } from '@/core/Animation'
 import { Crown } from '@/meshes/Crown'
+import { debug } from '@/core/Utils'
+import { InfoBillboard } from '@/meshes/InfoBillboard'
+import { SolvedSFX } from '@/core/Sounds'
 const { TransformNode, Vector3, MeshBuilder } = BABYLON
 
 export class Garden {
@@ -131,7 +134,10 @@ export class Garden {
         })
 
         const crown = Crown(this.scene)
+        crown.scaling = Vector3.Zero()
         crown.setParent(this.parent)
+        
+        const winnerText = new InfoBillboard(this.scene)
         
         // *** END GAME SPHERE ***
         this.endgameSphere = MeshBuilder.CreateSphere('endgame-sphere', {
@@ -143,6 +149,7 @@ export class Garden {
         this.endgameSphere.setParent(this.parent)
         this.endgameSphere.position.y = 1.5
         this.endgameSphere.onPointerPick = () => {
+            SolvedSFX()
             AnimationFactory.Instance.animateTransform({
                 mesh: this.endgameSphere as InteractiveMesh,
                 end: {
@@ -154,15 +161,29 @@ export class Garden {
             AnimationFactory.Instance.animateTransform({
                 mesh: crown,
                 end: {
-                    scaling: new Vector3(1, 1, 1)
+                    scaling: new Vector3(0.25, 0.25, 0.25)
                 },
-                duration: 1000
+                duration: 1000,
+                delay: 500
+            })
+            AnimationFactory.Instance.animateTransform({
+                mesh: winnerText.model,
+                end: {
+                    scaling: Vector3.One()
+                },
+                duration: 1000,
+                delay: 1000
             })
         }
-        // this.endgameSphere.setEnabled(false)
+        if (!debug) this.endgameSphere.setEnabled(false)
 
         crown.position = this.endgameSphere.position
 
+        winnerText.setEndgame()
+        winnerText.model.setParent(this.parent)
+        winnerText.model.position = this.endgameSphere.position.add(new Vector3 (0, 2, 0))
+        winnerText.model.scaling = Vector3.Zero()
+        
         
         // *** Flower Box Puzzles ***
         const flowerBoxBoards = [ // count{123}, Color{RYBWED}, shape{CST}
