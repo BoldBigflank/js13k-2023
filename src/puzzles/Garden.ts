@@ -5,6 +5,7 @@ import { Engine, Scene } from 'babylonjs'
 import { BLACK } from '@/core/Colors'
 import { InteractiveMesh } from '@/Types'
 import { AnimationFactory } from '@/core/Animation'
+import { Crown } from '@/meshes/Crown'
 const { TransformNode, Vector3, MeshBuilder } = BABYLON
 
 export class Garden {
@@ -115,6 +116,7 @@ export class Garden {
         statue.position = center
         statue.rotation.x = Math.PI / 2
         statue.scaling = new Vector3(0.5, 0.5, 1.5)
+        statue.isPickable = false
         statue.registerBeforeRender((mesh) => {
             if (this.solvedCount > 0) {
                 mesh.rotateAround(center, Vector3.Up(), Math.PI / 1700 * this.scene.getEngine().getDeltaTime())
@@ -125,8 +127,12 @@ export class Garden {
             if (this.solvedCount > 2) {
                 mesh.rotateAround(center, Vector3.Forward(), Math.PI / 500 * this.scene.getEngine().getDeltaTime())
             }
+
         })
 
+        const crown = Crown(this.scene)
+        crown.setParent(this.parent)
+        
         // *** END GAME SPHERE ***
         this.endgameSphere = MeshBuilder.CreateSphere('endgame-sphere', {
             diameter: 1,
@@ -145,8 +151,18 @@ export class Garden {
                 ease: new BABYLON.ExponentialEase(2),
                 duration: 10000
             })
+            AnimationFactory.Instance.animateTransform({
+                mesh: crown,
+                end: {
+                    scaling: new Vector3(1, 1, 1)
+                },
+                duration: 1000
+            })
         }
-        this.endgameSphere.setEnabled(false)
+        // this.endgameSphere.setEnabled(false)
+
+        crown.position = this.endgameSphere.position
+
         
         // *** Flower Box Puzzles ***
         const flowerBoxBoards = [ // count{123}, Color{RYBWED}, shape{CST}

@@ -70,9 +70,23 @@ export class Castle {
                 // wrap: true
             }, this.scene)
             wall.position = new Vector3(x, y , z)
-            wall.material = CastleMaterial(true, this.scene)
+            wall.material = CastleMaterial(true, 0.5, this.scene)
             wall.checkCollisions = true
             wall.setParent(this.parent)
+
+            // Roof tile
+            const roof = BABYLON.MeshBuilder.CreateTiledBox(`castle-roof${index}`, {
+                width: width - 0.01,
+                height: 0.3,
+                depth: depth - 0.01,
+                 tileSize: 2
+                // wrap: true
+            }, this.scene)
+            roof.setParent(this.parent)
+            roof.position = new Vector3(x, 0.5 * height + y + 0.15, z)
+            roof.material = GravelMaterial(this.scene)
+            // roof.checkCollisions = true
+
         })
     
         // x, y, z, diameter, height, coneHeight, 
@@ -109,7 +123,7 @@ export class Castle {
                 diameter
             }, this.scene)
             turret.position = new Vector3(x, y, z)
-            turret.material = CastleMaterial(false, this.scene)
+            turret.material = CastleMaterial(false, height / 4, this.scene)
             turret.checkCollisions = true
             turret.setParent(this.parent)
             if (coneHeight) {

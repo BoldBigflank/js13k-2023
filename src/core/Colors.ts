@@ -31,3 +31,5 @@ export const GRAVEL2 = "#484848"
 export const GRAVEL3 = "#4E523F"
 export const GRAVEL4 = "#63645F"
 export const GRAVEL5 = "#64655f"
+
+export const SPANISH_BLUE = "#0065BF"

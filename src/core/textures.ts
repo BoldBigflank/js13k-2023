@@ -22,6 +22,7 @@ import {
     LIGHT_GREEN,
     MID_GREY,
     ORANGE,
+    SPANISH_BLUE,
     WHITE } from "./Colors"
 import { initCanvas, sample, shuffle } from "./Utils"
 
@@ -60,7 +61,7 @@ export const CursorMaterial = (scene: BABYLON.Scene) => {
 }
 
 
-export const CastleMaterial = (windows = true, scene: BABYLON.Scene) => {
+export const CastleMaterial = (windows = true, scale: number, scene: BABYLON.Scene) => {
     // Setup
     const [canvas,ctx] = initCanvas(512)
 
@@ -68,8 +69,8 @@ export const CastleMaterial = (windows = true, scene: BABYLON.Scene) => {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // Horizontal lines
-    const brickHeight = 16
-    const brickWidth = 32
+    const brickHeight = 16 / scale
+    const brickWidth = 32 / scale
     ctx.save()
     ctx.strokeStyle = BLACK
     ctx.lineWidth = 4
@@ -350,7 +351,7 @@ export const TextMaterial = (lines: string[], scene: BABYLON.Scene) => {
 export const SymbolMaterial = (scene: BABYLON.Scene) => {
     const [canvas, ctx] = initCanvas(512)
 
-    ctx.fillStyle = BLUE
+    ctx.fillStyle = SPANISH_BLUE
     ctx.fillRect(128, 0, 256, 512)
 
     ctx.fillStyle = ORANGE

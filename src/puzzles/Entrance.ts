@@ -17,6 +17,7 @@ export class Entrance {
     bushes: BABYLON.TransformNode[]
     door?: BABYLON.TransformNode
     puzzles: DialPuzzle[]
+    trees: BABYLON.TransformNode[]
     // Meta
     solved = false
 
@@ -25,6 +26,7 @@ export class Entrance {
         this.puzzles = []
         this.floors = []
         this.bushes = []
+        this.trees = []
         // Parent position
         this.parent = new TransformNode('Entrance', this.scene)
         this.reset()
@@ -102,6 +104,7 @@ export class Entrance {
             if (!tree) return
             tree.setParent(this.parent)
             tree.position = new Vector3(0, 0, -4 * i + 4)
+            this.trees.push(tree)
         })
 
             

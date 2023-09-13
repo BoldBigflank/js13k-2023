@@ -1,12 +1,13 @@
 import { Castle } from '@/puzzles/Castle'
 import type { InteractiveMesh } from '@/Types'
-import { GrassMaterial, CursorMaterial } from './core/textures'
+import { GrassMaterial, CursorMaterial, ColorMaterial } from './core/textures'
 import { AnimationFactory } from './core/Animation'
 import { debug } from './core/Utils'
 import { Garden } from './puzzles/Garden'
 import { Entrance } from './puzzles/Entrance'
 import { TexturedMeshNME } from './shaders/TexturedMeshNME'
-import { BLUE, WHITE } from './core/Colors'
+import { GREEN, SPANISH_BLUE, WHITE } from './core/Colors'
+import { Crown } from './meshes/Crown'
 
 
 const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, PointerEventTypes } = BABYLON
@@ -101,11 +102,11 @@ const init = async () => {
     
     // *** SKYBOX
     const skybox = BABYLON.MeshBuilder.CreateSphere('skybox', {
-        diameter: 100,
+        diameter: 200,
         sideOrientation: BABYLON.Mesh.DOUBLESIDE
     }, scene)
     const skyboxMaterial = TexturedMeshNME({
-        color1: BLUE,
+        color1: SPANISH_BLUE,
         color2: WHITE,
         scale: 0.1
     })
@@ -132,6 +133,30 @@ const init = async () => {
     // *** ENTRANCE PUZZLE ***
     const entrance = new Entrance(scene)
     entrance.position = new Vector3(-15, 0, 32)
+
+    // // Outside Forest
+    // entrance.trees.forEach((tree) => {
+    //     const treeArray: BABYLON.Matrix[] = []
+    //     for (let i = 0; i < 1; i++) {
+    //         const x = Math.random() * 8 - 4
+    //         const z = Math.random() * 8 - 4
+    //         const matrix = BABYLON.Matrix.Translation(x, 0, z)
+    //         treeArray.push(matrix)
+    //     }
+    //     const treeChildren = tree.getChildMeshes()
+    //     for (let i = 0; i < treeChildren.length; i++) {
+    //         console.log('child', treeChildren[i])
+    //         const mesh = treeChildren[i].clone(`clone${i}`, entrance.model)
+    //         if (mesh instanceof BABYLON.Mesh) {
+    //             console.log('is a mesh', mesh)
+    //             mesh.material = ColorMaterial(GREEN, scene)
+    //             mesh.thinInstanceAdd(treeArray)
+    //         } else {
+    //             console.log('not a mesh', mesh)
+    //         }
+    //     }
+        
+    // })
 
     // *** CASTLE ***
     const castle = new Castle(scene)

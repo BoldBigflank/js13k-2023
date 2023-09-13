@@ -6,10 +6,6 @@
 * Garden - Correct particles
 * Entrance - Helper rocks
 * Hint system/Story dialogs
-* Castle - Texture the cones
-* Castle - Scale the cylinders
-* Castle - Add a slanted roof field for boxes
-* Outside - skybox
 * Outside - Create thin instances of trees/bushes
 ---
 
