@@ -2,6 +2,7 @@
   "name": "typescript-template",
   "version": "1.0.0",
   "main": "index.js",
+  "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.10",
     "@types/node": "^20.5.7",
