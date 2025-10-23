@@ -3,3 +3,4 @@
 /dist-minified/
 /node_modules/
 dist.zip
+*.zip
