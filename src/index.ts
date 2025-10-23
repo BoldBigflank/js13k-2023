@@ -14,10 +14,10 @@ const { Engine, Scene, MeshBuilder, HemisphericLight, UniversalCamera, Vector3, 
 const init = async () => {
     let inXRMode = false
     document.getElementById('intro')!.style.display = 'none'
-    const canvas: HTMLCanvasElement = document.getElementById('c') as HTMLCanvasElement
+    const canvas: HTMLCanvasElement = document.getElementById('c') as any as HTMLCanvasElement
     canvas.style.display = 'block'
     canvas.addEventListener("click", async () => {
-        if (document.pointerLockElement === canvas) return
+        // if (document.pointerLockElement === canvas) return
         // @ts-ignore
         await canvas.requestPointerLock({
             unadjustedMovement: true
