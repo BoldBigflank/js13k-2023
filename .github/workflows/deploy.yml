@@ -1,0 +1,76 @@
+name: Deploy
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Enable corepack
+              run: corepack enable
+            - name: Checkout repo
+              uses: actions/checkout@v3
+
+            - name: Setup Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 22
+                  cache: 'yarn'
+
+            - name: Install dependencies
+              uses: bahmutov/npm-install@v1
+
+            - name: Build project
+              run: yarn build
+
+            - name: Upload production-ready build files
+              uses: actions/upload-artifact@v4
+              with:
+                  name: production-files
+                  path: ./dist
+
+    deploy:
+        name: Upload to GitHub Pages
+        needs: build
+        permissions:
+            contents: write
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main'
+
+        steps:
+            - name: Download artifact
+              uses: actions/download-artifact@v4
+              with:
+                  name: production-files
+                  path: ./dist
+
+            - name: Deploy to GitHub Pages
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./dist
+    itch:
+        name: Upload to itch.io
+        needs: build
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main'
+
+        steps:
+            - name: Download artifact
+              uses: actions/download-artifact@v4
+              with:
+                  name: production-files
+                  path: ./dist
+            - name: Butler upload
+              uses: manleydev/butler-publish-itchio-action@master
+              env:
+                  BUTLER_CREDENTIALS: ${{ secrets.BUTLER_API_KEY }}
+                  CHANNEL: web
+                  ITCH_GAME: ${{ secrets.ITCH_GAME }}
+                  ITCH_USER: ${{ secrets.ITCH_USER }}
+                  PACKAGE: ./dist

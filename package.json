@@ -16,6 +16,7 @@
     "google-closure-compiler": "^20220601.0.0",
     "html-minifier": "^4.0.0",
     "html-webpack-plugin": "^5.3.2",
+    "husky": "^9.1.7",
     "l13": "^0.0.22",
     "roadroller": "^2.1.0",
     "tmp": "^0.2.1",
