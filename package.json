@@ -29,8 +29,8 @@
   },
   "scripts": {
     "dev": "l13 dev",
-    "build": "l13 build --roadroller",
-    "preview": "yarn build --roadroller && l13 preview",
+    "build": "l13 build",
+    "preview": "yarn build && l13 preview",
     "tsc": "tsc"
   },
   "author": "",

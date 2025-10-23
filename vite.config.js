@@ -19,7 +19,7 @@ export default defineConfig({
     },
     build: {
         rollupOptions: {
-            external: ['babylon'],
+            external: ['babylonjs'],
         },
     },
 })
